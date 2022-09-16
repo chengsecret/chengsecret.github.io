@@ -1,0 +1,31 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>All Posts - koi-secret的博客</title>
+        <link>https://blog.koisecret.site/posts/</link>
+        <description>All Posts | koi-secret的博客</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 16 Sep 2022 21:24:33 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Test1</title>
+    <link>https://blog.koisecret.site/posts/test1/</link>
+    <pubDate>Fri, 16 Sep 2022 21:24:33 &#43;0800</pubDate>
+    <author>xxxx</author>
+    <guid>https://blog.koisecret.site/posts/test1/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Second_post</title>
+    <link>https://blog.koisecret.site/posts/second_post/</link>
+    <pubDate>Fri, 16 Sep 2022 00:21:35 &#43;0800</pubDate>
+    <author>xxxx</author>
+    <guid>https://blog.koisecret.site/posts/second_post/</guid>
+    <description><![CDATA[第二篇博客 Linux服务器部署 前提条件 操作系统：CentOS 7.3 Tomcat 版本：Tomcat9.0.38 去官网找一下 JDK 版本：JDK1.8.0_181 J]]></description>
+</item>
+<item>
+    <title>First_post</title>
+    <link>https://blog.koisecret.site/posts/first_post/</link>
+    <pubDate>Thu, 15 Sep 2022 23:06:42 &#43;0800</pubDate>
+    <author>xxxx</author>
+    <guid>https://blog.koisecret.site/posts/first_post/</guid>
+    <description><![CDATA[第一篇博客 哇哈哈哈哈啊哈 public class HelloWorld { /* 第一个Java程序 * 它将输出字符串 Hello World */ public static void main(String[] args) { System.out.println(&#34;Hello World&#34;); // 输出 Hello World } }]]></description>
+</item>
+</channel>
+</rss>
