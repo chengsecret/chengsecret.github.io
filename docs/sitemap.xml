@@ -2,10 +2,11 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://blog.koisecret.site/</loc><lastmod>2022-09-16T21:24:33&#43;08:00</lastmod></url><url>
-            <loc>https://blog.koisecret.site/posts/</loc><lastmod>2022-09-16T21:24:33&#43;08:00</lastmod></url><url>
-            <loc>https://blog.koisecret.site/posts/test1/</loc><lastmod>2022-09-16T21:24:33&#43;08:00</lastmod></url><url>
-            <loc>https://blog.koisecret.site/posts/second_post/</loc><lastmod>2022-09-16T00:21:35&#43;08:00</lastmod></url><url>
-            <loc>https://blog.koisecret.site/posts/first_post/</loc><lastmod>2022-09-15T23:06:42&#43;08:00</lastmod></url><url>
-            <loc>https://blog.koisecret.site/categories/</loc></url><url>
-            <loc>https://blog.koisecret.site/tags/</loc></url></urlset>
+            <loc>https://blog.koisecret.site/categories/</loc><lastmod>2022-09-17T14:57:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://blog.koisecret.site/</loc><lastmod>2022-09-17T14:57:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://blog.koisecret.site/posts/</loc><lastmod>2022-09-17T14:57:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://blog.koisecret.site/tags/</loc><lastmod>2022-09-17T14:57:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://blog.koisecret.site/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</loc><lastmod>2022-09-17T14:57:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://blog.koisecret.site/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</loc><lastmod>2022-09-17T14:57:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://blog.koisecret.site/categories/%E5%85%B6%E5%AE%83/</loc><lastmod>2022-09-17T14:57:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://blog.koisecret.site/friend/</loc><changefreq>weekly</changefreq><priority>0.5</priority></url></urlset>
