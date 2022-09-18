@@ -15,7 +15,7 @@ title = "ctの博客 - 遇见你已经是很不可思议了"
 # 是否使用 robots.txt
 enableRobotsTXT = true
 # 是否使用 git 信息
-enableGitInfo = true
+enableGitInfo = false
 # 是否使用 emoji 代码
 enableEmoji = true
 [languages]
