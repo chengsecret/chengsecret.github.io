@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>docker - 分类 - ctの博客 - 遇见你已经是很不可思议了</title>
+        <link>https://blog.koisecret.site/categories/docker/</link>
+        <description>docker - 分类 - ctの博客 - 遇见你已经是很不可思议了</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 18 Sep 2022 20:29:23 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/categories/docker/" rel="self" type="application/rss+xml" /><item>
+    <title>Docker入门</title>
+    <link>https://blog.koisecret.site/docker%E5%AE%89%E8%A3%85/</link>
+    <pubDate>Sun, 18 Sep 2022 20:29:23 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.koisecret.site/docker%E5%AE%89%E8%A3%85/</guid>
+    <description><![CDATA[docker简介 Docker 是基于容器技术的轻量级虚拟化解决方案，是一种容器化技术的落地。容器作为一类操作系统层面的虚拟化技术，其目标是在单一Linu]]></description>
+</item>
+</channel>
+</rss>
