@@ -68,6 +68,12 @@ docker ps   # 列出当前正在运行的容器
 exit   # 容器停止
 ctrl+p+q  # 退出后容器在后台运行
 
+#进入后台正在运行的容器
+docker exec -it 容器id command ## 如docker exec -it id /bin/bash
+docker attach 容器id  ##区别： exec与attach都是进入后台正在运行的容器，
+							# exec是在容器中启动新的终端，因此exit后不会导致容器停止运行，推荐使用
+							# attach直接进入容器启动命令的终端，exit后容器停止运行
+
 docker rm 容器id或容器名 # 删除停止运行的容器
 docker rm -f $(docker ps -aq)
 

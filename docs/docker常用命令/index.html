@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.koisecret.site\/docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4\/"
-        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 入门, 云原生","wordcount":  1015 ,
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 入门, 云原生","wordcount":  1160 ,
         "url": "https:\/\/blog.koisecret.site\/docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4\/","datePublished": "2022-09-19T15:12:39+08:00","dateModified": "2022-09-19T15:12:39+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
@@ -72,7 +72,7 @@
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Docker常用命令</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
 </span>&nbsp;<span class="post-category">收录于 <a href="/categories/docker/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>docker</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-19">2022-09-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1015 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-19">2022-09-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1160 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;<span id="/docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="leancloud_visitors" data-flag-title="Docker常用命令">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
@@ -180,6 +180,12 @@
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run <span class="o">[</span>options<span class="o">]</span> 镜像名<span class="o">[</span>:tag<span class="o">]</span> <span class="o">[</span>command<span class="o">]</span>  <span class="c1"># 新建且启动容器</span>
@@ -203,6 +209,12 @@
 </span></span><span class="line"><span class="cl"><span class="c1"># 以交互模式运行时退出容器 如：docker run -it ubuntu /bin/bash </span>
 </span></span><span class="line"><span class="cl"><span class="nb">exit</span>   <span class="c1"># 容器停止</span>
 </span></span><span class="line"><span class="cl">ctrl+p+q  <span class="c1"># 退出后容器在后台运行</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#进入后台正在运行的容器</span>
+</span></span><span class="line"><span class="cl">docker <span class="nb">exec</span> -it 容器id <span class="nb">command</span> <span class="c1">## 如docker exec -it id /bin/bash</span>
+</span></span><span class="line"><span class="cl">docker attach 容器id  <span class="c1">##区别： exec与attach都是进入后台正在运行的容器，</span>
+</span></span><span class="line"><span class="cl">							<span class="c1"># exec是在容器中启动新的终端，因此exit后不会导致容器停止运行，推荐使用</span>
+</span></span><span class="line"><span class="cl">							<span class="c1"># attach直接进入容器启动命令的终端，exit后容器停止运行</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">docker rm 容器id或容器名 <span class="c1"># 删除停止运行的容器</span>
 </span></span><span class="line"><span class="cl">docker rm -f <span class="k">$(</span>docker ps -aq<span class="k">)</span>
