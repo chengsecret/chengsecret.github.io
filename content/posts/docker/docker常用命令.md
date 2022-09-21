@@ -139,8 +139,8 @@ docker commit -m="描述信息" -a="作者" 容器id 创建的镜像名:[版本�
 2. 运行镜像
 
    ```bash
-   docker run -d -p 5000:5000 -v /zzyyuse/myregistry/:/tmp/registry --privileged=true registry
-    ## -v 数据卷            个人认为这么挂载是有问题的，后续再回来看看
+   docker run -d -p 5000:5000 -v /dockerRepo:/var/lib/registry --privileged=true registry
+    ## -v 数据卷  容器中，仓库会被创建在容器的 /var/lib/registry 目录下（不能为其他的目录）
    ```
 
 3. curl命令查看容器中的镜像
@@ -152,7 +152,7 @@ docker commit -m="描述信息" -a="作者" 容器id 创建的镜像名:[版本�
 4. 将要上传的镜像（ubuntu）修改为符合私服规范的tag
 
    ```bash
-   docker tag 镜像:Tag   Host:Port/Repository:Tag # 如：docker tag  ubuntu:1.2  localhost:5000/ubuntu:1.2
+   docker tag 镜像[:Tag]  Host:Port/Repository:Tag # 如：docker tag  ubuntu:1.2  localhost:5000/ubuntu:1.2
    ```
 
 5. 修改配置文件使之支持http
@@ -187,7 +187,7 @@ docker commit -m="描述信息" -a="作者" 容器id 创建的镜像名:[版本�
 7. pull到本地
 
    ```bash
-   docker pull localhost:5000/zzyyubuntu:1.2
+   docker pull localhost:5000/ubuntu:1.2
    ```
 
 ## 容器数据卷
