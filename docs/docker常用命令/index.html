@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.koisecret.site\/docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4\/"
-        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 入门, 云原生","wordcount":  1160 ,
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 入门, 云原生","wordcount":  3020 ,
         "url": "https:\/\/blog.koisecret.site\/docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4\/","datePublished": "2022-09-19T15:12:39+08:00","dateModified": "2022-09-19T15:12:39+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
@@ -72,8 +72,8 @@
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Docker常用命令</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
 </span>&nbsp;<span class="post-category">收录于 <a href="/categories/docker/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>docker</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-19">2022-09-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1160 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;<span id="/docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="leancloud_visitors" data-flag-title="Docker常用命令">
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-19">2022-09-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3020 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;<span id="/docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="leancloud_visitors" data-flag-title="Docker常用命令">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -88,6 +88,14 @@
         <li><a href="#帮助启动类命令">帮助启动类命令</a></li>
         <li><a href="#镜像命令">镜像命令</a></li>
         <li><a href="#容器命令">容器命令</a></li>
+        <li><a href="#镜像加载原理">镜像加载原理</a></li>
+        <li><a href="#本地镜像发布">本地镜像发布</a>
+          <ul>
+            <li><a href="#发布到阿里云">发布到阿里云</a></li>
+            <li><a href="#发布到私有库">发布到私有库</a></li>
+          </ul>
+        </li>
+        <li><a href="#容器数据卷">容器数据卷</a></li>
       </ul>
     </li>
   </ul>
@@ -186,6 +194,9 @@
 </span><span class="lnt">36
 </span><span class="lnt">37
 </span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run <span class="o">[</span>options<span class="o">]</span> 镜像名<span class="o">[</span>:tag<span class="o">]</span> <span class="o">[</span>command<span class="o">]</span>  <span class="c1"># 新建且启动容器</span>
@@ -226,9 +237,243 @@
 </span></span><span class="line"><span class="cl">docker cp 容器id:容器内文件路径 目的主机路径  <span class="c1"># 复制容器内的文件到主机中</span>
 </span></span><span class="line"><span class="cl">docker <span class="nb">export</span> 容器id &gt; 文件名.tar  <span class="c1"># 导出整个容器内容为一个tar文件，放在当前目录中</span>
 </span></span><span class="line"><span class="cl">cat 文件名.tar <span class="p">|</span> docker import -包名/镜像名:版本号 <span class="c1"># 根据tar文件再次生成镜像</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker commit -m<span class="o">=</span><span class="s2">&#34;描述信息&#34;</span> -a<span class="o">=</span><span class="s2">&#34;作者&#34;</span> 容器id 创建的镜像名:<span class="o">[</span>版本号<span class="o">]</span> <span class="c1">#提交容器副本使之成为一个新的镜像</span>
+</span></span><span class="line"><span class="cl">								<span class="c1"># 如ubuntu镜像是没有vim命令的，ubuntu容器内下载vim，再commit成一个新镜像，新镜像就有vim命令</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div></div><div class="post-footer" id="post-footer">
+</div><h2 id="镜像加载原理">镜像加载原理</h2>
+<ul>
+<li>
+<p>docker的镜像实际上由一层一层的文件系统组成，称为层级的文件系统UnionFS。Union文件系统（UnionFS）是一种分层、轻量级并且高性能的文件系统，<strong>它支持对文件系统的修改作为一次提交来一层层的叠加</strong>，镜<strong>像可以通过分层来进行继承</strong>，基于基础镜像（没有父镜像），可以制作各种具体的应用镜像。</p>
+</li>
+<li>
+<p>bootfs(boot file system)主要包含bootloader和kernel, bootloader主要是引导加载kernel, Linux刚启动时会加载bootfs文件系统，在Docker镜像的最底层是引导文件系统bootfs。这一层与我们典型的Linux/Unix系统是一样的，包含boot加载器和内核。当boot加载完成之后整个内核就都在内存中了，此时内存的使用权已由bootfs转交给内核，此时系统也会卸载bootfs。</p>
+</li>
+<li>
+<p>rootfs (root file system) ，在bootfs之上。包含的就是典型 Linux 系统中的 /dev, /proc, /bin, /etc 等标准目录和文件。rootfs就是各种不同的操作系统发行版，比如Ubuntu，Centos等等。 对于一个精简的OS，rootfs可以很小，只需要包括最基本的命令、工具和程序库就可以了，因为底层直接用Host的kernel，自己只需要提供 rootfs 就行了。由此可见对于不同的linux发行版, bootfs基本是一致的, rootfs会有差别, 因此不同的发行版可以公用bootfs。</p>
+</li>
+<li>
+<p><strong>镜像分层最大的一个好处就是共享资源，方便复制迁移，就是为了复用。</strong></p>
+</li>
+<li>
+<p>当容器启动时，一个新的可写层被加载到镜像的顶部。这一层通常被称作“容器层”，“容器层”之下的都叫“镜像层”。所有对容器的改动 - 无论添加、删除、还是修改文件都只会发生在容器层中。只有容器层是可写的，容器层下面的所有镜像层都是只读的。</p>
+</li>
+</ul>
+<h2 id="本地镜像发布">本地镜像发布</h2>
+<h3 id="发布到阿里云">发布到阿里云</h3>
+<ol>
+<li>
+<p>阿里云官网搜索<code>容器镜像服务</code>,创建个人实例 ，新建<strong>命名空间</strong>和<strong>仓库名称</strong>，进入<strong>管理</strong>界面</p>
+</li>
+<li>
+<p>按照管理界面的命令，将镜像push到阿里云镜像仓库</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker login --username<span class="o">=</span>xxxxxx registry.cn-hangzhou.aliyuncs.com
+</span></span><span class="line"><span class="cl">docker tag <span class="o">[</span>ImageId<span class="o">]</span> registry.cn-hangzhou.aliyuncs.com/ctstudy/ubuntu-test:<span class="o">[</span>镜像版本号<span class="o">]</span>
+</span></span><span class="line"><span class="cl">docker push registry.cn-hangzhou.aliyuncs.com/ctstudy/ubuntu-test:<span class="o">[</span>镜像版本号<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>从阿里云镜像仓库拉取镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker pull registry.cn-hangzhou.aliyuncs.com/ctstudy/ubuntu-test:<span class="o">[</span>镜像版本号<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<h3 id="发布到私有库">发布到私有库</h3>
+<blockquote>
+<ul>
+<li>
+<p>官方Docker Hub地址：https://hub.docker.com/，中国大陆访问太慢了且准备被阿里云取代的趋势，不太主流。</p>
+</li>
+<li>
+<p>Dockerhub、阿里云这样的公共镜像仓库可能不太方便，涉及机密的公司不可能提供镜像给公网，所以需要创建一个本地私人仓库供给团队使用，基于公司内部项目构建镜像。</p>
+</li>
+<li>
+<p>Docker Registry镜像是官方提供的工具，可以用于构建私有镜像仓库。</p>
+</li>
+</ul>
+</blockquote>
+<ol>
+<li>
+<p>下载镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker pull registry
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>运行镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run -d -p 5000:5000 -v /zzyyuse/myregistry/:/tmp/registry --privileged<span class="o">=</span><span class="nb">true</span> registry
+</span></span><span class="line"><span class="cl"> <span class="c1">## -v 数据卷            个人认为这么挂载是有问题的，后续再回来看看</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>curl命令查看容器中的镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl -XGET http://localhost:5000/v2/_catalog  <span class="c1"># 显示 {&#34;repositories&#34;:[]}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>将要上传的镜像（ubuntu）修改为符合私服规范的tag</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker tag 镜像:Tag   Host:Port/Repository:Tag <span class="c1"># 如：docker tag  ubuntu:1.2  localhost:5000/ubuntu:1.2</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>修改配置文件使之支持http</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">vim /etc/docker/daemon.json
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>修改为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;registry-mirrors&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;https://xxxxxx.mirror.aliyuncs.com&#34;</span><span class="p">],</span>  <span class="c1">// 你自己的阿里云镜像，不用改，别忘了加逗号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nt">&#34;insecure-registries&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;localhost:5000&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>修改完后重启docker。</p>
+</li>
+<li>
+<p>push推送到私服库</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker push localhost:5000/ubuntu:1.2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>再次验证：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl -XGET http://localhost:5000/v2/_catalog  <span class="c1"># 显示 {&#34;repositories&#34;:[ubuntu]}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>pull到本地</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker pull localhost:5000/zzyyubuntu:1.2
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<h2 id="容器数据卷">容器数据卷</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run --privileged<span class="o">=</span><span class="nb">true</span> -v /宿主机绝对路径目录:/容器内目录  镜像名 <span class="c1">#  --privileged=true 记得带上，否则可能权限不够</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们对数据的要求希望是持久化的，Docker容器产生的数据，如果不备份，那么当容器实例删除后，容器内的数据自然也就没有了。为了能保存数据在docker中我们使用卷。</p>
+<ol>
+<li>
+<p>数据卷可在容器之间共享或重用数据</p>
+</li>
+<li>
+<p>卷中的更改可以直接实时生效，爽</p>
+</li>
+<li>
+<p>数据卷中的更改不会包含在镜像的更新中</p>
+</li>
+</ol>
+<ul>
+<li>
+<p>查看是否挂载成功：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker inspect 容器ID
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>映射的读写规则</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run --privileged<span class="o">=</span><span class="nb">true</span> -v /宿主机绝对路径目录:/容器内目录:ro  镜像名  <span class="c1">#容器内文件只读</span>
+</span></span><span class="line"><span class="cl">docker run --privileged<span class="o">=</span><span class="nb">true</span> -v /宿主机绝对路径目录:/容器内目录:rw  镜像名  <span class="c1">#默认，读写都可以</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>数据卷的继承与共享</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run -it  --privileged<span class="o">=</span><span class="nb">true</span> -v /mydocker/u:/tmp --name u1 ubuntu  <span class="c1"># 容器一</span>
+</span></span><span class="line"><span class="cl">docker run -it  --privileged<span class="o">=</span><span class="nb">true</span> --volumes-from u1 --name u2 ubuntu <span class="c1"># 容器二，他们共享容器卷</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
