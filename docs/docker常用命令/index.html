@@ -19,7 +19,7 @@
 <meta name="application-name" content="ctの博客">
 <meta name="apple-mobile-web-app-title" content="ctの博客"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.koisecret.site/docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" /><link rel="prev" href="https://blog.koisecret.site/docker%E5%AE%89%E8%A3%85/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"><script type="application/ld+json">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.koisecret.site/docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" /><link rel="prev" href="https://blog.koisecret.site/docker%E5%AE%89%E8%A3%85/" /><link rel="next" href="https://blog.koisecret.site/docker%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E5%AE%89%E8%A3%85/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -243,23 +243,21 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="镜像加载原理">镜像加载原理</h2>
-<ul>
-<li>
+<blockquote>
 <p>docker的镜像实际上由一层一层的文件系统组成，称为层级的文件系统UnionFS。Union文件系统（UnionFS）是一种分层、轻量级并且高性能的文件系统，<strong>它支持对文件系统的修改作为一次提交来一层层的叠加</strong>，镜<strong>像可以通过分层来进行继承</strong>，基于基础镜像（没有父镜像），可以制作各种具体的应用镜像。</p>
-</li>
-<li>
+</blockquote>
+<blockquote>
 <p>bootfs(boot file system)主要包含bootloader和kernel, bootloader主要是引导加载kernel, Linux刚启动时会加载bootfs文件系统，在Docker镜像的最底层是引导文件系统bootfs。这一层与我们典型的Linux/Unix系统是一样的，包含boot加载器和内核。当boot加载完成之后整个内核就都在内存中了，此时内存的使用权已由bootfs转交给内核，此时系统也会卸载bootfs。</p>
-</li>
-<li>
+</blockquote>
+<blockquote>
 <p>rootfs (root file system) ，在bootfs之上。包含的就是典型 Linux 系统中的 /dev, /proc, /bin, /etc 等标准目录和文件。rootfs就是各种不同的操作系统发行版，比如Ubuntu，Centos等等。 对于一个精简的OS，rootfs可以很小，只需要包括最基本的命令、工具和程序库就可以了，因为底层直接用Host的kernel，自己只需要提供 rootfs 就行了。由此可见对于不同的linux发行版, bootfs基本是一致的, rootfs会有差别, 因此不同的发行版可以公用bootfs。</p>
-</li>
-<li>
+</blockquote>
+<blockquote>
 <p><strong>镜像分层最大的一个好处就是共享资源，方便复制迁移，就是为了复用。</strong></p>
-</li>
-<li>
+</blockquote>
+<blockquote>
 <p>当容器启动时，一个新的可写层被加载到镜像的顶部。这一层通常被称作“容器层”，“容器层”之下的都叫“镜像层”。所有对容器的改动 - 无论添加、删除、还是修改文件都只会发生在容器层中。只有容器层是可写的，容器层下面的所有镜像层都是只读的。</p>
-</li>
-</ul>
+</blockquote>
 <h2 id="本地镜像发布">本地镜像发布</h2>
 <h3 id="发布到阿里云">发布到阿里云</h3>
 <ol>
@@ -494,7 +492,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/docker%E5%AE%89%E8%A3%85/" class="prev" rel="prev" title="Docker入门"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Docker入门</a></div>
+    <div class="post-nav"><a href="/docker%E5%AE%89%E8%A3%85/" class="prev" rel="prev" title="Docker入门"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Docker入门</a>
+            <a href="/docker%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E5%AE%89%E8%A3%85/" class="next" rel="next" title="Docker常用容器安装">Docker常用容器安装<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
 <div id="comments"><div id="valine" class="comment"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
