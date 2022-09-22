@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.koisecret.site\/docker%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E5%AE%89%E8%A3%85\/"
-        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 入门, 云原生","wordcount":  71 ,
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 入门, 云原生","wordcount":  539 ,
         "url": "https:\/\/blog.koisecret.site\/docker%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E5%AE%89%E8%A3%85\/","datePublished": "2022-09-22T15:28:11+08:00","dateModified": "2022-09-22T15:28:11+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
@@ -72,8 +72,8 @@
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Docker常用容器安装</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
 </span>&nbsp;<span class="post-category">收录于 <a href="/categories/docker/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>docker</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-22">2022-09-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 71 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 1 分钟&nbsp;<span id="/docker%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E5%AE%89%E8%A3%85/" class="leancloud_visitors" data-flag-title="Docker常用容器安装">
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-22">2022-09-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 539 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;<span id="/docker%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E5%AE%89%E8%A3%85/" class="leancloud_visitors" data-flag-title="Docker常用容器安装">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -86,13 +86,121 @@
     <li>
       <ul>
         <li><a href="#安装tomcat">安装tomcat</a></li>
+        <li><a href="#centos一些常用防火墙命令">Centos一些常用防火墙命令</a></li>
       </ul>
     </li>
   </ul>
 </nav></div>
             </div><div class="content" id="content"><p>运行一个容器不仅仅是<code>docker run </code>，还需要考虑端口、数据的持久化、容器自身的特殊命令等等，这样的容器在生产环境中才有实际意义。</p>
 <h2 id="安装tomcat">安装tomcat</h2>
-</div><div class="post-footer" id="post-footer">
+<blockquote>
+<p>安装命令</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker pull billygoo/tomcat8-jdk8
+</span></span><span class="line"><span class="cl">docker run -d -p 8080:8080 --name mytomcat8 billygoo/tomcat8-jdk8
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Linux系统安装了浏览器的话，就可以通过http://localhost:8080来访问。</p>
+<blockquote>
+<p>问题：访问不了？</p>
+</blockquote>
+<ul>
+<li>
+<p>可能没有映射端口，即： <code>-p 8080:8080</code></p>
+</li>
+<li>
+<p>可能下载的tomcat版本过新，需要把webapps.dist目录名修改为webapps即可。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker <span class="nb">exec</span> -it 容器id /bin/bash
+</span></span><span class="line"><span class="cl">ls -l
+</span></span><span class="line"><span class="cl">rm -r webapps  <span class="c1">#是一个空文件夹</span>
+</span></span><span class="line"><span class="cl">mv webapps.dist webapps <span class="c1">#给webapps.dist 文件夹换名字</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<blockquote>
+<p>外网如何访问？</p>
+</blockquote>
+<ul>
+<li>如果服务器是云服务器，需要开启<strong>安全组8080端口</strong>和<strong>防火墙8080端口</strong></li>
+<li>如果是本地虚拟机，开启<strong>防火墙8080端口</strong>，如果还是访问不了就重启一下（我重启后才能访问的）。</li>
+</ul>
+<h2 id="centos一些常用防火墙命令">Centos一些常用防火墙命令</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 开放端口</span>
+</span></span><span class="line"><span class="cl">firewall-cmd --zone<span class="o">=</span>public --add-port<span class="o">=</span>5672/tcp --permanent
+</span></span><span class="line"><span class="cl">firewall-cmd --reload   <span class="c1"># 配置立即生效</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#关闭端口</span>
+</span></span><span class="line"><span class="cl">firewall-cmd --zone<span class="o">=</span>public --remove-port<span class="o">=</span>5672/tcp --permanent 
+</span></span><span class="line"><span class="cl">firewall-cmd --reload   <span class="c1"># 配置立即生效</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看防火墙状态</span>
+</span></span><span class="line"><span class="cl">firewall-cmd --state
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#查看想开的端口是否已开</span>
+</span></span><span class="line"><span class="cl">firewall-cmd --query-port<span class="o">=</span>8888/tcp
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#查看防火墙所有开放的端口</span>
+</span></span><span class="line"><span class="cl">firewall-cmd --zone<span class="o">=</span>public --list-ports
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 开启防火墙</span>
+</span></span><span class="line"><span class="cl">systemctl start firewalld.service  		<span class="c1">#启动firewall</span>
+</span></span><span class="line"><span class="cl">systemctl <span class="nb">enable</span> firewalld.service		<span class="c1">#开机时启动firewall</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 关闭防火墙</span>
+</span></span><span class="line"><span class="cl">systemctl stop firewalld.service        <span class="c1">#停止firewall</span>
+</span></span><span class="line"><span class="cl">systemctl disable firewalld.service		<span class="c1">#禁止firewall开机启动</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#重启防火墙</span>
+</span></span><span class="line"><span class="cl">systemctl restart firewalld.service
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
