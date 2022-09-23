@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.koisecret.site\/docker%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E5%AE%89%E8%A3%85\/"
-        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 入门, 云原生","wordcount":  539 ,
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 入门, 云原生","wordcount":  1150 ,
         "url": "https:\/\/blog.koisecret.site\/docker%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E5%AE%89%E8%A3%85\/","datePublished": "2022-09-22T15:28:11+08:00","dateModified": "2022-09-22T15:28:11+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
@@ -72,8 +72,8 @@
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Docker常用容器安装</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
 </span>&nbsp;<span class="post-category">收录于 <a href="/categories/docker/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>docker</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-22">2022-09-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 539 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;<span id="/docker%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E5%AE%89%E8%A3%85/" class="leancloud_visitors" data-flag-title="Docker常用容器安装">
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-22">2022-09-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1150 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;<span id="/docker%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E5%AE%89%E8%A3%85/" class="leancloud_visitors" data-flag-title="Docker常用容器安装">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -87,6 +87,8 @@
       <ul>
         <li><a href="#安装tomcat">安装tomcat</a></li>
         <li><a href="#centos一些常用防火墙命令">Centos一些常用防火墙命令</a></li>
+        <li><a href="#安装mysql">安装mysql</a></li>
+        <li><a href="#安装redis">安装redis</a></li>
       </ul>
     </li>
   </ul>
@@ -133,11 +135,11 @@
 </div></li>
 </ul>
 <blockquote>
-<p>外网如何访问？</p>
+<p>外网访问不了？</p>
 </blockquote>
 <ul>
 <li>如果服务器是云服务器，需要开启<strong>安全组8080端口</strong>和<strong>防火墙8080端口</strong></li>
-<li>如果是本地虚拟机，开启<strong>防火墙8080端口</strong>，如果还是访问不了就重启一下（我重启后才能访问的）。</li>
+<li>如果是本地虚拟机，开启<strong>防火墙8080端口</strong>，如果还是访问不了就重启一下。虚拟机ip地址可以在虚拟机中使用<code>ifconfig</code>命令获取。</li>
 </ul>
 <h2 id="centos一些常用防火墙命令">Centos一些常用防火墙命令</h2>
 <div class="highlight"><div class="chroma">
@@ -200,7 +202,160 @@
 </span></span><span class="line"><span class="cl">systemctl restart firewalld.service
 </span></span></code></pre></td></tr></table>
 </div>
-</div></div><div class="post-footer" id="post-footer">
+</div><h2 id="安装mysql">安装mysql</h2>
+<ol>
+<li>
+<p>拉取镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker pull mysql:5.7
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>运行容器</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run -d -p 3306:3306 --privileged<span class="o">=</span><span class="nb">true</span> -v /mysql/log:/var/log/mysql -v /mysql/data:/var/lib/mysql -v /mysql/conf:/etc/mysql/conf.d -e <span class="nv">MYSQL_ROOT_PASSWORD</span><span class="o">=</span><span class="m">1234567</span>  --name mysql mysql:5.7
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>数据库中的数据不能丢失，所以数据卷一定要配置上</li>
+<li><code>-e MYSQL_ROOT_PASSWORD=1234567</code>是MySQL容器的特殊命令，表示配置root账户的登陆密码</li>
+</ul>
+</li>
+<li>
+<p>配置编码（不配置的话插入中文数据会报错）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> /mysql/conf/   <span class="c1"># 通过数据卷同步到容器中，这个目录是 docker run 时配置的目录</span>
+</span></span><span class="line"><span class="cl">vim my.cnf
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>将下面这段写入my.cnf:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="p">[</span><span class="nx">client</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">default_character_set</span><span class="p">=</span><span class="nx">utf8</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">mysqld</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">collation_server</span> <span class="p">=</span> <span class="nx">utf8_general_ci</span>
+</span></span><span class="line"><span class="cl"><span class="nx">character_set_server</span> <span class="p">=</span> <span class="nx">utf8</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>重启容器，查看字符编码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker restart mysql
+</span></span><span class="line"><span class="cl">docker <span class="nb">exec</span> -it mysql bash
+</span></span><span class="line"><span class="cl">mysql -uroot -p
+</span></span><span class="line"><span class="cl"><span class="c1"># 输入密码</span>
+</span></span><span class="line"><span class="cl">show variables like <span class="s1">&#39;character%&#39;</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<p>之后，还可以删除容器，再重新跑一个mysql容器，只要数据卷映射的文件夹不变，数据就会自动恢复了。</p>
+<h2 id="安装redis">安装redis</h2>
+<ol>
+<li>
+<p>拉取镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker pull redis:6.0.8
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>编辑redis配置文件，利用数据卷挂载到容器中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir -p /redis  <span class="c1">#创建宿主机目录，存放redis容器中的数据</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /redis
+</span></span><span class="line"><span class="cl">vim redis.conf  <span class="c1"># 去网上找一个redis初始配置文件，将内容复制进去</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>修改redis.conf中的内容</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">requirepass <span class="m">1234567</span> <span class="c1">#redis密码验证，开启会安全很多</span>
+</span></span><span class="line"><span class="cl"><span class="nb">bind</span> 0.0.0.0  <span class="c1">#将配置文件中的bind 127.0.0.1注释掉或改成bind 0.0.0.0 ；不改则只能本机访问redis</span>
+</span></span><span class="line"><span class="cl">daemonize no <span class="c1"># 将daemonize yes注释起来或者 daemonize no设置，因为该配置和docker run中-d参数冲突，会导致容器一直启动失败</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># appendonly yes  开启redis数据持久化  可选</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>运行容器</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run  -p 6379:6379 --name redis --privileged<span class="o">=</span><span class="nb">true</span> -v /redis/redis.conf:/etc/redis/redis.conf -v /redis/data:/data -d redis:6.0.8 redis-server /etc/redis/redis.conf
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>redis-cli连接</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker <span class="nb">exec</span> -it redis bash
+</span></span><span class="line"><span class="cl">root@7c5608e916c8:/data# redis-cli
+</span></span><span class="line"><span class="cl">root@7c5608e916c8:/data# auth <span class="m">1234567</span>
+</span></span><span class="line"><span class="cl">root@7c5608e916c8:/data# <span class="nb">exit</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+</div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
