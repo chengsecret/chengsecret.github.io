@@ -4,12 +4,36 @@
         <link>https://blog.koisecret.site/tags/</link>
         <description>Tags - 标签 - ctの博客 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 22 Sep 2022 15:28:11 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/tags/" rel="self" type="application/rss+xml" /><item>
     <title>docker</title>
     <link>https://blog.koisecret.site/tags/docker/</link>
-    <pubDate>Thu, 22 Sep 2022 15:28:11 &#43;0800</pubDate>
+    <pubDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</pubDate>
     <author>chengsecret</author>
     <guid>https://blog.koisecret.site/tags/docker/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>redis</title>
+    <link>https://blog.koisecret.site/tags/redis/</link>
+    <pubDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.koisecret.site/tags/redis/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>分布式存储</title>
+    <link>https://blog.koisecret.site/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/</link>
+    <pubDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.koisecret.site/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>云原生</title>
+    <link>https://blog.koisecret.site/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</link>
+    <pubDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.koisecret.site/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -18,14 +42,6 @@
     <pubDate>Thu, 22 Sep 2022 15:28:11 &#43;0800</pubDate>
     <author>chengsecret</author>
     <guid>https://blog.koisecret.site/tags/%E5%85%A5%E9%97%A8/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>云原生</title>
-    <link>https://blog.koisecret.site/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</link>
-    <pubDate>Thu, 22 Sep 2022 15:28:11 &#43;0800</pubDate>
-    <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>

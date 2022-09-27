@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Docker配置redis集群 - ctの博客 - 遇见你已经是很不可思议了</title><meta name="Description" content="chengsecret的博客网站"><meta property="og:title" content="Docker配置redis集群" />
+<meta property="og:description" content="当有上亿条数据需要缓存，该如何解决这个问题？ ——分布式存储 一 redis回顾 持久化 RDB快照：默认情况下，Redis将内存数据库快照保存为du" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.koisecret.site/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/" /><meta property="og:image" content="https://blog.koisecret.site/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-09-27T10:15:34+08:00" />
+<meta property="article:modified_time" content="2022-09-27T10:15:34+08:00" /><meta property="og:site_name" content="My cool site" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.koisecret.site/logo.png"/>
+
+<meta name="twitter:title" content="Docker配置redis集群"/>
+<meta name="twitter:description" content="当有上亿条数据需要缓存，该如何解决这个问题？ ——分布式存储 一 redis回顾 持久化 RDB快照：默认情况下，Redis将内存数据库快照保存为du"/>
+<meta name="application-name" content="ctの博客">
+<meta name="apple-mobile-web-app-title" content="ctの博客"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.koisecret.site/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/" /><link rel="prev" href="https://blog.koisecret.site/docker%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E5%AE%89%E8%A3%85/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Docker配置redis集群",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.koisecret.site\/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4\/"
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, redis, 分布式存储, 云原生","wordcount":  4110 ,
+        "url": "https:\/\/blog.koisecret.site\/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4\/","datePublished": "2022-09-27T10:15:34+08:00","dateModified": "2022-09-27T10:15:34+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "chengsecret"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ctの博客 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i> Github </a><a class="menu-item" href="/friend/"><i class='fas fa-user-friends'></i> 友链 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ctの博客 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>Github</a><a class="menu-item" href="/friend/" title=""><i class='fas fa-user-friends'></i>友链</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Docker配置redis集群</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
+</span>&nbsp;<span class="post-category">收录于 <a href="/categories/docker/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>docker</a>&nbsp;<a href="/categories/redis/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>redis</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-27">2022-09-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4110 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 9 分钟&nbsp;<span id="/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/" class="leancloud_visitors" data-flag-title="Docker配置redis集群">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#一-redis回顾">一 redis回顾</a></li>
+        <li><a href="#二-分布式缓存集群系统常用的三种算法">二 分布式缓存集群系统常用的三种算法</a>
+          <ul>
+            <li><a href="#1哈希取余算法">1.哈希取余算法</a></li>
+            <li><a href="#2一致性哈希算法">2.一致性哈希算法</a></li>
+            <li><a href="#3哈希槽算法">3.哈希槽算法</a></li>
+          </ul>
+        </li>
+        <li><a href="#三-docker容器配置redis集群">三 docker容器配置redis集群</a></li>
+        <li><a href="#四-本人的一些疑问及解答">四 本人的一些疑问及解答</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>当有上亿条数据需要缓存，该如何解决这个问题？   ——<strong>分布式存储</strong></p>
+<h2 id="一-redis回顾">一 redis回顾</h2>
+<blockquote>
+<p>持久化</p>
+</blockquote>
+<p><strong>RDB快照</strong>：默认情况下，Redis将内存数据库快照保存为dump.rdb二进制文件，可以设置他的初始化规则为N秒内发生了M次改动时就做一次保存动作 例： “60秒内有至少有1000个键被改动”这一条件时，自动保存一次数据集：配置文件：<code># save 60 1000</code>
+<strong>AOF</strong> : RDB有个缺点，当服务宕机后，会缺失最近没达到持久化条件一段时间内的数据。所以AOF出现了，他是规定多长时间就持久化一次，推荐每秒同步一次，即使故障也就那一秒的数据没有。这样的话文件就会较大，所以当恢复采用aof文件，进度就会稍慢。Redis4.0混合持久化，先采用RDB快照恢复，再用AOF补充缺失的部分数据。重启效率大大提高。</p>
+<blockquote>
+<p>主从复制</p>
+</blockquote>
+<ul>
+<li>
+<p>主从复制架构用来解决数据的<strong>冗余备份</strong>,从节点仅仅用来同步数据。</p>
+</li>
+<li>
+<p><strong>无法解决:master节点出现故障的自动故障转移</strong>。</p>
+</li>
+<li>
+<p><strong>数据的复制是单向的，只能由主节点到从节点</strong>。<strong>Master以写为主，Slave以读为主</strong>。</p>
+</li>
+</ul>
+<p><strong>一般来说，要将Redis运用于工程项目中，只使用一台Redis是万万不能的（宕机），原因如下：</strong></p>
+<ul>
+<li>从结构上，单个Redis服务器会发生单点故障，并且一台服务器需要处理所有的请求负载，压力较大！</li>
+<li>从容量上，单个Redis服务器内存容量有限，就算一台Redis服务器内容容量为256G，也不能将所有内存用作Redis存储内存，一般来说，<strong>单台Redis最大使用内存不应该超过20G</strong>。</li>
+</ul>
+<blockquote>
+<p>哨兵模式</p>
+</blockquote>
+<ul>
+<li>
+<p>Sentinel（哨兵）是Redis 的高可用性解决方案：由一个或多个Sentinel 实例 组成的Sentinel 系统可以监视任意多个主服务器，以及这些主服务器属下的所有从服务器，并在被监视的主服务器进入下线状态时，自动将下线主服务器属下的某个从服务器升级为新的主服务器。简单的说哨兵就是带有<strong>自动故障转移功能的主从架构</strong>。<strong>只有Redis的主节点对外提供服务，从节点不提供读写</strong>。</p>
+</li>
+<li>
+<p><strong>无法解决: 1.单节点并发压力问题   2.单节点内存和磁盘物理上限 3.很难扩缩容</strong></p>
+</li>
+</ul>
+<blockquote>
+<p>cluster集群</p>
+</blockquote>
+<p>即使使用哨兵，redis每个实例也是全量存储，每个redis存储的内容都是完整的数据，浪费内存且有木桶效应。为了最大化利用内存，可以采用<strong>cluster群集</strong>，就是<strong>分布式存储</strong>。即每台redis存储不同的内容。Redis在3.0后开始支持Cluster(模式)模式,它具有<strong>高可用、可扩展性、分布式、容错</strong>等特性。</p>
+<ul>
+<li>Redis集群<strong>不需要sentinel哨兵</strong>，也能完成节点移除和故障转移的功能。</li>
+<li>需要将每个节点设置成集群模式，这种集群模式没有中心节点，可水平扩展，据官方文档称可以线性扩展到上万个节点(官方推荐不超过1000个节点)。redis集群的性能和高可用性均优于之前版本的哨兵模式，且集群配置非常简单。</li>
+<li>数据分布的实现原理：Redis 集群将所有数据划分为16384个槽位，每个节点（主节点）负责其中的一部分，当我们根据key存放的时候，Redis根据CRC16算法得出一个结果，然后对16384求余数，这样每个key都会落在0-16383之间，然后找到对应的节点区间。</li>
+</ul>
+<p>判断一个是集群中的节点是否可用,是集群中的所用主节点选举过程,如果半数以上的节点认为当前节点挂掉,那么当前节点就是挂掉了,所以搭建redis集群时建议节点数最好为奇数，<strong>搭建集群至少需要三个主节点,三个从节点,至少需要6个节点</strong>。</p>
+<h2 id="二-分布式缓存集群系统常用的三种算法">二 分布式缓存集群系统常用的三种算法</h2>
+<h3 id="1哈希取余算法">1.哈希取余算法</h3>
+<p>2亿条记录就是2亿个k,v，我们单机不行必须要分布式多机，假设有3台机器构成一个集群，用户每次读写操作都是根据公式：<code>hash(key) % N</code>个机器台数，计算出哈希值，用来决定数据映射到哪一个节点上。</p>
+<p><strong>优点</strong>：简单粗暴，直接有效，只需要预估好数据规划好节点，例如3台、8台、10台，就能保证一段时间的数据支撑。使用Hash算法让固定的一部分请求落到同一台服务器上，这样每台服务器固定处理一部分请求（并维护这些请求的信息），起到负载均衡+分而治之的作用。</p>
+<p><strong>缺点</strong>：  原来规划好的节点，进行扩容或者缩容就比较麻烦。某个redis机器宕机了，由于台数数量变化，会导致hash取余全部数据重新洗牌。</p>
+<h3 id="2一致性哈希算法">2.一致性哈希算法</h3>
+<p>​        一致性Hash算法是对2^32取模，简单来说，一致性Hash算法将整个哈希值空间组织成一个虚拟的圆环，整个哈希环为：整个空间按顺时针方向组织，圆环的正上方的点代表0，0点右侧的第一个点代表1，以此类推，2、3、4、……直到2^32-1，也就是说0点左侧的第一个点代表2^32-1， 0和2^32-1在零点中方向重合，我们把这个由2^32个点组成的圆环称为Hash环。</p>
+<p>​        将各个服务器使用Hash进行一个哈希，具体可以选择服务器的IP或主机名作为关键字进行哈希，这样每台机器就能确定其在哈希环上的位置。</p>
+<p>​		当我们需要存储一个kv键值对时，首先计算key的hash值，hash(key)，将这个key使用相同的函数Hash计算出哈希值并确定此数据在环上的位置，<strong>从此位置沿环顺时针“行走”</strong>，第一台遇到的服务器就是其应该定位到的服务器，并将该键值对存储在该节点上。</p>
+<p><strong>优点</strong>：<strong>容错性</strong>（如果一台服务器不可用，则受影响的数据仅仅是此服务器到其环空间中前一台服务器（即沿着逆时针方向行走遇到的第一台服务器）之间数据，其它不会受到影响。）、<strong>扩展性</strong></p>
+<p><strong>缺点</strong>：<strong>数据倾斜问题</strong>（被缓存的对象大部分集中缓存在某一台服务器上）</p>
+<h3 id="3哈希槽算法">3.哈希槽算法</h3>
+<p>​		哈希槽实质就是一个数组，数组[0,2^14 -1]形成hash slot空间。redis集群采用的就是哈希槽算法。</p>
+<p>​		解决均匀分配的问题，在数据和节点之间又加入了一层，把这层称为哈希槽（slot），用于管理数据和节点之间的关系，现在就相当于节点上放的是槽，槽里放的是数据。</p>
+<p>​		一个集群只能有16384个槽，编号0-16383（0-2^14-1）。这些槽会分配给集群中的所有主节点，分配策略没有要求。可以指定哪些编号的槽分配给哪个主节点。集群会记录节点和槽的对应关系。解决了节点和槽的关系后，接下来就需要对key求哈希值，然后对16384取余，余数是几key就落入对应的槽里。slot = CRC16(key) % 16384。以槽为单位移动数据，因为槽的数目是固定的，处理起来比较容易，这样数据移动问题就解决了。</p>
+<h2 id="三-docker容器配置redis集群">三 docker容器配置redis集群</h2>
+<ol>
+<li>
+<p>新建六个redis容器实例</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run -d --name redis-node-1 --net host --privileged<span class="o">=</span><span class="nb">true</span> -v /data/redis/share/redis-node-1:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port <span class="m">6381</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker run -d --name redis-node-2 --net host --privileged<span class="o">=</span><span class="nb">true</span> -v /data/redis/share/redis-node-2:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port <span class="m">6382</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker run -d --name redis-node-3 --net host --privileged<span class="o">=</span><span class="nb">true</span> -v /data/redis/share/redis-node-3:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port <span class="m">6383</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker run -d --name redis-node-4 --net host --privileged<span class="o">=</span><span class="nb">true</span> -v /data/redis/share/redis-node-4:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port <span class="m">6384</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker run -d --name redis-node-5 --net host --privileged<span class="o">=</span><span class="nb">true</span> -v /data/redis/share/redis-node-5:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port <span class="m">6385</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker run -d --name redis-node-6 --net host --privileged<span class="o">=</span><span class="nb">true</span> -v /data/redis/share/redis-node-6:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port <span class="m">6386</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>&ndash;net host</strong> : 使用宿主机的端口和ip地址</li>
+<li><strong>&ndash;cluster-enabled yes</strong>：开启redis集群</li>
+<li><strong>&ndash;appendonly yes</strong>：开启持久化</li>
+</ul>
+</li>
+<li>
+<p>进入容器redis-node-1，并为六个容器构建集群关系</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker <span class="nb">exec</span> -it redis-node-1 /bin/bash
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">redis-cli --cluster create 192.168.188.128:6381 192.168.188.128:6382 192.168.188.128:6383 192.168.188.128:6384 192.168.188.128:6385 192.168.188.128:6386 --cluster-replicas <span class="m">1</span>   <span class="c1"># ip地址修改为你自己的</span>
+</span></span><span class="line"><span class="cl">			<span class="c1"># --cluster-replicas 1 表示为每个master创建一个slave节点</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/docker%e9%85%8d%e7%bd%aeredis%e9%9b%86%e7%be%a4/image-20220927173207986.png"
+        data-srcset="/docker%e9%85%8d%e7%bd%aeredis%e9%9b%86%e7%be%a4/image-20220927173207986.png, /docker%e9%85%8d%e7%bd%aeredis%e9%9b%86%e7%be%a4/image-20220927173207986.png 1.5x, /docker%e9%85%8d%e7%bd%aeredis%e9%9b%86%e7%be%a4/image-20220927173207986.png 2x"
+        data-sizes="auto"
+        alt="/docker配置redis集群/image-20220927173207986.png"
+        title="image-20220916210458221" /></p>
+<h2 id="四-本人的一些疑问及解答">四 本人的一些疑问及解答</h2>
+<blockquote>
+<p>网上一些教程上说的是“主从复制，master与slave读写分离”，而很多博客说的是slave不会提供读服务。所以<strong>slave到底会不会提供读服务？提供的话，是读请求自动分配到slave还是说得靠程序逻辑去指定？</strong></p>
+</blockquote>
+<ul>
+<li>Redis的从节点默认情况下是不会接受任何读写数据的请求的，从节点的目标只有一个就是作为主节点数据的副本，以提供主节点宕机后的快速恢复。换句话说Redis现在的主从架构默认情况下是不支持读写分离的。</li>
+<li>再回到读写分离的本质上，为什么需要进行读写分离？无非就是分担主节点的压力，所以如果能够将主节点的压力降低到足够承受的地步，那么久自然不需要所谓的读写分离了。而主节点的压力绝大部分都是来自于主线程的阻塞，所以归根究底就是要把Redis的阻塞扼杀掉。Redis的性能瓶颈常见项。所以总的来说，Redis的主从模式是可以实现读写分离的，但是需要自己修改相关配置，因为Redis的默认机制是所有命令必须由主节点接受并执行，从节点只负责从主节点中拷贝数据，作为一个纯粹的副本。另外，实现读写分离的性价比不高，实际上是可以通过避免使用可能会导致主线程阻塞的相关命令来达到更高的吞吐量。</li>
+<li>对于读占比较高的场景，确实可以通过把一部分读流量分摊到从节点来减轻主主节点的压力，同时所有写操作必须在主节点中执行。假设Redis现在的从节点可以执行读命令，那么使用了读写分离会有以下几个问题：主从数据延迟问题、主服务器数据过期问题、从节点宕机后路由问题。</li>
+<li>在redis的官方文档中，对redis-cluster架构上，有这样的说明：在cluster架构下，默认的，一般redis-master用于接收读写，而redis-slave则用于备份，当有请求是在向slave发起时，会直接重定向到对应key所在的master来处理。但如果不介意读取的是redis-cluster中有可能过期的数据并且对写请求不感兴趣时，则亦可通过readonly命令，将slave设置成可读，然后通过slave获取相关的key，达到读写分离。对于redis -cluster主从架构，若要进行读写分离，官方其实是不建议的。</li>
+</ul>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://www.cnblogs.com/zhenjungan/p/16504092.html" target="_blank" rel="noopener noreffer">https://www.cnblogs.com/zhenjungan/p/16504092.html</a>
+</li>
+<li><a href="https://www.cnblogs.com/zhenjungan/category/2190380.html" target="_blank" rel="noopener noreffer">https://www.cnblogs.com/zhenjungan/category/2190380.html</a>
+</li>
+<li><a href="https://www.cnblogs.com/kaleidoscope/p/9636264.html" target="_blank" rel="noopener noreffer">https://www.cnblogs.com/kaleidoscope/p/9636264.html</a>
+</li>
+</ul>
+<hr>
+<blockquote>
+<p>哨兵模式和集群模式下，springboot该如何去连接？(由于不涉及读写分离，因此问题也简化了)</p>
+</blockquote>
+<ul>
+<li>
+<p>哨兵模式下的yml文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">redis</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># 数据库（默认为0号库）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># database: 2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># 密码（默认空），操作redis需要使用的密码</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">jwssw</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># 端口号</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">#    port: 6379</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">#连接超时时间（毫秒）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l">10000ms</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">sentinel</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">master</span><span class="p">:</span><span class="w"> </span><span class="l">mymaster </span><span class="w"> </span><span class="c"># master书写是使用哨兵监听的那个名称</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">nodes</span><span class="p">:</span><span class="w">    </span><span class="c"># 连接的不再是一个具体redis主机,书写的是多个哨兵节点</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="m">192.168.229.200</span><span class="p">:</span><span class="m">26379</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="m">192.168.229.201</span><span class="p">:</span><span class="m">26379</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="m">192.168.229.202</span><span class="p">:</span><span class="m">26379</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># 操作sentinel时需要提供的密码</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">jwssw</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># 使用lettuce配置</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">lettuce</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">pool</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c"># 连接池最大连接数（使用负值表示没有限制）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">max-active</span><span class="p">:</span><span class="w"> </span><span class="m">200</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c"># 连接池中的最大空闲连接</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">max-idle</span><span class="p">:</span><span class="w"> </span><span class="m">20</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c"># 连接池中的最小空闲连接</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">min-idle</span><span class="p">:</span><span class="w"> </span><span class="m">5</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c"># 连接池最大阻塞等待时间（使用负值表示没有限制）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">max-wait</span><span class="p">:</span><span class="w"> </span>-<span class="l">1ms</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>集群下的yml文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">redis</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">cluster</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># 集群节点</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">nodes</span><span class="p">:</span><span class="w"> </span><span class="m">192.168.211.158</span><span class="p">:</span><span class="m">6382</span><span class="p">,</span><span class="m">192.168.211.158</span><span class="p">:</span><span class="m">6383</span><span class="p">,</span><span class="m">192.168.211.158</span><span class="p">:</span><span class="m">6384</span><span class="p">,</span><span class="m">192.168.211.158</span><span class="p">:</span><span class="m">6385</span><span class="p">,</span><span class="m">192.168.211.158</span><span class="p">:</span><span class="m">6386</span><span class="p">,</span><span class="m">192.168.211.158</span><span class="p">:</span><span class="m">6387</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># 最大重定向次数</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">max-redirects</span><span class="p">:</span><span class="w"> </span><span class="m">5</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># 密码</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">myredis</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">lettuce</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">pool</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">min-idle</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">max-active</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">max-wait</span><span class="p">:</span><span class="w"> </span>-<span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">max-idle</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-09-27</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://blog.koisecret.site/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/" data-title="Docker配置redis集群" data-hashtags="docker,redis,分布式存储,云原生"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://blog.koisecret.site/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/" data-hashtag="docker"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://blog.koisecret.site/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/" data-title="Docker配置redis集群"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://blog.koisecret.site/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/" data-title="Docker配置redis集群"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://blog.koisecret.site/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/" data-title="Docker配置redis集群"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/docker/">docker</a>,&nbsp;<a href="/tags/redis/">redis</a>,&nbsp;<a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/">分布式存储</a>,&nbsp;<a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/docker%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E5%AE%89%E8%A3%85/" class="prev" rel="prev" title="Docker常用容器安装"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Docker常用容器安装</a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">chengsecret</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.5.4/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"cIRpq8figzQxyGz5LyAdUahJ-gzGzoHsz","appKey":"T9YWfgGhznKaXXx7TCLxzS3C","avatar":"robohash","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":true,"highlight":true,"lang":true,"meta":true,"pageSize":true,"placeholder":"说点什么吧...","recordIP":true,"visitor":true}},"data":{"id-1":"ctの博客","id-2":"ctの博客"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
