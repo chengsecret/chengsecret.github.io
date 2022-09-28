@@ -91,6 +91,8 @@ tags: ["docker","redis","分布式存储","云原生"]
 
 ## 三 docker容器配置redis集群
 
+### 搭建集群环境
+
 1. 新建六个redis容器实例
 
    ```bash
@@ -111,6 +113,17 @@ tags: ["docker","redis","分布式存储","云原生"]
    - **--cluster-enabled yes**：开启redis集群
    - **--appendonly yes**：开启持久化
 
+   生产环境下，建议修改配置文件，以下是最小的Redis集群配置文件：
+
+   ```properties
+   port 7000
+   cluster-enabled yes
+   cluster-config-file nodes.conf
+   cluster-node-timeout 5000
+   appendonly yes
+   # 想要外网连接，还要注释掉bind 127.0.0.1
+   ```
+
 2. 进入容器redis-node-1，并为六个容器构建集群关系
 
    ```bash
@@ -119,10 +132,138 @@ tags: ["docker","redis","分布式存储","云原生"]
 
    ```bash
    redis-cli --cluster create 192.168.188.128:6381 192.168.188.128:6382 192.168.188.128:6383 192.168.188.128:6384 192.168.188.128:6385 192.168.188.128:6386 --cluster-replicas 1   # ip地址修改为你自己的
-   			# --cluster-replicas 1 表示为每个master创建一个slave节点
+   			# --cluster-replicas 1 表示为每个master创建一个slave节点	
    ```
 
-![image-20220916210458221](/docker配置redis集群/image-20220927173207986.png)
+   运行结果如下：
+
+   ![image-20220916221934686](/docker配置redis集群/a.png)
+
+3. redis客户端连接6381容器，查看节点状态
+
+   ```bash
+   redis-cli -p 6381
+   cluster info 
+   cluster nodes
+   ```
+
+4. 数据读写
+
+   若以`redis-cli -p 6381`的方式连接redis，会发现一些key存不进去（因为key对应的槽位不在6381容器中），要采用集群的方式连接
+
+   ```bash
+   redis-cli -p 6381 -c
+   ```
+
+   运行结果如下：
+
+   ![image-20220916221934686](/docker配置redis集群/b.png)
+
+5. 查看集群信息
+
+   ```bash
+   redis-cli --cluster check 192.168.188.128:6381
+   ```
+
+### 容错切换迁移
+
+1.将redis-node-1容器关掉会发生什么？
+
+```bash
+docker stop redis-node-1
+docker exec -it redis-node-2 /bin/bash
+redis-cli --cluster check 192.168.188.128:6382
+```
+
+会发现redis-node-1的从机自动上位成了master节点。
+
+2.如何还原之前的三主三从？
+
+1. 开启node1容器，此时node1为从节点
+2. 关闭node1的主节点容器，此时node1升级为主节点
+3. 开启刚刚关闭的node1主节点容器，此时该节点变为从节点
+
+3.将主节点node1以及它的从节点都关闭会怎么样？
+
+    - 槽位未完全分配，集群就无法提供任何服务。
+
+### 主从扩容
+
+1. 新建6387、6388两个节点
+
+   ```bash
+   docker run -d --name redis-node-7 --net host --privileged=true -v /data/redis/share/redis-node-7:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port 6387
+   docker run -d --name redis-node-8 --net host --privileged=true -v /data/redis/share/redis-node-8:/data redis:6.0.8 --cluster-enabled yes --appendonly yes --port 6388
+   ```
+
+2. 进入6387容器实例内部
+
+   ```bash 
+   docker exec -it redis-node-7 bash
+   ```
+
+3. 将6387节点作为master节点加入集群
+
+   ```bash
+   redis-cli --cluster add-node 192.168.188.128:6387 192.168.188.128:6381
+   
+   redis-cli --cluster check 192.168.188.128:6381 # 查看集群情况
+   ```
+
+   - 6387 就是将要作为master新增节点
+
+   - 6381 就是原来集群节点里面的领路人，相当于6387拜拜6381的码头从而找到组织加入集群
+   - 此时6387节点是主节点，但是槽为是空的
+
+4. 重新分配曹号
+
+   ```bash
+   redis-cli --cluster reshard 192.168.111.147:6381
+   ```
+
+   运行结果如下：
+
+   ![image-20220916221934686](/docker配置redis集群/c.png)
+
+   可以再次查看集群情况`redis-cli --cluster check 192.168.188.128:6381`，会发现6387节点的槽是分段的，分成了三个区间，因为重新分配成本太高，所以前3家各自匀出来一部分，从6381/6382/6383三个旧节点分别匀出1364个坑位给新节点6387。
+
+5. 为主节点分配从节点6388
+
+   ```bash
+   redis-cli --cluster add-node 192.168.188.128:6388 192.168.188.128:6387 --cluster-slave --cluster-master-id e4781f644d4a4e4d4b4d107157b9ba8144631451
+   # 命令：redis-cli --cluster add-node ip地址:新slave端口 ip地址:新master端口 --cluster-slave --cluster-master-id master节点ID
+   ```
+
+### 主从缩容
+
+目的：将6387和6388节点下线。
+
+1. 获取节点id，将6388节点删除
+
+   ```bash
+   redis-cli --cluster check 192.168.188.128:6382
+   redis-cli --cluster del-node 192.168.188.128:6388 5d149074b7e57b802287d1797a874ed7a1a284a8 #6388节点id
+   ```
+
+2. 将6387槽号清空，重新分配（本例将槽位都给6382）
+
+   ```bash
+   redis-cli --cluster check 192.168.188.128:6382
+   ```
+
+   运行结果如下：
+
+   ![image-20220916221934686](/docker配置redis集群/d.png)
+
+   此时6387节点的槽位已经清空了。
+
+3. 删除6387节点
+
+   ```bash
+   redis-cli --cluster del-node 192.168.188.128:6387 e4781f644d4a4e4d4b4d107157b9ba8144631451 #6387节点id
+   ```
+
+
 
 ## 四 本人的一些疑问及解答
 
