@@ -82,9 +82,9 @@ enableEmoji = true
         weight = 5     
     [languages.zh-cn.params]
       # 网站描述
-      description = "chengsecret的博客网站"
+      description = "燎原的博客网站"
       # 网站关键词
-      keywords = ["blog", "chengsecret"]
+      keywords = ["blog", "燎原"]
       # 应用图标配置
       [languages.zh-cn.params.app]
         # 当添加到 iOS 主屏幕或者 Android 启动器时的标题, 覆盖默认标题
@@ -672,7 +672,7 @@ enableEmoji = true
 # Author config
 # 作者配置
 [author]
-  name = "chengsecret"
+  name = "燎原"
   email = "2240141419@qq.com"
   link = ""
 
