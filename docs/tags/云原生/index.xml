@@ -1,10 +1,18 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>云原生 - 标签 - ctの博客 - 遇见你已经是很不可思议了</title>
+        <title>云原生 - 标签 - 燎原 - 遇见你已经是很不可思议了</title>
         <link>https://blog.koisecret.site/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</link>
-        <description>云原生 - 标签 - ctの博客 - 遇见你已经是很不可思议了</description>
+        <description>云原生 - 标签 - 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (燎原)</managingEditor>
-            <webMaster>2240141419@qq.com (燎原)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (燎原)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 08 Oct 2022 16:43:10 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" rel="self" type="application/rss+xml" /><item>
+    <title>Dockerfile解析与服务部署</title>
+    <link>https://blog.koisecret.site/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2/</link>
+    <pubDate>Sat, 08 Oct 2022 16:43:10 &#43;0800</pubDate>
+    <author>燎原</author>
+    <guid>https://blog.koisecret.site/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2/</guid>
+    <description><![CDATA[Dockerfile是什么 DockerFile是用来构建docker镜像的文本文件，是一条条构建镜像所需的指令和参数构成的脚本。 每条保留字指]]></description>
+</item>
+<item>
     <title>Docker配置redis集群</title>
     <link>https://blog.koisecret.site/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/</link>
     <pubDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</pubDate>

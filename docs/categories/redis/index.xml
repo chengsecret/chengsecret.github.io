@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>redis - 分类 - ctの博客 - 遇见你已经是很不可思议了</title>
+        <title>redis - 分类 - 燎原 - 遇见你已经是很不可思议了</title>
         <link>https://blog.koisecret.site/categories/redis/</link>
-        <description>redis - 分类 - ctの博客 - 遇见你已经是很不可思议了</description>
+        <description>redis - 分类 - 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (燎原)</managingEditor>
             <webMaster>2240141419@qq.com (燎原)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/categories/redis/" rel="self" type="application/rss+xml" /><item>
     <title>Docker配置redis集群</title>

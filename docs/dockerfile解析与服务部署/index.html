@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Dockerfile解析与服务部署 - 燎原 - 遇见你已经是很不可思议了</title><meta name="Description" content="燎原的博客网站"><meta property="og:title" content="Dockerfile解析与服务部署" />
+<meta property="og:description" content="Dockerfile是什么 DockerFile是用来构建docker镜像的文本文件，是一条条构建镜像所需的指令和参数构成的脚本。 每条保留字指" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.koisecret.site/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2/" /><meta property="og:image" content="https://blog.koisecret.site/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-10-08T16:43:10+08:00" />
+<meta property="article:modified_time" content="2022-10-08T16:43:10+08:00" /><meta property="og:site_name" content="My cool site" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.koisecret.site/logo.png"/>
+
+<meta name="twitter:title" content="Dockerfile解析与服务部署"/>
+<meta name="twitter:description" content="Dockerfile是什么 DockerFile是用来构建docker镜像的文本文件，是一条条构建镜像所需的指令和参数构成的脚本。 每条保留字指"/>
+<meta name="application-name" content="燎原の博客">
+<meta name="apple-mobile-web-app-title" content="燎原の博客"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.koisecret.site/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2/" /><link rel="prev" href="https://blog.koisecret.site/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Dockerfile解析与服务部署",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.koisecret.site\/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2\/"
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 云原生","wordcount":  3797 ,
+        "url": "https:\/\/blog.koisecret.site\/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2\/","datePublished": "2022-10-08T16:43:10+08:00","dateModified": "2022-10-08T16:43:10+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "燎原"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i> Github </a><a class="menu-item" href="/friend/"><i class='fas fa-user-friends'></i> 友链 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>Github</a><a class="menu-item" href="/friend/" title=""><i class='fas fa-user-friends'></i>友链</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Dockerfile解析与服务部署</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>燎原</a>
+</span>&nbsp;<span class="post-category">收录于 <a href="/categories/docker/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>docker</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-10-08">2022-10-08</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3797 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;<span id="/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2/" class="leancloud_visitors" data-flag-title="Dockerfile解析与服务部署">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#dockerfile是什么">Dockerfile是什么</a></li>
+        <li><a href="#dockerfile常用保留字指令">Dockerfile常用保留字指令</a></li>
+        <li><a href="#dockerfile定义镜像实战">Dockerfile定义镜像实战</a></li>
+        <li><a href="#简单实战">简单实战</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="dockerfile是什么">Dockerfile是什么</h2>
+<p>DockerFile是用来<strong>构建docker镜像</strong>的文本文件，是一条条构建镜像所需的指令和参数构成的<strong>脚本</strong>。</p>
+<ul>
+<li>每条保留字指令必须是<strong>大写字母</strong>并且后面要<code>跟随至少一个参数</code></li>
+<li>指令从上到下顺序执行</li>
+<li>’# ‘为注释</li>
+<li>每条指令都会创建一个新的镜像层，最终生成目标镜像（镜像的分层结构）</li>
+</ul>
+<hr>
+<p><strong>Dockerfile执行流程分析：</strong></p>
+<ol>
+<li><code>docker</code>从基础镜像运行一个容器</li>
+<li>执行一条指令并对容器作出修改</li>
+<li>执行类似<code>docker commit</code>的操作提交一个新的镜像层。</li>
+<li><code>docker</code>再基于刚提交的镜像运行一个新容器</li>
+<li>执行<code>dockerfile</code>中的下一条指令直到所有指令都执行完成</li>
+</ol>
+<hr>
+<p><strong>构建步骤</strong>：编写DockerFile文件&mdash;&mdash;&ndash;》docker build构建镜像&mdash;&mdash;&ndash;》docker run根据镜像运行容器</p>
+<p>Dockerfile面向开发，Docker镜像成为交付标准，Docker容器则涉及部署与运维，三者缺一不可，合力充当Docker体系的基石。</p>
+<ol>
+<li>
+<p><strong>Dockerfile</strong>，需要定义一个Dockerfile，Dockerfile定义了进程需要的一切东西。Dockerfile涉及的内容包括执行代码或者是文件、环境变量、依赖包、运行时环境、动态链接库、操作系统的发行版、服务进程和内核进程(当应用进程需要和系统服务和内核进程打交道，这时需要考虑如何设计namespace的权限控制)等等;</p>
+</li>
+<li>
+<p><strong>Docker镜像</strong>，在用Dockerfile定义一个文件之后，docker build时会产生一个Docker镜像，当运行 Docker镜像时会真正开始提供服务;</p>
+</li>
+<li>
+<p><strong>Docker容器</strong>，容器是直接提供服务的。</p>
+</li>
+</ol>
+<h2 id="dockerfile常用保留字指令">Dockerfile常用保留字指令</h2>
+<p>构建tomcat9.0镜像的DockerFile文件如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">FROM amazoncorretto:8-al2-jdk
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ENV CATALINA_HOME /usr/local/tomcat
+</span></span><span class="line"><span class="cl">ENV PATH <span class="nv">$CATALINA_HOME</span>/bin:<span class="nv">$PATH</span>
+</span></span><span class="line"><span class="cl">RUN mkdir -p <span class="s2">&#34;</span><span class="nv">$CATALINA_HOME</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">WORKDIR <span class="nv">$CATALINA_HOME</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># let &#34;Tomcat Native&#34; live somewhere isolated</span>
+</span></span><span class="line"><span class="cl">ENV TOMCAT_NATIVE_LIBDIR <span class="nv">$CATALINA_HOME</span>/native-jni-lib
+</span></span><span class="line"><span class="cl">ENV LD_LIBRARY_PATH <span class="si">${</span><span class="nv">LD_LIBRARY_PATH</span><span class="p">:+</span><span class="nv">$LD_LIBRARY_PATH</span><span class="p">:</span><span class="si">}</span><span class="nv">$TOMCAT_NATIVE_LIBDIR</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># see https://www.apache.org/dist/tomcat/tomcat-9/KEYS</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># see also &#34;versions.sh&#34; (https://github.com/docker-library/tomcat/blob/master/versions.sh)</span>
+</span></span><span class="line"><span class="cl">ENV GPG_KEYS 48F8E69F6390C9F25CFEDCD268248959359E722B A9C5DF4D22E99998D9875A5110C01C5A2F6059E7 DCFD35E0BF8CA7344752DE8B6FB21E8933C60243
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ENV TOMCAT_MAJOR <span class="m">9</span>
+</span></span><span class="line"><span class="cl">ENV TOMCAT_VERSION 9.0.68
+</span></span><span class="line"><span class="cl">ENV TOMCAT_SHA512 840b21c5cd2bfea7bbfed99741c166608fa1515bb00475ebd4eccfd4f3ed2a1be6bfffd590b2a6600003205b62f271b6ba0937e557fc65a536df61cb4f7b7c8f
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">RUN <span class="nb">set</span> -eux<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="c1"># http://yum.baseurl.org/wiki/YumDB.html</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> ! <span class="nb">command</span> -v yumdb &gt; /dev/null<span class="p">;</span> <span class="k">then</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		yum install -y --setopt<span class="o">=</span><span class="nv">skip_missing_names_on_install</span><span class="o">=</span>False yum-utils<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		yumdb <span class="nb">set</span> reason dep yum-utils<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="k">fi</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="c1"># a helper function to &#34;yum install&#34; things, but only if they aren&#39;t installed (and to set their &#34;reason&#34; to &#34;dep&#34; so &#34;yum autoremove&#34; can purge them for us)</span>
+</span></span><span class="line"><span class="cl">	_yum_install_temporary<span class="o">()</span> <span class="o">{</span> <span class="o">(</span> <span class="nb">set</span> -eu +x<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="nb">local</span> pkg <span class="nv">todo</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="k">for</span> pkg<span class="p">;</span> <span class="k">do</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			<span class="k">if</span> ! rpm --query <span class="s2">&#34;</span><span class="nv">$pkg</span><span class="s2">&#34;</span> &gt; /dev/null 2&gt;<span class="p">&amp;</span>1<span class="p">;</span> <span class="k">then</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>				<span class="nv">todo</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$todo</span><span class="s2"> </span><span class="nv">$pkg</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			<span class="k">fi</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="k">done</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="k">if</span> <span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$todo</span><span class="s2">&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			<span class="nb">set</span> -x<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			yum install -y --setopt<span class="o">=</span><span class="nv">skip_missing_names_on_install</span><span class="o">=</span>False <span class="nv">$todo</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			yumdb <span class="nb">set</span> reason dep <span class="nv">$todo</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="k">fi</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="o">)</span> <span class="o">}</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	_yum_install_temporary gzip tar<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	ddist<span class="o">()</span> <span class="o">{</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="nb">local</span> <span class="nv">f</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span><span class="p">;</span> shift<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="nb">local</span> <span class="nv">distFile</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span><span class="p">;</span> shift<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="nb">local</span> <span class="nv">mvnFile</span><span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">1</span><span class="k">:-</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="nb">local</span> <span class="nv">success</span><span class="o">=</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="nb">local</span> <span class="nv">distUrl</span><span class="o">=</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="k">for</span> distUrl in <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="c1"># https://issues.apache.org/jira/browse/INFRA-8753?focusedCommentId=14735394#comment-14735394</span>
+</span></span><span class="line"><span class="cl">			<span class="s2">&#34;https://www.apache.org/dyn/closer.cgi?action=download&amp;filename=</span><span class="nv">$distFile</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="c1"># if the version is outdated (or we&#39;re grabbing the .asc file), we might have to pull from the dist/archive :/</span>
+</span></span><span class="line"><span class="cl">			<span class="s2">&#34;https://downloads.apache.org/</span><span class="nv">$distFile</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			<span class="s2">&#34;https://www-us.apache.org/dist/</span><span class="nv">$distFile</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			<span class="s2">&#34;https://www.apache.org/dist/</span><span class="nv">$distFile</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			<span class="s2">&#34;https://archive.apache.org/dist/</span><span class="nv">$distFile</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="c1"># if all else fails, let&#39;s try Maven (https://www.mail-archive.com/users@tomcat.apache.org/msg134940.html; https://mvnrepository.com/artifact/org.apache.tomcat/tomcat; https://repo1.maven.org/maven2/org/apache/tomcat/tomcat/)</span>
+</span></span><span class="line"><span class="cl">			<span class="si">${</span><span class="nv">mvnFile</span><span class="p">:+</span><span class="s2">&#34;https://repo1.maven.org/maven2/org/apache/tomcat/tomcat/</span><span class="nv">$mvnFile</span><span class="s2">&#34;</span><span class="si">}</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="p">;</span> <span class="k">do</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			<span class="k">if</span> curl -fL -o <span class="s2">&#34;</span><span class="nv">$f</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="nv">$distUrl</span><span class="s2">&#34;</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> -s <span class="s2">&#34;</span><span class="nv">$f</span><span class="s2">&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>				<span class="nv">success</span><span class="o">=</span>1<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>				break<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			<span class="k">fi</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="k">done</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$success</span><span class="s2">&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="o">}</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	ddist <span class="s1">&#39;tomcat.tar.gz&#39;</span> <span class="s2">&#34;tomcat/tomcat-</span><span class="nv">$TOMCAT_MAJOR</span><span class="s2">/v</span><span class="nv">$TOMCAT_VERSION</span><span class="s2">/bin/apache-tomcat-</span><span class="nv">$TOMCAT_VERSION</span><span class="s2">.tar.gz&#34;</span> <span class="s2">&#34;</span><span class="nv">$TOMCAT_VERSION</span><span class="s2">/tomcat-</span><span class="nv">$TOMCAT_VERSION</span><span class="s2">.tar.gz&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$TOMCAT_SHA512</span><span class="s2"> *tomcat.tar.gz&#34;</span> <span class="p">|</span> sha512sum --strict --check -<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	ddist <span class="s1">&#39;tomcat.tar.gz.asc&#39;</span> <span class="s2">&#34;tomcat/tomcat-</span><span class="nv">$TOMCAT_MAJOR</span><span class="s2">/v</span><span class="nv">$TOMCAT_VERSION</span><span class="s2">/bin/apache-tomcat-</span><span class="nv">$TOMCAT_VERSION</span><span class="s2">.tar.gz.asc&#34;</span> <span class="s2">&#34;</span><span class="nv">$TOMCAT_VERSION</span><span class="s2">/tomcat-</span><span class="nv">$TOMCAT_VERSION</span><span class="s2">.tar.gz.asc&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="nb">export</span> <span class="nv">GNUPGHOME</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span>mktemp -d<span class="k">)</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="k">for</span> key in <span class="nv">$GPG_KEYS</span><span class="p">;</span> <span class="k">do</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		gpg --batch --keyserver keyserver.ubuntu.com --recv-keys <span class="s2">&#34;</span><span class="nv">$key</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="k">done</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	gpg --batch --verify tomcat.tar.gz.asc tomcat.tar.gz<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	tar -xf tomcat.tar.gz --strip-components<span class="o">=</span>1<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	rm bin/*.bat<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	rm tomcat.tar.gz*<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="nb">command</span> -v gpgconf <span class="o">&amp;&amp;</span> gpgconf --kill all <span class="o">||</span> :<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	rm -rf <span class="s2">&#34;</span><span class="nv">$GNUPGHOME</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="c1"># https://tomcat.apache.org/tomcat-9.0-doc/security-howto.html#Default_web_applications</span>
+</span></span><span class="line"><span class="cl">	mv webapps webapps.dist<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	mkdir webapps<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="c1"># we don&#39;t delete them completely because they&#39;re frankly a pain to get back for users who do want them, and they&#39;re generally tiny (~7MB)</span>
+</span></span><span class="line"><span class="cl">	<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="nv">nativeBuildDir</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span>mktemp -d<span class="k">)</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	tar -xf bin/tomcat-native.tar.gz -C <span class="s2">&#34;</span><span class="nv">$nativeBuildDir</span><span class="s2">&#34;</span> --strip-components<span class="o">=</span>1<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	_yum_install_temporary <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		apr-devel <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		gcc <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		make <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		openssl11-devel <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="o">(</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="nb">export</span> <span class="nv">CATALINA_HOME</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$PWD</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="nb">cd</span> <span class="s2">&#34;</span><span class="nv">$nativeBuildDir</span><span class="s2">/native&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="nv">aprConfig</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span><span class="nb">command</span> -v apr-1-config<span class="k">)</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		./configure <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			--libdir<span class="o">=</span><span class="s2">&#34;</span><span class="nv">$TOMCAT_NATIVE_LIBDIR</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			--prefix<span class="o">=</span><span class="s2">&#34;</span><span class="nv">$CATALINA_HOME</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			--with-apr<span class="o">=</span><span class="s2">&#34;</span><span class="nv">$aprConfig</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			--with-java-home<span class="o">=</span><span class="s2">&#34;</span><span class="nv">$JAVA_HOME</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>			--with-ssl <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="nv">nproc</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span>nproc<span class="k">)</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		make -j <span class="s2">&#34;</span><span class="nv">$nproc</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		make install<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="o">)</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	rm -rf <span class="s2">&#34;</span><span class="nv">$nativeBuildDir</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	rm bin/tomcat-native.tar.gz<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="c1"># mark any explicit dependencies as manually installed</span>
+</span></span><span class="line"><span class="cl">	find <span class="s2">&#34;</span><span class="nv">$TOMCAT_NATIVE_LIBDIR</span><span class="s2">&#34;</span> -type f -executable -exec ldd <span class="s1">&#39;{}&#39;</span> <span class="s1">&#39;;&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="p">|</span> awk <span class="s1">&#39;/=&gt;/ &amp;&amp; $(NF-1) != &#34;=&gt;&#34; { print $(NF-1) }&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="p">|</span> xargs -rt readlink -e <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="p">|</span> sort -u <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="p">|</span> xargs -rt rpm --query --whatprovides <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="p">|</span> sort -u <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="p">|</span> tee <span class="s2">&#34;</span><span class="nv">$TOMCAT_NATIVE_LIBDIR</span><span class="s2">/.dependencies.txt&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="p">|</span> xargs -r yumdb <span class="nb">set</span> reason user <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="c1"># clean up anything added temporarily and not later marked as necessary</span>
+</span></span><span class="line"><span class="cl">	yum autoremove -y<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	yum clean all<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	rm -rf /var/cache/yum<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="c1"># sh removes env vars it doesn&#39;t support (ones with periods)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># https://github.com/docker-library/tomcat/issues/77</span>
+</span></span><span class="line"><span class="cl">	find ./bin/ -name <span class="s1">&#39;*.sh&#39;</span> -exec sed -ri <span class="s1">&#39;s|^#!/bin/sh$|#!/usr/bin/env bash|&#39;</span> <span class="s1">&#39;{}&#39;</span> +<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="c1"># fix permissions (especially for running as non-root)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># https://github.com/docker-library/tomcat/issues/35</span>
+</span></span><span class="line"><span class="cl">	chmod -R +rX .<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	chmod <span class="m">777</span> logs temp work<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="c1"># smoke test</span>
+</span></span><span class="line"><span class="cl">	catalina.sh version
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># verify Tomcat Native is working properly</span>
+</span></span><span class="line"><span class="cl">RUN <span class="nb">set</span> -eux<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="nv">nativeLines</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span>catalina.sh configtest 2&gt;<span class="p">&amp;</span>1<span class="k">)</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="nv">nativeLines</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$nativeLines</span><span class="s2">&#34;</span> <span class="p">|</span> grep <span class="s1">&#39;Apache Tomcat Native&#39;</span><span class="k">)</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="nv">nativeLines</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$nativeLines</span><span class="s2">&#34;</span> <span class="p">|</span> sort -u<span class="k">)</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="k">if</span> ! <span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$nativeLines</span><span class="s2">&#34;</span> <span class="p">|</span> grep -E <span class="s1">&#39;INFO: Loaded( APR based)? Apache Tomcat Native library&#39;</span> &gt;<span class="p">&amp;</span>2<span class="p">;</span> <span class="k">then</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="nb">echo</span> &gt;<span class="p">&amp;</span><span class="m">2</span> <span class="s2">&#34;</span><span class="nv">$nativeLines</span><span class="s2">&#34;</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		<span class="nb">exit</span> 1<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	<span class="k">fi</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">EXPOSE <span class="m">8080</span>
+</span></span><span class="line"><span class="cl">CMD <span class="o">[</span><span class="s2">&#34;catalina.sh&#34;</span>, <span class="s2">&#34;run&#34;</span><span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p><strong>FROM</strong>：基础镜像，即当前新镜像是基于哪个镜像创建的</p>
+</li>
+<li>
+<p><strong>MAINTAINER</strong>：镜像维护者的姓名和邮箱地址</p>
+</li>
+<li>
+<p><strong>RUN</strong>：容器<strong>构建时</strong>需要运行的指令，有两种格式</p>
+<ul>
+<li>shell格式，如：<code>RUN yum -y install vim</code></li>
+<li>exec格式，<code>RUN [&quot;可执行文件&quot;,&quot;参数一&quot;,&quot;参数二&quot;]</code></li>
+</ul>
+</li>
+<li>
+<p><strong>EXPOSE</strong>：当前容器对外暴露的端口</p>
+</li>
+<li>
+<p><strong>WORKDIR</strong>：指定在创建容器后，终端默认登录进来的工作目录</p>
+</li>
+<li>
+<p><strong>ENV</strong>：用来在构建镜像过程中设置环境变量。这个环境变量可以在后续的任何RUN指令中使用，这就如同在命令前面指定了环境变量前缀一样;也可以在其它指令中直接使用这些环境变量。如：<code>ENV MYCAT_HOME=/usr/local/mycat</code>  <code>WORKDIR $MYCAT_HOME/mycat</code></p>
+</li>
+<li>
+<p><strong>ADD</strong> 和 <strong>COPY</strong>：</p>
+<ul>
+<li>
+<p>ADD：将宿主机目录下的文件拷贝进镜像，并且ADD命令会自动处理URL和解压tar压缩包，如`ADD centos-6-docker.tar.xz /</p>
+</li>
+<li>
+<p>COPY：将从构建上下文目录中&lt;源路径&gt;的文件/目录 复制到新的一层的镜像内的&lt;目标路径&gt;位置，如<code>COPY src destCOPY</code> 或 <code>COPY [&quot;src&quot; &quot;dest&quot;]</code></p>
+</li>
+<li>
+<p>两者功能基本一致，区别为：</p>
+<p>第一处：ADD指令可以添加URL资源,或者说可以直接从远程添加文件到镜像中，或者说，而COPY不具备这样的能力；
+第二处：ADD指令将这些资源添加到镜像镜像的文件系统；而COPY指令是将这些资源添加到容器的文件系统中；ADD指令是将资源添加到静态文件系统中，COPY指令是将资源添加到动态文件系统中，具体有什么实质性的体现呢？
+下面详细说明ADD指令带来的实际影响。
+如果src是文件类型的资源，dest以/结尾， 则docker会把dest当作一个目录看待，会把资源拷贝到dest目录下。如果dest不存在，则会创建dest目录；</p>
+<p>如果src是个文件类型的资源，dest不以/结尾，则docker会把dest当作一个文件看待；</p>
+<p>如果dest存在，则会把src拷贝到dest的上级目录中，并重命名为dest；如果目标文件dest是已存在，会用源文件中的内容覆盖掉dest中的内容。</p>
+<p>如果src是个目录，且dest不存在，则docker会创建一个名为dest的目录，把src目录下的文件拷贝进来。如果dest是个已经存在的目录，则docker会把src目录下的文件拷贝到该目录下。</p>
+<p>如果源文件是压缩文件，则docker会自动解压。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>VOLUME</strong>：容器数据卷，用于数据持久化和数据保存。如： <code>VOLUME /share/data　#声明容器中/share/data为匿名卷</code>。volume和run -v的区别见<a href="https://blog.csdn.net/qq32933432/article/details/120944205" target="_blank" rel="noopener noreffer">一文说清楚Dockerfile 中VOLUME到底有什么用？</a>
+</p>
+</li>
+<li>
+<p><strong>CMD</strong> 和 <strong>ENTRYPOINT</strong>：指定一个<strong>容器启动时</strong>要运行的命令。</p>
+<p><strong>CMD</strong>的指令和RUN相似，也是两种格式：</p>
+<ul>
+<li><code>shell</code>格式：CMD&lt;命令&gt;，如<code>CMD cat /conf/my.cnfCMD</code> <code>cat /bin/bash</code></li>
+<li><code>exec</code>格式：CMD [&ldquo;可执行文件“，”参数1“，”参数2“…]，如<code>CMD [&quot;catalina.sh&quot;, &quot;run&quot;]</code></li>
+</ul>
+<p><code>Dockerfile</code>中可以有多个CMD指令，<strong>但只有最后一个生效</strong>，CMD会<strong>被<code>docker run</code>之后的参数替换</strong>。<code>docker run</code>运行时不能够额外追加命令，否则会覆盖掉<code>Dockerfile</code>中的<code>CMD</code>命令。</p>
+<p>而<code>ENTRYPOINT</code>则不同，可以将<code>ENTRYPOINT</code>简单理解为追加。<strong>ENTRYPOINT不会被docker run后面的命令覆盖，而且这些命令行参数会被当做参数传给ENTRYPOINT指令指定的程序。ENTRYPOINT同样只有最后一个生效。</strong></p>
+<p>ENTRYPOINT可以和CMD一起用，一般是变参才会使用 CMD ，这里的 CMD 等于是在给 ENTRYPOINT 传参。当指定了ENTRYPOINT后，CMD的含义就发生了变化，不再是直接运行其命令而是将CMD的内容作为参数传递给ENTRYPOINT指令。如：<code>ENTRYPOINT [&quot;nginx&quot;,&quot;-c&quot;] #定参</code> <code>CMD [&quot;/etc/nginx/mginx.conf&quot;] #变参</code></p>
+</li>
+<li>
+<p><strong>onbuild</strong>：当构建一个被继承的<code>Dockerfile</code>时运行命令，父镜像在被子继承后，父镜像的<code>onbuild</code>被触发。</p>
+</li>
+</ul>
+<h2 id="dockerfile定义镜像实战">Dockerfile定义镜像实战</h2>
+<p>目标：镜像具有centos + vim + ifconfig + jdk8</p>
+<ol>
+<li>
+<p>新建一个文件夹，文件夹中有jdk1.8的Linux版压缩包、Dockerfile文件（D大写）</p>
+</li>
+<li>
+<p>编辑Dockerfile文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">FROM centos:7
+</span></span><span class="line"><span class="cl">MAINTAINER ct&lt;ct@126.com&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ENV MYPATH /usr/local
+</span></span><span class="line"><span class="cl">WORKDIR <span class="nv">$MYPATH</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#安装vim编辑器</span>
+</span></span><span class="line"><span class="cl">RUN yum -y install vim
+</span></span><span class="line"><span class="cl"><span class="c1">#安装ifconfig命令查看网络IP</span>
+</span></span><span class="line"><span class="cl">RUN yum -y install net-tools
+</span></span><span class="line"><span class="cl"><span class="c1">#安装java8及lib库</span>
+</span></span><span class="line"><span class="cl">RUN yum -y install glibc.i686
+</span></span><span class="line"><span class="cl">RUN mkdir /usr/local/java
+</span></span><span class="line"><span class="cl"><span class="c1">#ADD 是相对路径jar,把jdk-8u171-linux-x64.tar.gz添加到容器中,安装包和Dockerfile文件在同一位置</span>
+</span></span><span class="line"><span class="cl">ADD jdk-8u171-linux-x64.tar.gz /usr/local/java/
+</span></span><span class="line"><span class="cl"><span class="c1">#配置java环境变量</span>
+</span></span><span class="line"><span class="cl">ENV JAVA_HOME /usr/local/java/jdk1.8.0_171
+</span></span><span class="line"><span class="cl">ENV JRE_HOME <span class="nv">$JAVA_HOME</span>/jre
+</span></span><span class="line"><span class="cl">ENV CLASSPATH <span class="nv">$JAVA_HOME</span>/lib/dt.jar:<span class="nv">$JAVA_HOME</span>/lib/tools.jar:<span class="nv">$JRE_HOME</span>/lib:<span class="nv">$CLASSPATH</span>
+</span></span><span class="line"><span class="cl">ENV PATH <span class="nv">$JAVA_HOME</span>/bin:<span class="nv">$PATH</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">EXPOSE <span class="m">80</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">CMD <span class="nb">echo</span> <span class="nv">$MYPATH</span>
+</span></span><span class="line"><span class="cl">CMD <span class="nb">echo</span> <span class="s2">&#34;success--------------ok&#34;</span>
+</span></span><span class="line"><span class="cl">CMD /bin/bash <span class="c1">#上两个CMD不生效</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>构建镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker build -t centosjava8:1.5 . <span class="c1"># docker build -t 镜像名:版本号 Dockerfile所在目录</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>运行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run -it centosjava8:1.5
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<blockquote>
+<p>虚悬镜像</p>
+</blockquote>
+<ul>
+<li>
+<p>即仓库名、标签名都是<code>&lt;none&gt;</code>的镜像，也称为<strong>dangling image</strong></p>
+</li>
+<li>
+<p>查看所以虚悬镜像命令：<code>docker image ls -f dangling=true</code></p>
+</li>
+<li>
+<p>删除所有虚悬镜像：<code>docker image prune</code></p>
+</li>
+</ul>
+<h2 id="简单实战">简单实战</h2>
+<ol>
+<li>
+<p>idea建一个springboot项目，简单写个controller，打成一个jar包</p>
+</li>
+<li>
+<p>将jar包和Dockerfile文件放在同一个文件夹下，编写Dockerfile文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 基础镜像使用java</span>
+</span></span><span class="line"><span class="cl">FROM java:8
+</span></span><span class="line"><span class="cl"><span class="c1"># 作者</span>
+</span></span><span class="line"><span class="cl">MAINTAINER ct
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># VOLUME 在主机/var/lib/docker目录下创建了一个临时文件并链接到容器的/tmp</span>
+</span></span><span class="line"><span class="cl">VOLUME /tmp
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 将jar包添加到容器中并更名为dockertest.jar</span>
+</span></span><span class="line"><span class="cl">ADD docker_boot-0.0.1-SNAPSHOT.jar dockertest.jar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 运行jar包</span>
+</span></span><span class="line"><span class="cl">RUN bash -c <span class="s1">&#39;touch /dockertest.jar&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ENTRYPOINT <span class="o">[</span><span class="s2">&#34;java&#34;</span>,<span class="s2">&#34;-jar&#34;</span>,<span class="s2">&#34;/dockertest.jar&#34;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#暴露6001端口作为微服务</span>
+</span></span><span class="line"><span class="cl">EXPOSE <span class="m">6001</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>构建镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker build -t dockertest:1.8 .
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>运行容器</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"> docker run -d -p 6001:6001 dockertest:1.8
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-10-08</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://blog.koisecret.site/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2/" data-title="Dockerfile解析与服务部署" data-hashtags="docker,云原生"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://blog.koisecret.site/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2/" data-hashtag="docker"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://blog.koisecret.site/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2/" data-title="Dockerfile解析与服务部署"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://blog.koisecret.site/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2/" data-title="Dockerfile解析与服务部署"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://blog.koisecret.site/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2/" data-title="Dockerfile解析与服务部署"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/docker/">docker</a>,&nbsp;<a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" class="prev" rel="prev" title="内网穿透"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>内网穿透</a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">燎原</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.5.4/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"cIRpq8figzQxyGz5LyAdUahJ-gzGzoHsz","appKey":"T9YWfgGhznKaXXx7TCLxzS3C","avatar":"robohash","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":true,"highlight":true,"lang":true,"meta":true,"pageSize":true,"placeholder":"说点什么吧...","recordIP":true,"visitor":true}},"data":{"id-1":"燎原の博客","id-2":"燎原の博客"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
