@@ -11,7 +11,7 @@ hasCJKLanguage = true
 # 主题
 theme = "LoveIt"
 # 网站标题
-title = "燎原の博客 - 遇见你已经是很不可思议了"
+title = "燎原 - 遇见你已经是很不可思议了"
 # 是否使用 robots.txt
 enableRobotsTXT = true
 # 是否使用 git 信息
