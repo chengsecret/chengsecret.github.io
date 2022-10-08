@@ -1,5 +1,5 @@
 ---
-title: "DockerFile解析与服务部署"
+title: "Dockerfile解析与服务部署"
 subtitle: ""
 date: 2022-10-08T16:43:10+08:00
 lastmod: 2022-10-08T16:43:10+08:00
@@ -11,7 +11,7 @@ categories: ["docker"]
 tags: ["docker","云原生"]
 ---
 
-## DockerFile是什么
+## Dockerfile是什么
 
 DockerFile是用来**构建docker镜像**的文本文件，是一条条构建镜像所需的指令和参数构成的**脚本**。
 
@@ -45,7 +45,7 @@ Dockerfile面向开发，Docker镜像成为交付标准，Docker容器则涉及�
 
 
 
-## DockerFile常用保留字指令
+## Dockerfile常用保留字指令
 
 构建tomcat9.0镜像的DockerFile文件如下：
 
@@ -204,22 +204,22 @@ EXPOSE 8080
 CMD ["catalina.sh", "run"]
 ```
 
-- FROM：基础镜像，即当前新镜像是基于哪个镜像创建的
+- **FROM**：基础镜像，即当前新镜像是基于哪个镜像创建的
 
-- MAINTAINER：镜像维护者的姓名和邮箱地址
+- **MAINTAINER**：镜像维护者的姓名和邮箱地址
 
-- RUN：容器**构建时**需要运行的指令，有两种格式
+- **RUN**：容器**构建时**需要运行的指令，有两种格式
 
   - shell格式，如：`RUN yum -y install vim`
   - exec格式，`RUN ["可执行文件","参数一","参数二"]`
 
-- EXPOSE：当前容器对外暴露的端口
+- **EXPOSE**：当前容器对外暴露的端口
 
-- WORKDIR：指定在创建容器后，终端默认登录进来的工作目录
+- **WORKDIR**：指定在创建容器后，终端默认登录进来的工作目录
 
-- ENV：用来在构建镜像过程中设置环境变量。这个环境变量可以在后续的任何RUN指令中使用，这就如同在命令前面指定了环境变量前缀一样;也可以在其它指令中直接使用这些环境变量。如：`ENV MYCAT_HOME=/usr/local/mycat`  `WORKDIR $MYCAT_HOME/mycat`
+- **ENV**：用来在构建镜像过程中设置环境变量。这个环境变量可以在后续的任何RUN指令中使用，这就如同在命令前面指定了环境变量前缀一样;也可以在其它指令中直接使用这些环境变量。如：`ENV MYCAT_HOME=/usr/local/mycat`  `WORKDIR $MYCAT_HOME/mycat`
 
-- ADD 和 COPY：
+- **ADD** 和 **COPY**：
 
   - ADD：将宿主机目录下的文件拷贝进镜像，并且ADD命令会自动处理URL和解压tar压缩包，如`ADD centos-6-docker.tar.xz / 
 
@@ -240,46 +240,121 @@ CMD ["catalina.sh", "run"]
 
     如果源文件是压缩文件，则docker会自动解压。
 
-- VOLUME：容器数据卷，用于数据持久化和数据保存。如： `VOLUME /share/data　#声明容器中/share/data为匿名卷`。volume和run -v的区别见[一文说清楚Dockerfile 中VOLUME到底有什么用？](https://blog.csdn.net/qq32933432/article/details/120944205)
+- **VOLUME**：容器数据卷，用于数据持久化和数据保存。如： `VOLUME /share/data　#声明容器中/share/data为匿名卷`。volume和run -v的区别见[一文说清楚Dockerfile 中VOLUME到底有什么用？](https://blog.csdn.net/qq32933432/article/details/120944205)
 
-- CMD 和 ENTRYPOINT：指定一个**容器启动时**要运行的命令。
+- **CMD** 和 **ENTRYPOINT**：指定一个**容器启动时**要运行的命令。
 
-  CMD的指令和RUN相似，也是两种格式：
+  **CMD**的指令和RUN相似，也是两种格式：
 
   - `shell`格式：CMD<命令>，如`CMD cat /conf/my.cnfCMD` `cat /bin/bash`
   - `exec`格式：CMD ["可执行文件“，”参数1“，”参数2“…]，如`CMD ["catalina.sh", "run"]`
 
   `Dockerfile`中可以有多个CMD指令，**但只有最后一个生效**，CMD会**被`docker run`之后的参数替换**。`docker run`运行时不能够额外追加命令，否则会覆盖掉`Dockerfile`中的`CMD`命令。
 
-  而`ENTRYPOINT`则不同，你可以将`ENTRYPOINT`简单理解为追加。
+  而`ENTRYPOINT`则不同，可以将`ENTRYPOINT`简单理解为追加。**ENTRYPOINT不会被docker run后面的命令覆盖，而且这些命令行参数会被当做参数传给ENTRYPOINT指令指定的程序。ENTRYPOINT同样只有最后一个生效。**
+  
+  ENTRYPOINT可以和CMD一起用，一般是变参才会使用 CMD ，这里的 CMD 等于是在给 ENTRYPOINT 传参。当指定了ENTRYPOINT后，CMD的含义就发生了变化，不再是直接运行其命令而是将CMD的内容作为参数传递给ENTRYPOINT指令。如：`ENTRYPOINT ["nginx","-c"] #定参` `CMD ["/etc/nginx/mginx.conf"] #变参`
+  
+- **onbuild**：当构建一个被继承的`Dockerfile`时运行命令，父镜像在被子继承后，父镜像的`onbuild`被触发。
 
 
 
+## Dockerfile定义镜像实战
+
+目标：镜像具有centos + vim + ifconfig + jdk8
+
+1. 新建一个文件夹，文件夹中有jdk1.8的Linux版压缩包、Dockerfile文件（D大写）
+
+2. 编辑Dockerfile文件
+
+   ```bash
+   FROM centos:7
+   MAINTAINER ct<ct@126.com>
+    
+   ENV MYPATH /usr/local
+   WORKDIR $MYPATH
+    
+   #安装vim编辑器
+   RUN yum -y install vim
+   #安装ifconfig命令查看网络IP
+   RUN yum -y install net-tools
+   #安装java8及lib库
+   RUN yum -y install glibc.i686
+   RUN mkdir /usr/local/java
+   #ADD 是相对路径jar,把jdk-8u171-linux-x64.tar.gz添加到容器中,安装包和Dockerfile文件在同一位置
+   ADD jdk-8u171-linux-x64.tar.gz /usr/local/java/
+   #配置java环境变量
+   ENV JAVA_HOME /usr/local/java/jdk1.8.0_171
+   ENV JRE_HOME $JAVA_HOME/jre
+   ENV CLASSPATH $JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib:$CLASSPATH
+   ENV PATH $JAVA_HOME/bin:$PATH
+    
+   EXPOSE 80
+    
+   CMD echo $MYPATH
+   CMD echo "success--------------ok"
+   CMD /bin/bash #上两个CMD不生效
+   ```
+
+3. 构建镜像
+
+   ```bash
+   docker build -t centosjava8:1.5 . # docker build -t 镜像名:版本号 Dockerfile所在目录
+   ```
+
+4. 运行
+
+   ```bash
+   docker run -it centosjava8:1.5
+   ```
+
+> 虚悬镜像
+
+- 即仓库名、标签名都是`<none>`的镜像，也称为**dangling image**
+
+- 查看所以虚悬镜像命令：`docker image ls -f dangling=true`
+- 删除所有虚悬镜像：`docker image prune`
 
 
 
+## 简单实战
 
+1. idea建一个springboot项目，简单写个controller，打成一个jar包
 
+2. 将jar包和Dockerfile文件放在同一个文件夹下，编写Dockerfile文件
 
+   ```bash
+   # 基础镜像使用java
+   FROM java:8
+   # 作者
+   MAINTAINER ct
+   
+   # VOLUME 在主机/var/lib/docker目录下创建了一个临时文件并链接到容器的/tmp
+   VOLUME /tmp
+   
+   # 将jar包添加到容器中并更名为dockertest.jar
+   ADD docker_boot-0.0.1-SNAPSHOT.jar dockertest.jar
+   
+   # 运行jar包
+   RUN bash -c 'touch /dockertest.jar'
+   
+   ENTRYPOINT ["java","-jar","/dockertest.jar"]
+   
+   #暴露6001端口作为微服务
+   EXPOSE 6001
+   ```
 
+3. 构建镜像
 
+   ```bash
+   docker build -t dockertest:1.8 .
+   ```
 
+4. 运行容器
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   ```bash
+    docker run -d -p 6001:6001 dockertest:1.8
+   ```
 
 
 
