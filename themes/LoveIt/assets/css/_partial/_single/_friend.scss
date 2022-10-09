@@ -1,90 +1,128 @@
-.friendurl {
-    text-decoration: none !important;
-    color: black;
+#article-container {
+    word-wrap: break-word;
+    overflow-wrap: break-word
    }
    
-   .myfriend {
-    width: 56px !important;
-    height: 56px !important;
-    border-radius: 50%;
-    border: 1px solid #ddd;
-    padding: 2px;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
-    margin-top: 14px !important;
-    margin-left: 14px !important;
-    background-color: #fff;
+   #article-container a {
+    color: #49b1f5
    }
    
-   .frienddiv {
-    height: 92px;
-    margin-top: 10px;
-    width: 48%;
-    display: inline-block !important;
-    border-radius: 5px;
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 4px 4px 2px 1px rgba(0, 0, 255, 0.2);
+   #article-container a:hover {
+    text-decoration: underline
    }
    
-   .frienddiv:hover {
+   #article-container img {
+    margin: 0 auto .8rem
+   }
+   
+   .flink#article-container .friend-list-div > .friend-div a .friend-info,
+   .flink#article-container .friend-list-div > .friend-div a .friend-name {
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: nowrap
+   }
+   
+   .flink#article-container .friend-list-div {
+    overflow: auto;
+    padding: 10px 10px 0;
+    text-align: center;
+   }
+   .flink#article-container .friend-list-div > .friend-div {
+    position: relative;
+    float: left;
+    overflow: hidden;
+    margin: 15px 7px;
+    width: calc(100% / 3 - 15px);
+    height: 90px;
+    border-radius: 8px;
+    line-height: 17px;
+    -webkit-transform: translateZ(0)
+   }
+   
+   @media screen and (max-width: 1100px) {
+    .flink#article-container .friend-list-div > .friend-div {
+     width: calc(50% - 15px) !important
+    }
+   
+   @media screen and (max-width: 600px) {
+    .flink#article-container .friend-list-div > .friend-div {
+     width: calc(100% - 15px) !important
+    }
+   }
+   }
+   
+   .flink#article-container .friend-list-div > .friend-div:hover {
     background: rgba(87, 142, 224, 0.15);
    }
    
-   .frienddiv:hover .frienddivleft img {
-    transition: 0.9s !important;
-    -webkit-transition: 0.9s !important;
-    -moz-transition: 0.9s !important;
-    -o-transition: 0.9s !important;
-    -ms-transition: 0.9s !important;
-    transform: rotate(360deg) !important;
-    -webkit-transform: rotate(360deg) !important;
-    -moz-transform: rotate(360deg) !important;
-    -o-transform: rotate(360deg) !important;
-    -ms-transform: rotate(360deg) !important;
+   .flink#article-container .friend-list-div > .friend-div:hover img {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg)
    }
    
-   .frienddivleft {
-    width: 92px;
+   .flink#article-container .friend-list-div > .friend-div:before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    background: var(--text-bg-hover);
+    content: '';
+    -webkit-transition: -webkit-transform .3s ease-out;
+    -moz-transition: -moz-transform .3s ease-out;
+    -o-transition: -o-transform .3s ease-out;
+    -ms-transition: -ms-transform .3s ease-out;
+    transition: transform .3s ease-out;
+    -webkit-transform: scale(0);
+    -moz-transform: scale(0);
+    -o-transform: scale(0);
+    -ms-transform: scale(0);
+    transform: scale(0)
+   }
+   .flink#article-container .friend-list-div > .friend-div:hover:before,
+   .flink#article-container .friend-list-div > .friend-div:focus:before,
+   .flink#article-container .friend-list-div > .friend-div:active:before {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -o-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1)
+   }
+   .flink#article-container .friend-list-div > .friend-div a {
+    color: var(--font-color);
+    text-decoration: none
+   }
+   
+   .flink#article-container .friend-list-div > .friend-div a img{
     float: left;
+    margin: 15px 10px;
+    width: 60px;
+    height: 60px;
+    border-radius: 35px;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    -o-transition: all .3s;
+    -ms-transition: all .3s;
+    transition: all .3s
    }
    
-   .frienddivleft {
-    margin-right: 2px;
+   .flink#article-container .friend-list-div > .friend-div a .friend-name {
+    display: block;
+    padding: 16px 10px 0 0;
+    height: 40px;
+    font-weight: 700;
+    font-size: 20px
    }
    
-   .frienddivright {
-    margin-top: 18px;
-    margin-right: 18px;
-   }
-   
-   .friendname {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-   }
-   
-   .friendinfo {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-   }
-   
-   @media screen and (max-width: 600px) {
-    .friendinfo {
-     display: none;
-    }
-    .frienddivleft {
-     width: 84px;
-     margin: auto;
-    }
-    .frienddivright {
-     height: 100%;
-     margin: auto;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-    }
-    .friendname {
-     font-size: 14px;
-    }
+   .flink#article-container .friend-list-div > .friend-div a .friend-info {
+    display: block;
+    padding: 1px 10px 1px 0;
+    height: 50px;
+    font-size: 13px
    }
    
