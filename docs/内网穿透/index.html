@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.koisecret.site\/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F\/"
-        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "网络, linux, 实验室","wordcount":  2551 ,
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "网络, linux, 实验室","wordcount":  4202 ,
         "url": "https:\/\/blog.koisecret.site\/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F\/","datePublished": "2022-10-07T22:41:49+08:00","dateModified": "2022-10-07T22:41:49+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
@@ -72,8 +72,8 @@
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">实验室网络解析 （内网穿透）</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>燎原</a>
 </span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%BD%91%E7%BB%9C/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>网络</a>&nbsp;<a href="/categories/linux/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>linux</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-10-07">2022-10-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2551 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 6 分钟&nbsp;<span id="/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" class="leancloud_visitors" data-flag-title="实验室网络解析 （内网穿透）">
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-10-07">2022-10-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4202 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 9 分钟&nbsp;<span id="/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" class="leancloud_visitors" data-flag-title="实验室网络解析 （内网穿透）">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -89,17 +89,17 @@
         <li><a href="#二配置内网穿透前了解的linux知识">二、配置内网穿透前了解的Linux知识</a>
           <ul>
             <li><a href="#linux权限">Linux权限</a></li>
+            <li><a href="#禁止root账户密码登录">禁止root账户密码登录</a></li>
           </ul>
         </li>
         <li><a href="#三frp内网穿透">三、frp内网穿透</a></li>
-        <li><a href="#四简单记录一些环境软件的配置-leetcode">四、简单记录一些环境、软件的配置 leetcode</a></li>
       </ul>
     </li>
   </ul>
 </nav></div>
             </div><div class="content" id="content"><p>  之前师兄在群里发了学校实验室两台服务器和之江实验室两台服务器的SSH连接方法，讲了在实验室怎么连和在外面怎么连。当时就觉得很高级，也没有细品为什么要这么连，内外网跳板机是如何实现的&hellip;后来师兄<a href="https://blog.aflybird.cn/" target="_blank" rel="noopener noreffer">爱飞的鸟</a>
-在一台闲置主机上装了Linux用作服务器，并配置了内网穿透，使得外网也能连接这台主机。我当时还不懂实验室外网跳板机和师兄配置内网穿透这两者的关系，后来请教师兄后才豁然开朗，它们原来是一样的！</p>
-<p>  于是我也找了台实验室闲置的主机（最后一台了hhh），装了Linux系统，配置了内网穿透，然后我也拥有了一台16GB内存的服务器😍。这篇文章就来梳理一下实验室的网络情况以及实现原理，顺便写一下最近电脑重装系统后一些环境的配置。</p>
+在一台闲置主机上装了Linux系统，并配置了内网穿透，使得外网也能连接这台主机。我当时还不懂<strong>实验室外网跳板机</strong>和师兄<strong>配置内网穿透</strong>这两者的关系，后来请教师兄后才豁然开朗，它们原来是一件事！</p>
+<p>  于是我也找了台实验室闲置的主机（最后一台了hhh），装了Linux系统，配置了内网穿透，然后我也拥有了一台16GB内存的服务器😍。这篇文章就来<strong>梳理一下实验室的网络情况以及实现原理</strong>。</p>
 <h2 id="一内网外网跳板机ssh">一、内网、外网、跳板机、ssh</h2>
 <p>这是实验室的网络拓扑情况：</p>
 <p>      <img
@@ -110,7 +110,7 @@
         data-sizes="auto"
         alt="/实验室网络解析（内网穿透）/a.png"
         title="网络拓扑" /></p>
-<p>  我们实验室的电脑，不管是连接无线网i-HDU，还是插网线连接网络，都会进入学校内网，IP地址为10.X.X.X；之江实验室也同样有属于他们自己的内网。用户主机2为在实验室（即在学校内网中）的电脑，用户主机3为外网的电脑。主机J既是内网跳板机又是外网跳板机，它能访问zjlab内网，也能被外网的主机所访问。基于以上情况，产生了以下问题：</p>
+<p>  我们实验室的电脑，不管是连接无线网i-HDU，还是插网线连接网络，都会进入学校内网，IP地址为10.X.X.X；之江实验室也同样有属于他们自己的内网。用户主机2为在实验室（即在学校内网中）的电脑，用户主机3为外网的电脑。主机J既是内网跳板机又是外网跳板机（还是window系统的），它能访问zjlab内网，也能被外网的主机所访问。基于以上情况，产生了以下问题：</p>
 <ol>
 <li>用户主机2如何连接服务器A、B？</li>
 <li>用户主机2如何连接服务器C、D？</li>
@@ -144,7 +144,7 @@
 <p>  vscode远程连接需要下载remote-ssh插件，下载完成后按<a href="https://zhuanlan.zhihu.com/p/103578899" target="_blank" rel="noopener noreffer">VSCode Remote ssh跳板机配置</a>
 所说配置即可。</p>
 <p> 之后可以再去搜索一下<code>vscode ssh 免密登录</code>，将主机的公匙放到服务器<code>用户主目录/.ssh/authorized_keys</code>中即可，可参考<a href="https://blog.csdn.net/weixin_42397613/article/details/114983147" target="_blank" rel="noopener noreffer">vscode设置remote-ssh并免密登录</a>
-。这里我<strong>遇到了一个坑</strong>，明明我配置好了，但是免密登录一直都没有生效，后来翻了很多博客，发现有些博客有<code>sudo chmod 700 ~/。ssh</code>这一步，我执行后，免密登录就成功了。我觉得大概率原本的.ssh文件没有执行权限，所以进不去。</p>
+。这里我<strong>遇到了一个坑</strong>，明明我配置好了，但是免密登录一直都没有生效，后来翻了很多博客，发现有些博客有<code>sudo chmod 700 ~/。ssh</code>这一步，我执行后，免密登录就成功了。我觉得大概率<strong>原本的.ssh文件没有执行权限</strong>，所以进不去。</p>
 <p> 以下是我实验室主机的部分config文件（“打码”处理了，内网穿透本身就不安全，万一导致实验室被网络攻击沦陷了就g了🤡）。（连接腾讯云服务器需要跳，是因为学校内网不允许我们直接ssh连接外网的服务器）。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -245,7 +245,8 @@
 <blockquote>
 <p>6.跳板机是什么？有什么作用？</p>
 </blockquote>
-<p> 简单来说，跳板机就是一个桥梁，他和她无法交流，你和她、你和他能交流，你就去当个跳板机，他和她就能交流了。其实，任何电脑都能当跳板机，无需任何配置，只要一台电脑能访问到另一台电脑，你就可以通过这台电脑去访问那台电脑。就像之江实验室的服务器zjlabC可以直接访问到我的腾讯云服务器，那么无需任何配置，在实验室内网的主机2，就能以zjlabC为跳板机连接腾讯云服务器。</p>
+<p> 简单来说，跳板机就是一个桥梁，他和她无法交流，你和她、你和他能交流，你就去当个跳板机，他和她就能交流了。</p>
+<p> 其实，任何电脑都能当跳板机，无需任何配置，只要一台电脑能访问到另一台电脑，你就可以通过这台电脑去访问那台电脑。就像之江实验室的服务器zjlabC可以直接访问到我的腾讯云服务器，那么无需任何配置，在实验室内网的主机2，就能以zjlabC为跳板机连接腾讯云服务器。</p>
 <blockquote>
 <p>7.主机j是如何实现内网跳板机的？</p>
 </blockquote>
@@ -254,25 +255,88 @@
 <p>8.主机j是如何实现外网跳板机的？</p>
 </blockquote>
 <p> 也就是说，主机j是如何能被外网访问的？&mdash;&ndash;内网穿透！采用内网穿透技术，就能在外网直接连接主机j了，然后就能以主机j为跳板，来访问主机j能访问到的机器（也就是hdu内网和zjlab内网中的所以主机）。</p>
-<p><strong> 因此，我在实验室配了一台Linux主机1，明明需求是内网穿透从而外网能直接连接Linux主机1，没想到Linux主机1它还能充当外网跳板机。</strong>（当然我也能通过跳板机j来连接主机1）</p>
+<p><strong> 因此，我在实验室配了一台Linux主机1，明明需求是内网穿透从而外网能直接连接Linux主机1，没想到Linux主机1它还能充当外网跳板机来连接实验室的服务器。</strong>（当然我也能通过跳板机j来连接主机1）</p>
 <h2 id="二配置内网穿透前了解的linux知识">二、配置内网穿透前了解的Linux知识</h2>
 <h3 id="linux权限">Linux权限</h3>
-<p>查看目录下文件的权限命令：<code>ls -a</code></p>
-<h2 id="三frp内网穿透">三、frp内网穿透</h2>
-<p>ddd</p>
-<h2 id="四简单记录一些环境软件的配置-leetcode">四、简单记录一些环境、软件的配置 leetcode</h2>
-<p>1、ubuntu 安装 ssh 服务
-$ sudo apt-get install openssh-server</p>
-<p>2、ubuntu 启动 ssh 服务
-$ sudo service ssh start</p>
-<p>3、ubuntu ssh 服务加入开机启动
-$ sudo systemctl enable ssh</p>
-<p>4、ubuntu 关闭防火墙
-sudo ufw disable</p>
+<ul>
+<li>查看目录下文件的权限命令：<code>ls -a</code>，具体可见<a href="https://blog.csdn.net/weixin_45631506/article/details/114834013?spm=1001.2014.3001.5501" target="_blank" rel="noopener noreffer">ls -l命令详解</a>
+</li>
+<li>chown、chgrp、chmod命令，具体可见<a href="https://blog.csdn.net/weixin_45631506/article/details/114906296?spm=1001.2014.3001.5501" target="_blank" rel="noopener noreffer">chown、chgrp和chmod区分和用法详解</a>
+</li>
+</ul>
+<p>总的来说，就是要知道三个权限：读r（4）、写w（2）、执行x（1），三种用户：所有者、所在组、其他用户。</p>
+<p><strong>用户</strong>： Linux是多用户多任务的系统，<strong>每个用户都有自己的个人隐私</strong>，这就是用户的作用。</p>
+<p><strong>用户组</strong>： Linux是多用户多任务的系统，<strong>你想和你团队合作者一起分享某些文件，非团队的用户不能看你分享的文件</strong>，这就是用户组的作用。（<strong>一个用户可以有多个用户组</strong>）</p>
+<p><strong>其他用户</strong>： Linux是多用户多任务的系统，例如一个人陌生人（其他用户）想要进入你家（用户组），你（用户）肯定不会让他进来，也肯定不会把你的隐私（用户拥有的文件）给他看。</p>
+<p><strong>文件权限</strong>：</p>
+<ul>
+<li>
+<p><strong>读( r )：</strong> 可否对文件内容的查看。</p>
+</li>
+<li>
+<p><strong>写( w )：</strong> 可否对文件进行修改。(<strong>但不能删除该文件</strong>)</p>
+</li>
+<li>
+<p><strong>执行( x )：</strong> 可否该文件可以被系统执行。</p>
+</li>
+</ul>
+<p><strong>目录权限：</strong></p>
+<ul>
+<li><strong>读( r )：</strong> 可否查看此目录下的文件名和目录。</li>
+<li>**写( w )：**可在该目录下创建、删除、更名或移动文件或目录。</li>
+<li><strong>执行( x )：</strong> 能否进入目录。<strong>一般给任何人看你的目录要同时开放r和x（w权限不要随便给！）</strong></li>
+</ul>
+<p> 所以多用户使用同一台Linux服务器的时候，可以通过给用户划分为同一个组，并将文件/文件夹修改用户组，以此达到共享的目的。一般来说，用户目录（/home）下的文件是私有的，其他用户不能访问，一些大家都要用的东西就不要放在家目录里。</p>
+<p> 新建文件默认权限为666，新建目录默认权限为777。但是要&quot;减去&quot; umask的值，umask的值可以使用umask命令看到，一般情况下,root用户的为022，普通用户为002。这里的&quot;减&quot;并非数字上相减，而是减去相应的权限。因此，<strong>默认情况下，root用户新建文件的权限是644，新建目录权限是755；普通用户新建文件的权限是664，新建目录权限是775</strong>。</p>
+<h3 id="禁止root账户密码登录">禁止root账户密码登录</h3>
+<p> <strong>root身份是拥有至高无上的权利的</strong>，不管有没有设置权限，root身份的用户都可以进行各种操作。Linux系统默认情况下，是可以通过ssh以root权限登录的。但出于安全考虑，这样的权限是不合适的，因为黑客可能通过暴力破解你的root密码，然后进入你的系统。</p>
+<p> 同样是出于安全性考虑，我们在日常使用linux系统时，<strong>一般是通过普通用户来进行操作</strong>，在某些操作需要root权限时，通过su - 命令，或者sudo命名获取root权限进行操作，而不是一直以root用户在系统中横冲直撞，因为说不定什么时候你手一抖，就进行了一些危险性的操作。
+操作方法如下(操作前先通过<code>useradd</code>命令创建普通用户)：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="err">通过</span><span class="nx">vim</span><span class="err">打开该文件：</span>
+</span></span><span class="line"><span class="cl"><span class="c"># vim /etc/ssh/sshd_config</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">在文件中找到下面一行文字：</span>
+</span></span><span class="line"><span class="cl"><span class="c">#PermitRootLogin no</span>
+</span></span><span class="line"><span class="cl"><span class="err">去掉该行前面的</span><span class="c">#号，使其成为下面这样：</span>
+</span></span><span class="line"><span class="cl"><span class="nx">PermitRootLogin</span> <span class="nx">no</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">接下来，在</span><span class="nx">shell</span><span class="err">中输入以下命令来重启</span><span class="nx">ssh</span><span class="err">服务</span>
+</span></span><span class="line"><span class="cl"><span class="c"># service sshd restart</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="三frp内网穿透">三、frp内网穿透</h2>
+<p> 接下来就是如何配置内网穿透了，使得外网可以直接连接内网的Linux主机1。前提是你需要有一台共有公网ip地址的服务器。</p>
+<p>具体步骤参考了一下两篇文章：</p>
+<ul>
+<li><a href="https://blog.csdn.net/weixin_43213815/article/details/121336968" target="_blank" rel="noopener noreffer">使用frp配置内网</a>
+</li>
+<li><a href="https://cloud.tencent.com/developer/article/1837482" target="_blank" rel="noopener noreffer">frp配置内网穿透教程</a>
+</li>
+</ul>
+<p> 两篇博客中，一篇是将frp放在用户目录下，一篇是放在各种地方（配置文件放在/etc、日志输出在/var、程序放在/usr）,两者各有优劣吧，我选择放在了用户目录下。配置过程中要注意几个点：</p>
 <ol>
-<li>内网穿透后 密码不一致时</li>
-<li>frp 报错、nohup</li>
+<li>Linux服务器如果是刚装的系统，需要去下载openssh才能被ssh访问</li>
+<li>可以只配ssh，像rdp、http这种，用到了再配好了</li>
+<li>服务器端和客户端都nohup后台运行</li>
+<li>启动frpc客户端时报错<code>login to server failed: EOF</code>，客户端配置 common 下 添加 <code>tls_enable = true</code>即可</li>
+<li>如果腾讯云服务器的账号密码和主机1的账号密码不一样，termius每次连接的时候会让你输密码，一样的时候就不用输（不知道是不是因为我没有会员的原因）；vscode免密登录就没有这个问题</li>
+<li>注意防火墙问题。像腾讯云、阿里云这种，是有两层防火墙的，一层是主机本身的防火墙（可以用shell命令去设置），一层是服务商提供的防火墙（阿里云是安全组），需要去官网“实例”中去管理。要两层防火墙都开放对应端口。</li>
 </ol>
+<p> 配置完成后，就可以用腾讯云服务器的ip地址以及你配置的端口来连接内网的主机了，那台内网的主机也可以成为一个跳板机，用来连接内网的服务器！</p>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
