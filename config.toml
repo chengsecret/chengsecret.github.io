@@ -476,7 +476,7 @@ enableEmoji = true
       # Valine comment config (https://github.com/xCss/Valine)
       # Valine 评论系统设置 (https://github.com/xCss/Valine)
       [params.page.comment.valine]
-        enable = true
+        enable = false
         appId = 'cIRpq8figzQxyGz5LyAdUahJ-gzGzoHsz'
         appKey = 'T9YWfgGhznKaXXx7TCLxzS3C'
         notify = true  # mail notifier , https://github.com/xCss/Valine/wiki
@@ -515,9 +515,9 @@ enableEmoji = true
       # Utterances comment config (https://utteranc.es/)
       # Utterances comment 评论系统设置 (https://utteranc.es/)
       [params.page.comment.utterances]
-        enable = false
+        enable = true
         # owner/repo
-        repo = ""
+        repo = "chengsecret/chengsecret.github.io"
         issueTerm = "pathname"
         label = ""
         lightTheme = "github-light"
