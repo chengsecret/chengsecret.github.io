@@ -9,5 +9,6 @@ toc:
 weight: false
 categories: [""]
 tags: [""]
+featuredImage: ""
 ---
 
