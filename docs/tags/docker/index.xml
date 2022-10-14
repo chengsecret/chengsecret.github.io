@@ -10,7 +10,7 @@
     <pubDate>Thu, 13 Oct 2022 15:52:37 &#43;0800</pubDate>
     <author>燎原</author>
     <guid>https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/</guid>
-    <description><![CDATA[docker网络模式介绍 docker网络模式主要解决的是容器与容器间、外界与容器的通信问题。docker网络模式分为host、bridge、]]></description>
+    <description><![CDATA[docker网络模式介绍 网络模式的具体情况可以参考下面的博客（不想自己写一遍了。。。太长了。。。）： https://blog.csdn.net/heian_99/article/details/104914945 https://blog.csdn.net/heian_99/article/details/104944575 https://blog.csdn.net/heian_99/article/details/104993333 个人总结如下，如果有不正确的地方，]]></description>
 </item>
 <item>
     <title>Dockerfile解析与服务部署</title>
