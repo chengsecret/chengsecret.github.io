@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <title>Docker网络模式解析 - 燎原 - 遇见你已经是很不可思议了</title><meta name="Description" content="燎原的博客网站"><meta property="og:title" content="Docker网络模式解析" />
-<meta property="og:description" content="docker网络模式介绍" />
+<meta property="og:description" content="docker网络模式介绍 docker网络模式主要解决的是容器与容器间、外界与容器的通信问题。docker网络模式分为host、bridge、" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/" /><meta property="og:image" content="https://blog.koisecret.site/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-10-13T15:52:37+08:00" />
@@ -15,7 +15,7 @@
 <meta name="twitter:image" content="https://blog.koisecret.site/logo.png"/>
 
 <meta name="twitter:title" content="Docker网络模式解析"/>
-<meta name="twitter:description" content="docker网络模式介绍"/>
+<meta name="twitter:description" content="docker网络模式介绍 docker网络模式主要解决的是容器与容器间、外界与容器的通信问题。docker网络模式分为host、bridge、"/>
 <meta name="application-name" content="燎原の博客">
 <meta name="apple-mobile-web-app-title" content="燎原の博客"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.koisecret.site\/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90\/"
-        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 网络","wordcount":  12 ,
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 网络, 云原生","wordcount":  1223 ,
         "url": "https:\/\/blog.koisecret.site\/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90\/","datePublished": "2022-10-13T15:52:37+08:00","dateModified": "2022-10-13T15:52:37+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
@@ -72,8 +72,8 @@
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Docker网络模式解析</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>燎原</a>
 </span>&nbsp;<span class="post-category">收录于 <a href="/categories/docker/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>docker</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-10-13">2022-10-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 12 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 1 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-10-13">2022-10-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1223 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
@@ -84,12 +84,65 @@
     <li>
       <ul>
         <li><a href="#docker网络模式介绍">docker网络模式介绍</a></li>
+        <li><a href="#常用命令">常用命令</a></li>
       </ul>
     </li>
   </ul>
 </nav></div>
             </div><div class="content" id="content"><h2 id="docker网络模式介绍">docker网络模式介绍</h2>
-</div><div class="post-footer" id="post-footer">
+<p>docker网络模式主要解决的是容器与容器间、外界与容器的通信问题。docker网络模式分为host、bridge、none、container四种模式，并且可以自定义网络。容器运行时使用哪种网络，可以通过<code>--network</code>来指定。</p>
+<ul>
+<li>none网络：**none网络就是什么都没有的网络。**一些对安全性要求高并且不需要联网的应用可以使用none网络。</li>
+<li>host网络：容器将不会获得一个独立的Network Namespace， 而是和宿主机共用一个Network Namespace。容器将不会虚拟出自己的网卡而是使用宿主机的IP和端口。
+<ul>
+<li>因此容器运行时不用使用<code>-p</code>进行端口映射，使用了也不会生效。外部主机与容器可以直接通过主机的IP地址通信。</li>
+<li>使用Docker host的网络最大的好处就是性能，如果容器对网络传输效率有较高要求，则可以选择host网络。</li>
+<li>便之处就是牺牲一些灵活性，比如要<strong>考虑端口冲突问题</strong>，Docker host 上<strong>已经使用的端口就不能再用</strong>了。</li>
+</ul>
+</li>
+<li>bridge网络：默认的网络模式。Docker 服务默认会在主机创建一个 docker0 网桥，docker run 的时候，没有指定network的话默认使用的网桥模式就是bridge，使用的就是docker0。Docker启动一个容器时会根据Docker网桥的网段分配给容器一个IP地址，称为Container-IP，同时Docker网桥是每个容器的默认网关。因为在同一宿主机内的容器都接入同一个网桥，这样容器之间就能够通过容器的Container-IP直接通信。
+<ul>
+<li>所有使用bridge模式的容器都可以互相通过Container-IP进行通信，因为它们都连在docker0网桥上。其他的容器或者是外界，是不能通过Container-IP与对应容器通信的。</li>
+<li>使用bridge网络，外界如果想访问容器内的服务，必须要<code>-p</code>端口映射。</li>
+</ul>
+</li>
+<li>container网络：新建的容器和已经存在的一个容器共享一个网络ip配置而不是和宿主机共享。新创建的容器不会创建自己的网卡，配置自己的IP，而是和一个指定的容器共享IP、端口范围等。同样，两个容器除了网络方面，其他的如文件系统、进程列表等还是隔离的。可以通过<code>--network=container:容器名</code>指定。
+<ul>
+<li>适合不同容器中的程序希望通过loopback高效快速地通信，比如web Server与App Server.</li>
+<li>希望监控其他容器的网络流量，比如运行在独立容器中的网络监控程序。</li>
+</ul>
+</li>
+<li>自定义网络：自定义网络会有自己的一个网桥，使用同一个自定义网络的容器可以直接相互通信，并且可以直接通过容器名进行通信。自定义网络默认使用的就是bridge，除了网桥用的不是docker0之外，其他都是一样的。</li>
+</ul>
+<p>网络模式的具体情况可以参考：</p>
+<ul>
+<li><a href="https://blog.csdn.net/heian_99/article/details/104914945" target="_blank" rel="noopener noreffer">https://blog.csdn.net/heian_99/article/details/104914945</a>
+</li>
+<li><a href="https://blog.csdn.net/heian_99/article/details/104944575" target="_blank" rel="noopener noreffer">https://blog.csdn.net/heian_99/article/details/104944575</a>
+</li>
+<li><a href="https://blog.csdn.net/heian_99/article/details/104993333" target="_blank" rel="noopener noreffer">https://blog.csdn.net/heian_99/article/details/104993333</a>
+</li>
+</ul>
+<h2 id="常用命令">常用命令</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker network  --help
+</span></span><span class="line"><span class="cl">docker network ls   <span class="c1"># 列出所有网络</span>
+</span></span><span class="line"><span class="cl">docker network inspect 网络名   <span class="c1">#查看网络具体情况</span>
+</span></span><span class="line"><span class="cl">docker network rm 网络名 <span class="c1"># 删除网络</span>
+</span></span><span class="line"><span class="cl">docker network create 网络名 <span class="c1"># 创建网络（自定义网络）</span>
+</span></span><span class="line"><span class="cl">docker network connect 网络名 容器id <span class="c1">#将容器连入一个网络当中</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
@@ -98,13 +151,13 @@
         <div class="post-info-line">
             <div class="post-info-md"></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/" data-title="Docker网络模式解析" data-hashtags="docker,网络"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/" data-hashtag="docker"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/" data-title="Docker网络模式解析"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/" data-title="Docker网络模式解析"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/" data-title="Docker网络模式解析"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/" data-title="Docker网络模式解析" data-hashtags="docker,网络,云原生"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/" data-hashtag="docker"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/" data-title="Docker网络模式解析"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/" data-title="Docker网络模式解析"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/" data-title="Docker网络模式解析"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/docker/">docker</a>,&nbsp;<a href="/tags/%E7%BD%91%E7%BB%9C/">网络</a></section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/docker/">docker</a>,&nbsp;<a href="/tags/%E7%BD%91%E7%BB%9C/">网络</a>,&nbsp;<a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</a></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
         </section>
