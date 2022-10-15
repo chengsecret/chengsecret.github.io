@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Compose容器编排 - 燎原 - 遇见你已经是很不可思议了</title><meta name="Description" content="燎原的博客网站"><meta property="og:title" content="Compose容器编排" />
+<meta property="og:description" content="一、docker-compose是什么 之前使用 Docker 的时候，定义 Dockerfile 文件，然后使用 docker build、docker run 等命令操作容器。然而微服务架构的应用" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.koisecret.site/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/" /><meta property="og:image" content="https://blog.koisecret.site/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-10-15T13:14:53+08:00" />
+<meta property="article:modified_time" content="2022-10-15T13:14:53+08:00" /><meta property="og:site_name" content="My cool site" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.koisecret.site/logo.png"/>
+
+<meta name="twitter:title" content="Compose容器编排"/>
+<meta name="twitter:description" content="一、docker-compose是什么 之前使用 Docker 的时候，定义 Dockerfile 文件，然后使用 docker build、docker run 等命令操作容器。然而微服务架构的应用"/>
+<meta name="application-name" content="燎原の博客">
+<meta name="apple-mobile-web-app-title" content="燎原の博客"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.koisecret.site/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/" /><link rel="prev" href="https://blog.koisecret.site/%E8%B5%B0%E8%BF%91%E7%A7%91%E5%AD%A6%E4%B9%8B%E9%AC%BC%E6%95%B2%E9%97%A8/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Compose容器编排",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.koisecret.site\/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92\/"
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 云原生","wordcount":  1890 ,
+        "url": "https:\/\/blog.koisecret.site\/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92\/","datePublished": "2022-10-15T13:14:53+08:00","dateModified": "2022-10-15T13:14:53+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "燎原"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i> Github </a><a class="menu-item" href="/friend/"><i class='fas fa-user-friends'></i> 友链 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>Github</a><a class="menu-item" href="/friend/" title=""><i class='fas fa-user-friends'></i>友链</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Compose容器编排</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>燎原</a>
+</span>&nbsp;<span class="post-category">收录于 <a href="/categories/docker/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>docker</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-10-15">2022-10-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1890 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#一docker-compose是什么">一、docker-compose是什么</a></li>
+        <li><a href="#二compose常用命令">二、compose常用命令</a></li>
+        <li><a href="#三compose实战">三、compose实战</a>
+          <ul>
+            <li><a href="#不使用compose如何实现">不使用compose如何实现？</a></li>
+            <li><a href="#使用compose如何实现">使用compose如何实现？</a></li>
+          </ul>
+        </li>
+        <li><a href="#四composeswarmk8s的比较">四、compose、swarm、k8s的比较</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="一docker-compose是什么">一、docker-compose是什么</h2>
+<p>之前使用 Docker 的时候，定义 Dockerfile 文件，然后使用 docker build、docker run 等命令操作容器。然而微服务架构的<strong>应用系统一般包含若干个微服务，每个微服务一般都会部署多个实例，如果每个微服务都要手动启停，那么效率之低，维护量之大可想而知。</strong></p>
+<p>Compose 是 Docker 公司推出的一个工具软件，<strong>可以管理多个 Docker 容器组成一个应用，实现对docker容器的快速编排</strong>。你需要写一个 YAML 格式的配置文件<code>docker-compose.yml</code>，来<strong>定义一组相关联的应用容器为一个项目（project）</strong>，写好多个容器之间的调用关系。然后，只要一个命令，就能同时启动/关闭这些容器。</p>
+<p>compose安装步骤：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl -L <span class="s2">&#34;https://github.com/docker/compose/releases/download/1.29.2/docker-compose-</span><span class="k">$(</span>uname -s<span class="k">)</span><span class="s2">-</span><span class="k">$(</span>uname -m<span class="k">)</span><span class="s2">&#34;</span> -o /usr/local/bin/docker-compose
+</span></span><span class="line"><span class="cl">chmod +x /usr/local/bin/docker-compose
+</span></span><span class="line"><span class="cl">docker-compose --version
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Compose 使用的三个步骤：</p>
+<ul>
+<li>使用 Dockerfile 定义各个微服务并构建出对应的镜像文件。</li>
+<li>使用 docker-compose.yml 定义构成应用程序的服务，这样它们可以在隔离环境中一起运行。</li>
+<li>最后，执行 docker-compose up 命令来启动并运行整个应用程序。</li>
+</ul>
+<h2 id="二compose常用命令">二、compose常用命令</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-compose -h                           <span class="c1"># 查看帮助</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose up                           <span class="c1"># 启动所有docker-compose服务</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose up -d                        <span class="c1"># 启动所有docker-compose服务并后台运行</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose down                         <span class="c1"># 停止并删除容器、网络、卷、镜像。</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose <span class="nb">exec</span>  yml里面的服务id                 <span class="c1"># 进入容器实例内部  docker-compose exec docker-compose.yml文件中写的服务id /bin/bash</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose ps                      <span class="c1"># 展示当前docker-compose编排过的运行的所有容器</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose top                     <span class="c1"># 展示当前docker-compose编排过的容器进程</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose logs  yml里面的服务id     <span class="c1"># 查看容器输出日志</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose config     <span class="c1"># 检查配置</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose config -q  <span class="c1"># 检查配置，有问题才有输出</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose restart   <span class="c1"># 重启服务</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose start     <span class="c1"># 启动服务</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose stop      <span class="c1"># 停止服务</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="三compose实战">三、compose实战</h2>
+<p>有一个springboot项目，用到了MySQL和redis，要用docker部署。需要三个容器：一个放redis、一个放MySQL、一个放服务（jar包）。【实际情况的话，redis和mysql一般都不会放容器中。compose编排的基本是各个微服务。这里只是为了测试一下compose才这么去做的。】</p>
+<h3 id="不使用compose如何实现">不使用compose如何实现？</h3>
+<ol>
+<li>
+<p>制作Java服务的镜像：打jar包，编写Dockerfile文件，构建镜像。Dockerfile文件可以如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="c"># 基础镜像使用java</span>
+</span></span><span class="line"><span class="cl"><span class="nx">FROM</span> <span class="nx">java</span><span class="err">:</span><span class="mi">8</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 作者</span>
+</span></span><span class="line"><span class="cl"><span class="nx">MAINTAINER</span> <span class="nx">liaoyuan</span>
+</span></span><span class="line"><span class="cl"><span class="c"># VOLUME 指定临时文件目录为/tmp，在主机/var/lib/docker目录下创建了一个临时文件并链接到容器的/tmp</span>
+</span></span><span class="line"><span class="cl"><span class="nx">VOLUME</span> <span class="err">/</span><span class="nx">tmp</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 将jar包添加到容器中并更名为zzyy_docker.jar</span>
+</span></span><span class="line"><span class="cl"><span class="nx">ADD</span> <span class="nx">docker_boot-0</span><span class="p">.</span><span class="mf">0.1</span><span class="nx">-SNAPSHOT</span><span class="p">.</span><span class="nx">jar</span> <span class="nx">zzyy_docker</span><span class="p">.</span><span class="nx">jar</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 运行jar包</span>
+</span></span><span class="line"><span class="cl"><span class="nx">RUN</span> <span class="nx">bash</span> <span class="nx">-c</span> <span class="s1">&#39;touch /zzyy_docker.jar&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;java&#34;</span><span class="p">,</span><span class="s2">&#34;-jar&#34;</span><span class="p">,</span><span class="s2">&#34;/zzyy_docker.jar&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="c">#暴露6001端口作为微服务</span>
+</span></span><span class="line"><span class="cl"><span class="nx">EXPOSE</span> <span class="mi">6001</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>新建MySQL容器，建库建表。</p>
+</li>
+<li>
+<p>建立redis容器。</p>
+</li>
+<li>
+<p>运行Java服务容器。</p>
+</li>
+</ol>
+<p><strong>这么做产生了哪些问题？</strong></p>
+<ul>
+<li>先后顺序必须固定，先redis+MySQL，再Java服务。</li>
+<li>需要多个run命令，一个个去开启容器。</li>
+<li>服务器间的停启，可能导致ip地址变动。（这可以通过自定义网络解决）</li>
+</ul>
+<h3 id="使用compose如何实现">使用compose如何实现？</h3>
+<ol>
+<li>
+<p>编写docker-compose,yml文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;3&#34;</span><span class="w">     </span><span class="c"># 指定compose的版本</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">services</span><span class="p">:</span><span class="w">   </span><span class="c"># 定义一个项目的所有服务</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">microService</span><span class="p">:</span><span class="w">  </span><span class="c"># 定义服务名</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">zzyy_docker:1.6 </span><span class="w"> </span><span class="c"># 由哪个镜像构建</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">ms01 </span><span class="w"> </span><span class="c"># 定义容器名称</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;6001:6001&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">/app/microService:/data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">liaoyuan_net  </span><span class="w"> </span><span class="c"># 指定使用的网络</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">  </span><span class="c"># redis服务和myql服务构建完成后才启动microService服务</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">mysql </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">redis</span><span class="p">:</span><span class="w"> </span><span class="c"># 定义服务名</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">redis:6.0.8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;6379:6379&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">/app/redis/redis.conf:/etc/redis/redis.conf</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">/app/redis/data:/data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">liaoyuan_net</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l">redis-server /etc/redis/redis.conf</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">mysql</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">mysql:5.7</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;1234567&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">MYSQL_ALLOW_EMPTY_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;no&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">MYSQL_DATABASE</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;db2021&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">MYSQL_USER</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;liaoyuan&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">MYSQL_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;123&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span>- <span class="s2">&#34;3306:3306&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span>- <span class="l">/app/mysql/db:/var/lib/mysql</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span>- <span class="l">/app/mysql/conf/my.cnf:/etc/my.cnf</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span>- <span class="l">/app/mysql/init:/docker-entrypoint-initdb.d</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">liaoyuan_net</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span>--<span class="l">default-authentication-plugin=mysql_native_password</span><span class="w"> </span><span class="c">#解决外部无法访问</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">networks</span><span class="p">:</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="nt">liaoyuan_net</span><span class="p">:</span><span class="w">  </span><span class="c"># 自定义网络</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>docker-compose,yml</code>文件的其他配置可见：https://cloud.tencent.com/developer/article/1982631</p>
+</li>
+<li>
+<p>制作Java服务的镜像：打jar包，编写Dockerfile文件，构建镜像。此时，Java服务的配置文件<code>application.yml</code>中，调用redis和MySQL的<strong>ip地址可以用<code>docker-compose,yml</code>中定义的服务名来表示</strong>。</p>
+</li>
+<li>
+<p>执行<code>docker-compose up -d</code>启动。</p>
+</li>
+<li>
+<p>进入MySQL容器，建库建表。</p>
+</li>
+</ol>
+<h2 id="四composeswarmk8s的比较">四、compose、swarm、k8s的比较</h2>
+<p>它们三者主要都是用于容器编排，区别是什么？</p>
+<ul>
+<li>compose定义的是单机里，一个项目中多个容器的编排。</li>
+<li>swarm也是docker公司出品的，解决的是多个主机间，docker容器集群的编排。但是不适合大型项目的管理。</li>
+<li>k8s比swarm还要高级，对于大型项目，是肯定需要靠k8s去管理。所以说就容器编排而言，k8s目前来说是终点。</li>
+</ul>
+<p>参考连接：</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/qq_40585800/article/details/109120484" target="_blank" rel="noopener noreffer">https://blog.csdn.net/qq_40585800/article/details/109120484</a>
+</p>
+<p><a href="https://blog.csdn.net/lgxzzz/article/details/124454585" target="_blank" rel="noopener noreffer">https://blog.csdn.net/lgxzzz/article/details/124454585</a>
+</p>
+<p><a href="https://www.zhihu.com/question/312917608" target="_blank" rel="noopener noreffer">https://www.zhihu.com/question/312917608</a>
+</p>
+</blockquote>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-10-15</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://blog.koisecret.site/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/" data-title="Compose容器编排" data-hashtags="docker,云原生"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://blog.koisecret.site/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/" data-hashtag="docker"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://blog.koisecret.site/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/" data-title="Compose容器编排"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://blog.koisecret.site/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/" data-title="Compose容器编排"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://blog.koisecret.site/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/" data-title="Compose容器编排"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/docker/">docker</a>,&nbsp;<a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/%E8%B5%B0%E8%BF%91%E7%A7%91%E5%AD%A6%E4%B9%8B%E9%AC%BC%E6%95%B2%E9%97%A8/" class="prev" rel="prev" title="走近科学之鬼敲门"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>走近科学之鬼敲门</a></div>
+</div>
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">燎原</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.5.4/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"chengsecret/chengsecret.github.io"}},"data":{"id-1":"燎原の博客","id-2":"燎原の博客"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -4,7 +4,15 @@
         <link>https://blog.koisecret.site/tags/docker/</link>
         <description>docker - 标签 - 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (燎原)</managingEditor>
-            <webMaster>2240141419@qq.com (燎原)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 13 Oct 2022 15:52:37 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/tags/docker/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (燎原)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 15 Oct 2022 13:14:53 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/tags/docker/" rel="self" type="application/rss+xml" /><item>
+    <title>Compose容器编排</title>
+    <link>https://blog.koisecret.site/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/</link>
+    <pubDate>Sat, 15 Oct 2022 13:14:53 &#43;0800</pubDate>
+    <author>燎原</author>
+    <guid>https://blog.koisecret.site/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/</guid>
+    <description><![CDATA[一、docker-compose是什么 之前使用 Docker 的时候，定义 Dockerfile 文件，然后使用 docker build、docker run 等命令操作容器。然而微服务架构的应用]]></description>
+</item>
+<item>
     <title>Docker网络模式解析</title>
     <link>https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/</link>
     <pubDate>Thu, 13 Oct 2022 15:52:37 &#43;0800</pubDate>
