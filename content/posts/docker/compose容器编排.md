@@ -100,14 +100,6 @@ docker-compose stop      # 停止服务
    >
    >https://blog.csdn.net/begefefsef/article/details/123936679
 
-> 此时docker中有三个容器：redis、MySQL、java服务。java服务是要访问redis和MySQL的，`application.yml`中该如何去写IP地址呢？**我遇到了一个坑**如下：
-
-一开始我使用的IP地址是`127.0.0.1`去访问redis和MySQL，**发现Java服务的容器访问不了redis和MySQL容器**；我又换成了**宿主机的IP**地址，发现还是**访问不了**。我是run镜像时是配置了`-p`端口映射的，而且我在另一台电脑上是可以用宿主机的IP地址来连上容器mysql的。
-
-后来我使用了redis和MySQL的**容器IP地址**来连接，就成功了。
-
-使用容器IP地址连接是可以的，是因为他们使用的都是docker0网桥。那么用宿主机ip地址为什么不可以呢，明明是有`-p`端口转发的，外界都能访问mysql容器。**我觉得**原因**应该是**docker屏蔽了不同网桥之间的网络流量，**想要容器间通信还是得配置自定义网络**。
-
 
 
 ### 不使用compose产生了哪些问题？
