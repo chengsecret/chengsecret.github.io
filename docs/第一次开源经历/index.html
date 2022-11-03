@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>记录第一次开源经历 - 燎原 - 遇见你已经是很不可思议了</title><meta name="Description" content="燎原的博客网站"><meta property="og:title" content="记录第一次开源经历" />
+<meta property="og:description" content="好久没写博客了，这半个月确实有点浪，剧本杀阿瓦隆喝酒唱歌聚餐样样没落下，还“努力”上了个王者，简直读了个假研究生。 不过这半个月里，我也完成了" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.koisecret.site/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86/" /><meta property="og:image" content="https://blog.koisecret.site/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-01T15:49:19+08:00" />
+<meta property="article:modified_time" content="2022-11-01T15:49:19+08:00" /><meta property="og:site_name" content="My cool site" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.koisecret.site/logo.png"/>
+
+<meta name="twitter:title" content="记录第一次开源经历"/>
+<meta name="twitter:description" content="好久没写博客了，这半个月确实有点浪，剧本杀阿瓦隆喝酒唱歌聚餐样样没落下，还“努力”上了个王者，简直读了个假研究生。 不过这半个月里，我也完成了"/>
+<meta name="application-name" content="燎原の博客">
+<meta name="apple-mobile-web-app-title" content="燎原の博客"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.koisecret.site/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86/" /><link rel="prev" href="https://blog.koisecret.site/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "记录第一次开源经历",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.koisecret.site\/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86\/"
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "开源, docker, 部署运维","wordcount":  3186 ,
+        "url": "https:\/\/blog.koisecret.site\/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86\/","datePublished": "2022-11-01T15:49:19+08:00","dateModified": "2022-11-01T15:49:19+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "chengsecret"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i> Github </a><a class="menu-item" href="/friend/"><i class='fas fa-user-friends'></i> 友链 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>Github</a><a class="menu-item" href="/friend/" title=""><i class='fas fa-user-friends'></i>友链</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">记录第一次开源经历</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
+</span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E5%BC%80%E6%BA%90/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>开源</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-01">2022-11-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3186 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#一需求分析">一、需求分析</a></li>
+            <li><a href="#二操作步骤">二、操作步骤</a></li>
+            <li><a href="#三遇到的问题与收获">三、遇到的问题与收获</a>
+              <ul>
+                <li><a href="#1-maven相关">1. maven相关</a></li>
+                <li><a href="#2-项目打包插件">2. 项目打包插件</a></li>
+                <li><a href="#3-脚本">3. 脚本</a></li>
+                <li><a href="#4-依赖冲突问题">4. 依赖冲突问题</a></li>
+                <li><a href="#5数据卷">5.数据卷</a></li>
+                <li><a href="#6写开源项目时使用git的技巧">6.写开源项目时，使用git的技巧</a></li>
+                <li><a href="#6-沟通的重要性">6. 沟通的重要性</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>  好久没写博客了，这半个月确实有点浪，剧本杀阿瓦隆喝酒唱歌聚餐样样没落下，还“努力”上了个王者，简直读了个假研究生。</p>
+<p>  不过这半个月里，我也完成了一个开源任务，给<a href="https://github.com/dromara/hmily-admin" target="_blank" rel="noopener noreffer">hmily-admin</a>
+增加<code>docker打包</code>部署方式，提交了pr并合并了。老早就在师兄的安利下，想要接触开源了，这次算是第一次真正参与了一个开源项目，虽然这个只是个小项目（属于<a href="https://github.com/dromara/hmily" target="_blank" rel="noopener noreffer">hmily</a>
+的展示平台），但也收获了挺多东西。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/%e5%bc%80%e6%ba%90/first.png"
+        data-srcset="/%e5%bc%80%e6%ba%90/first.png, /%e5%bc%80%e6%ba%90/first.png 1.5x, /%e5%bc%80%e6%ba%90/first.png 2x"
+        data-sizes="auto"
+        alt="/开源/first.png"
+        title="第一个合并的pr" /></p>
+<h3 id="一需求分析">一、需求分析</h3>
+<p><code>hmily-admin</code>原本是一个单体项目，部署方式是将项目打包成一个zip包，再通过shell脚本的方式来启动。这种方式比起上传jar包，再通过命令行的方式运行，确实是方便了一点。</p>
+<p>我的任务是，仿照<a href="https://github.com/apache/shenyu" target="_blank" rel="noopener noreffer">apache/shenyu</a>
+，给<code>hmily-admin</code>增加<code>docker打包</code>部署方式以及完善相应文档。</p>
+<p><code>shenyu</code>的docker部署只需要<code>make build-all-image</code>一条命令，就能将项目打包成镜像了，接下来就是通过<code>docker run</code>时<strong>传入配置文件参数</strong>或<strong>绑定数据卷</strong>的方式，跑起服务。shenyu是通过<code>Makefile</code> + <code>打包模块</code>来实现的，我仿照shenyu实现了hmily-admin的docker部署。</p>
+<h3 id="二操作步骤">二、操作步骤</h3>
+<blockquote>
+<p>1.更改项目结构</p>
+</blockquote>
+<p>  由于需要新建打包模块，需要将原来的单体项目修改为多模块项目，这个可以去参考一下微服务项目的构建方法。</p>
+<blockquote>
+<p>2.新建<code>hmily-admin-dist</code>模块</p>
+</blockquote>
+<p>  基本照抄shenyu的打包模块，改的地方只有路径、项目名、主启动类名等。我认为这个模块最重要的就是<code>maven-assembly-plugin</code>插件以及<code>binary.xml</code>文件，至于具体是怎么生成目标文件的，我准备之后研究研究，可以期待一下我的后续博客。</p>
+<blockquote>
+<p>3.编写Makefile与Dockerfile</p>
+</blockquote>
+<ul>
+<li><strong>Makefile</strong></li>
+</ul>
+<p>  Makefile主要来完成两件事情：maven打包项目、docker生成镜像。Makefile文件如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="nv">HMILY_HOME</span> <span class="o">:=</span>  <span class="s2">&#34;.&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">REGISTRY</span> <span class="o">?=</span> <span class="s2">&#34;docker.io&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">REPOSITORY_PREF</span> <span class="o">?=</span> <span class="s2">&#34;dromara/hmily&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">ADMIN_REPOSITORY</span> <span class="o">?=</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">REPOSITORY_PREF</span><span class="si">}</span><span class="s2">-admin&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">TAG</span> <span class="o">?=</span> latest
+</span></span><span class="line"><span class="cl"><span class="nv">VERSION</span> <span class="o">?=</span> <span class="s2">&#34;1.0.2&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">COMMIT_ID</span> <span class="o">:=</span> <span class="k">$(</span>shell git rev-parse HEAD<span class="k">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">default</span><span class="o">:</span> <span class="n">build</span>-<span class="n">hmily</span>-<span class="n">admin</span>-<span class="n">image</span>
+</span></span><span class="line"><span class="cl"><span class="c"># docker生成镜像
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nf">build-hmily-admin-image</span><span class="o">:</span> <span class="n">build</span>-<span class="n">hmily</span>-<span class="n">admin</span>
+</span></span><span class="line"><span class="cl">	@echo <span class="s2">&#34;build-hmily-admin-image&#34;</span>
+</span></span><span class="line"><span class="cl">	@docker buildx build --load <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    		-t <span class="si">${</span><span class="nv">REGISTRY</span><span class="si">}</span>/<span class="si">${</span><span class="nv">ADMIN_REPOSITORY</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    		-f <span class="si">${</span><span class="nv">HMILY_HOME</span><span class="si">}</span>/hmily-admin-dist/docker/Dockerfile <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    		--build-arg <span class="nv">APP_NAME</span><span class="o">=</span>hmily-admin-<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span>-admin-bin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    		--label <span class="s2">&#34;commit.id=</span><span class="si">${</span><span class="nv">COMMIT_ID</span><span class="si">}</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    		<span class="si">${</span><span class="nv">HMILY_HOME</span><span class="si">}</span>/hmily-admin-dist
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># maven打包项目
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nf">build-hmily-admin</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	@echo <span class="s2">&#34;build hmily admin&#34;</span>
+</span></span><span class="line"><span class="cl">	@mvn -am <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		-pl hmily-admin-dist <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		-Dmaven.javadoc.skip<span class="o">=</span><span class="nb">true</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		-Drat.skip<span class="o">=</span><span class="nb">true</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		-Djacoco.skip<span class="o">=</span><span class="nb">true</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		-DskipTests <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		-Prelease <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>		clean package
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>  maven打包项目：指定了打包的模块是<code>hmily-admin-dist</code>，<code>-Prelease</code>用来指定pom文件中的<code>release</code>方式，用于生成<code>hmily-admin-1.0.2-admin-bin.tar.gz</code>。</p>
+<p>  docker生成镜像：指定Dockerfile的位置，通过Dockerfile生成镜像。</p>
+<ul>
+<li><strong>Dockerfile</strong></li>
+</ul>
+<p>  将生成<code>hmily-admin-1.0.2-admin-bin.tar.gz</code>add到镜像中，配置<code>entrypoint.sh</code>，使得用户能通过命令行传入需要配置的信息，如数据库用户密码等。现在的entrypoint.sh还是有改进空间的，因为用户能传入的内容还不足以覆盖全部的配置信息。</p>
+<blockquote>
+<p>4.运行测试</p>
+</blockquote>
+<p>  如何运行可参考<a href="https://github.com/chengsecret/hmily-admin/blob/master/QuickStart.md" target="_blank" rel="noopener noreffer">README.md</a>
+。运行过程中也遇到了几个问题：</p>
+<ul>
+<li><code>self4j-log4j12</code>依赖冲突问题。通过<code>mvn dependency:tree</code>命令查找哪个依赖中还有self4j-log4j12包，剔除就好。<strong><code>mvn dependency:tree</code>命令很重要，依赖冲突时能排查！</strong></li>
+<li><code>-v</code>数据卷绑定方式传入配置文件，控制台日志不输出问题。后来发现日志输出在容器的<code>/opt/log</code>目录下，就建立一个日志的数据卷，就能方便查看日志文件了。</li>
+<li>用Java11编译运行项目时报错。一开始以为是项目pom文件里定义的Java版本是java8而导致的错误，修改了pom里的版本后还是有错。后来网上找了找，发现是lombok版本太低导致的。 看来pom里定义的Java版本并没什么用。</li>
+</ul>
+<h3 id="三遇到的问题与收获">三、遇到的问题与收获</h3>
+<h4 id="1-maven相关">1. maven相关</h4>
+<blockquote>
+<p>maven命令</p>
+</blockquote>
+<p>  以前操作maven都是靠idea的图形界面，点一点就好，这次算是熟悉maven的常用命令了。其实每次点击idea里的打包命令，控制台第一行会输出打包命令。</p>
+<p>  pom文件里，可以通过<code>&lt;profiles&gt;</code>标签定义多套配置，maven打包时通过<code>mvn package -P 配置名</code>指定配置即可。</p>
+<blockquote>
+<p>maven wrapper</p>
+</blockquote>
+<p>  使用<code>start.spring.io</code>生成项目，会发现里面有<code>mvnw</code>和<code>mvnw.cmd</code>两个文件。这两个文件其实就是用于使用maven wrapper的。<code>shenyu</code>使用的打包命令就是<code>mvnw</code>，而不是<code>mvn</code>。</p>
+<p>  感觉我们生成项目时，会习惯性的删掉<code>mvnw</code>和<code>mvnw.cmd</code>等文件，<code>hmily-admin</code>就删掉了。因此一开始，<code>Makefile</code>里我用<code>mvnw</code>命令去打包，就报错了，后面就改用了<code>mvn</code>。</p>
+<p>  <code>maven wrapper</code>属于项目级别的maven，在主机里没安装maven或者maven版本与项目所需不一致时，就会自动下载一个项目级别的maven，供项目使用。它的<strong>好处就是，打包项目时，不用在意主机有没有安装maven了，肯定能帮你打包好</strong>。<strong>坏处就是，没有配置国内镜像，下载jar包的速度贼慢</strong>。而且虽然官网说的是在找不到maven的时候，它会自动下载一个，但我用了几个服务器来打包shenyu，发现本机的maven都没有生效，用的都是maven wrapper，所以打包速度贼慢。因此我还是会选择用<code>mvn</code>。</p>
+<h4 id="2-项目打包插件">2. 项目打包插件</h4>
+<p>  以前写项目，一直注重的是开发方面，对运维部署就没放在心上，所以对打包插件也没多注意。这次看了<code>hmily-admin</code>里的打包插件，比如<code>maven-assembly-plugin</code>、<code>docker-maven-plugin</code>、<code>maven-checkstyle-plugin</code>等，是真的牛逼，直接把程序连同脚本一起，打包成一个压缩包的形式，配合Dockerfile打包成镜像，方便部署。我准备之后在项目里试一试这些插件，成功部署后再来细讲。</p>
+<h4 id="3-脚本">3. 脚本</h4>
+<p>  看了一些开源项目的部署方式，基本都会涉及到脚本，一键启动是真方便。但是shell脚本是真难看懂，我现在也只能照着被人的脚本改改，慢慢摸索吧。</p>
+<h4 id="4-依赖冲突问题">4. 依赖冲突问题</h4>
+<p>  当初写毕设的时候，就遇到过依赖冲突，当时稀里糊涂就解决了，这次遇到了<code>self4j-log4j12</code>的依赖冲突，算是总结到了解决依赖冲突的方法。</p>
+<ul>
+<li>
+<p>首先，根据报错信息，找到冲突的依赖包</p>
+</li>
+<li>
+<p>项目根目录（pom所在目录）执行<code>mvn dependency:tree</code>命令，会输出项目用到的依赖包以及依赖包下含有的依赖包。<code>hmily-admin</code>里，我发现<code>zookeeper</code>包中也含有<code>self4j-log4j12</code>。</p>
+</li>
+<li>
+<p>冲突的依赖包下剔除重复的包。本项目中，在<code>zookeeper</code>包里，使用<code>&lt;exclusions&gt;</code>进行剔除self4j。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.apache.zookeeper<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>zookeeper<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>3.4.14<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;exclusions&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;exclusion&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>slf4j-log4j12<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/exclusion&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/exclusions&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="err">&lt;</span>/dependency
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h4 id="5数据卷">5.数据卷</h4>
+<p> <code>docker run -v 宿主机目录:容器目录</code>，执行命令时，宿主机目录里的东西会<strong>覆盖掉</strong>容器目录里的东西。容器执行过程中，容器目录里生成的文件或者修改过的文件，会实时同步到宿主机目录中。以前理解错了，现在的理解绝对是对的🤡。</p>
+<h4 id="6写开源项目时使用git的技巧">6.写开源项目时，使用git的技巧</h4>
+<p>可参考：</p>
+<ul>
+<li><a href="https://dromara.org/zh/projects/hmily/contributor/" target="_blank" rel="noopener noreffer">https://dromara.org/zh/projects/hmily/contributor/</a>
+</li>
+<li><a href="https://www.danielhu.cn/open-a-pr-in-github/" target="_blank" rel="noopener noreffer">https://www.danielhu.cn/open-a-pr-in-github/</a>
+</li>
+</ul>
+<p>总之就是，对代码的修改在分支中进行，一切都是为了解决或者防止冲突。</p>
+<h4 id="6-沟通的重要性">6. 沟通的重要性</h4>
+<p> 一开始我对完成这个开源项目都没什么信心，像那些脚本、打包模块什么的，见啊没见过。开始修改项目时，报了一堆错，比如上面说过的<code>mvnw</code>。。<strong>一筹莫展时，多问问身边的大佬，不要怕别人说你菜狗</strong>🐶。</p>
+<p> 很多问题都是眼界不够导致的，没见过就无从下手，有大佬指点一二，就会发现很多问题迎刃而解了。</p>
+<p> 还有就是得仔细听需求，不懂的就及时问。一开始以为遇到问题网上查就行，结果刚开始做的时候都觉得无从下手。后面再次询问师兄，才大概懂了流程。。和京东的项目负责人聊也是，一开始没理解什么叫“新建父模块”，导致了两三天的摆烂，后来去询问了一下他，问题马上解决了。。</p>
+<hr>
+<p>后面要学的东西还很多，下一步，研究研究插件，自己实现一遍打包模块。向k8s进发。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-11-01</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://blog.koisecret.site/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86/" data-title="记录第一次开源经历" data-hashtags="开源,docker,部署运维"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://blog.koisecret.site/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86/" data-hashtag="开源"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://blog.koisecret.site/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86/" data-title="记录第一次开源经历"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://blog.koisecret.site/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86/" data-title="记录第一次开源经历"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://blog.koisecret.site/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86/" data-title="记录第一次开源经历"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/%E5%BC%80%E6%BA%90/">开源</a>,&nbsp;<a href="/tags/docker/">docker</a>,&nbsp;<a href="/tags/%E9%83%A8%E7%BD%B2%E8%BF%90%E7%BB%B4/">部署运维</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/" class="prev" rel="prev" title="Compose容器编排"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Compose容器编排</a></div>
+</div>
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">chengsecret</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.5.4/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"chengsecret/chengsecret.github.io"}},"data":{"id-1":"燎原の博客","id-2":"燎原の博客"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

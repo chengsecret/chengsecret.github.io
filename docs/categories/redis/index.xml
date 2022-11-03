@@ -3,12 +3,12 @@
         <title>redis - 分类 - 燎原 - 遇见你已经是很不可思议了</title>
         <link>https://blog.koisecret.site/categories/redis/</link>
         <description>redis - 分类 - 燎原 - 遇见你已经是很不可思议了</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (燎原)</managingEditor>
-            <webMaster>2240141419@qq.com (燎原)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/categories/redis/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/categories/redis/" rel="self" type="application/rss+xml" /><item>
     <title>Docker配置redis集群</title>
     <link>https://blog.koisecret.site/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/</link>
     <pubDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</pubDate>
-    <author>燎原</author>
+    <author>chengsecret</author>
     <guid>https://blog.koisecret.site/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/</guid>
     <description><![CDATA[当有上亿条数据需要缓存，该如何解决这个问题？ ——分布式存储 一 redis回顾 持久化 RDB快照：默认情况下，Redis将内存数据库快照保存为du]]></description>
 </item>

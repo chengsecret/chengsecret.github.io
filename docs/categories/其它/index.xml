@@ -3,12 +3,12 @@
         <title>其它 - 分类 - 燎原 - 遇见你已经是很不可思议了</title>
         <link>https://blog.koisecret.site/categories/%E5%85%B6%E5%AE%83/</link>
         <description>其它 - 分类 - 燎原 - 遇见你已经是很不可思议了</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (燎原)</managingEditor>
-            <webMaster>2240141419@qq.com (燎原)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 17 Sep 2022 14:57:22 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/categories/%E5%85%B6%E5%AE%83/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 17 Sep 2022 14:57:22 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/categories/%E5%85%B6%E5%AE%83/" rel="self" type="application/rss+xml" /><item>
     <title>Hugo搭建博客</title>
     <link>https://blog.koisecret.site/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</link>
     <pubDate>Sat, 17 Sep 2022 14:57:22 &#43;0800</pubDate>
-    <author>燎原</author>
+    <author>chengsecret</author>
     <guid>https://blog.koisecret.site/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</guid>
     <description><![CDATA[教你如何简单地搭建属于自己的博客。 一、安装hugo 本人以window系统为例，介绍如何安装Hugo，具体可见官方文档 。 采用window包管理]]></description>
 </item>
