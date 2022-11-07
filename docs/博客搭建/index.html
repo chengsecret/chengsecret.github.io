@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <title>Hugo搭建博客 - 燎原 - 遇见你已经是很不可思议了</title><meta name="Description" content="燎原的博客网站"><meta property="og:title" content="Hugo搭建博客" />
-<meta property="og:description" content="教你如何简单地搭建属于自己的博客。 一、安装hugo 本人以window系统为例，介绍如何安装Hugo，具体可见官方文档 。 采用window包管理" />
+<meta property="og:description" content="教你如何简单地搭建属于自己的博客。 一、安装hugo 本人以window系统为例，介绍如何安装Hugo，具体可见官方文档 。 下载hugo二进制文件" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.koisecret.site/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" /><meta property="og:image" content="https://blog.koisecret.site/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-09-17T14:57:22+08:00" />
@@ -15,7 +15,7 @@
 <meta name="twitter:image" content="https://blog.koisecret.site/logo.png"/>
 
 <meta name="twitter:title" content="Hugo搭建博客"/>
-<meta name="twitter:description" content="教你如何简单地搭建属于自己的博客。 一、安装hugo 本人以window系统为例，介绍如何安装Hugo，具体可见官方文档 。 采用window包管理"/>
+<meta name="twitter:description" content="教你如何简单地搭建属于自己的博客。 一、安装hugo 本人以window系统为例，介绍如何安装Hugo，具体可见官方文档 。 下载hugo二进制文件"/>
 <meta name="application-name" content="燎原の博客">
 <meta name="apple-mobile-web-app-title" content="燎原の博客"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.koisecret.site\/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA\/"
-        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "博客搭建","wordcount":  2657 ,
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "博客搭建","wordcount":  2530 ,
         "url": "https:\/\/blog.koisecret.site\/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA\/","datePublished": "2022-09-17T14:57:22+08:00","dateModified": "2022-09-17T14:57:22+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
@@ -72,7 +72,7 @@
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Hugo搭建博客</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
 </span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E5%85%B6%E5%AE%83/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>其它</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-17">2022-09-17</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2657 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-17">2022-09-17</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2530 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 6 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -97,33 +97,11 @@
 <p>本人以<strong>window</strong>系统为例，介绍如何安装Hugo，具体可见官方<a href="https://gohugo.io/getting-started/installing/" target="_blank" rel="noopener noreffer">文档</a>
 。</p>
 <ol>
-<li>
-<p>采用window包管理器<strong>chocolatey</strong>来下载安装Hugo，因此首先下载chocolatey。采用CMD安装，以管理员身份运行powershell，使用命令：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">@<span class="s2">&#34;%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe&#34;</span> -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command <span class="s2">&#34;iex ((New-Object System.Net.WebClient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&#34;</span> <span class="o">&amp;&amp;</span> SET <span class="s2">&#34;PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin&#34;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>命令行中敲入<code>choco --version</code>，如果显示版本号证明你的 chocolatey 已经安装完毕。</p>
+<li>下载hugo二进制文件<a href="https://github.com/gohugoio/hugo/releases/download/v0.102.2/hugo_extended_0.102.2_Windows-64bit.zip" target="_blank" rel="noopener noreffer">hugo_extended_0.102.2_Windows-64bit.zip</a>
 </li>
-<li>
-<p>命令行中安装Hugo</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">choco install hugo -confirm
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>检查hugo是否安装成功：命令行中敲入<code>hugo version</code>，如果显示版本号证明你的 chocolatey 已经安装完毕。</p>
-</li>
+<li>再配置环境变量，若你的<code>hugo.exe</code>的位置为<code>C:\environment\hugo\hugo.exe</code>，就在用户环境变量<code>path</code>中配置<code>C:\environment\hugo</code>。</li>
+<li>配置完后重启计算机。</li>
 </ol>
-<p>（也可以**下载hugo二进制文件<a href="https://github.com/gohugoio/hugo/releases/tag/v0.102.2" target="_blank" rel="noopener noreffer">hugo_0.102.2_Windows-64bit.zip</a>
-，再配置环境变量(配完重启)**的方式下载hugo。）</p>
 <h2 id="二-创建站点">二、 创建站点</h2>
 <ol>
 <li>

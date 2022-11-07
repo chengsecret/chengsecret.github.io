@@ -4,7 +4,15 @@
         <link>https://blog.koisecret.site/posts/</link>
         <description>所有文章 | 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 01 Nov 2022 15:49:19 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Nov 2022 13:31:29 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>K8s介绍与环境安装</title>
+    <link>https://blog.koisecret.site/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/</link>
+    <pubDate>Mon, 07 Nov 2022 13:31:29 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.koisecret.site/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/</guid>
+    <description><![CDATA[1. Kubernetes介绍 1.1 应用部署方式演变 在部署应用程序的方式上，主要经历了三个时代： 传统部署：互联网早期，会直接将应用程序部署在物理机上]]></description>
+</item>
+<item>
     <title>记录第一次开源经历</title>
     <link>https://blog.koisecret.site/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86/</link>
     <pubDate>Tue, 01 Nov 2022 15:49:19 &#43;0800</pubDate>
@@ -77,14 +85,6 @@
     <author>chengsecret</author>
     <guid>https://blog.koisecret.site/docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</guid>
     <description><![CDATA[帮助启动类命令 1 2 3 4 5 6 7 8 systemctl start docker # 启动docker systemctl stop docker # 停止docker systemctl restart docker # 重启docker systemctl status docker # 查看docker状态 systemctl enable docker # 开]]></description>
-</item>
-<item>
-    <title>Docker入门</title>
-    <link>https://blog.koisecret.site/docker%E5%AE%89%E8%A3%85/</link>
-    <pubDate>Sun, 18 Sep 2022 20:29:23 &#43;0800</pubDate>
-    <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/docker%E5%AE%89%E8%A3%85/</guid>
-    <description><![CDATA[docker简介 Docker 是基于容器技术的轻量级虚拟化解决方案，是一种容器化技术的落地。容器作为一类操作系统层面的虚拟化技术，其目标是在单一Linu]]></description>
 </item>
 </channel>
 </rss>
