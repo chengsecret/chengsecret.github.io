@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <title>K8s介绍与环境安装 - 燎原 - 遇见你已经是很不可思议了</title><meta name="Description" content="燎原的博客网站"><meta property="og:title" content="K8s介绍与环境安装" />
-<meta property="og:description" content="1. Kubernetes介绍 1.1 应用部署方式演变 在部署应用程序的方式上，主要经历了三个时代： 传统部署：互联网早期，会直接将应用程序部署在物理机上" />
+<meta property="og:description" content="一. Kubernetes介绍 1 应用部署方式演变 在部署应用程序的方式上，主要经历了三个时代： 传统部署：互联网早期，会直接将应用程序部署在物理机" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.koisecret.site/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/" /><meta property="og:image" content="https://blog.koisecret.site/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-11-07T13:31:29+08:00" />
@@ -15,7 +15,7 @@
 <meta name="twitter:image" content="https://blog.koisecret.site/logo.png"/>
 
 <meta name="twitter:title" content="K8s介绍与环境安装"/>
-<meta name="twitter:description" content="1. Kubernetes介绍 1.1 应用部署方式演变 在部署应用程序的方式上，主要经历了三个时代： 传统部署：互联网早期，会直接将应用程序部署在物理机上"/>
+<meta name="twitter:description" content="一. Kubernetes介绍 1 应用部署方式演变 在部署应用程序的方式上，主要经历了三个时代： 传统部署：互联网早期，会直接将应用程序部署在物理机"/>
 <meta name="application-name" content="燎原の博客">
 <meta name="apple-mobile-web-app-title" content="燎原の博客"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.koisecret.site\/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85\/"
-        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k8s, 云原生","wordcount":  2040 ,
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k8s, 云原生","wordcount":  3104 ,
         "url": "https:\/\/blog.koisecret.site\/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85\/","datePublished": "2022-11-07T13:31:29+08:00","dateModified": "2022-11-07T13:31:29+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
@@ -72,8 +72,8 @@
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">K8s介绍与环境安装</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
 </span>&nbsp;<span class="post-category">收录于 <a href="/categories/k8s/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>k8s</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-07">2022-11-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2040 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-07">2022-11-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3104 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
@@ -81,19 +81,34 @@
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
-    <li><a href="#1-kubernetes介绍">1. Kubernetes介绍</a>
+    <li><a href="#一-kubernetes介绍">一. Kubernetes介绍</a>
       <ul>
-        <li><a href="#11-应用部署方式演变">1.1 应用部署方式演变</a></li>
-        <li><a href="#12-kubernetes简介">1.2 kubernetes简介</a></li>
-        <li><a href="#13-kubernetes组件">1.3 kubernetes组件</a></li>
-        <li><a href="#14-kubernetes概念">1.4 kubernetes概念</a></li>
+        <li><a href="#1-应用部署方式演变">1 应用部署方式演变</a></li>
+        <li><a href="#2-kubernetes简介">2 kubernetes简介</a></li>
+        <li><a href="#3-kubernetes组件">3 kubernetes组件</a></li>
+        <li><a href="#4-kubernetes概念">4 kubernetes概念</a></li>
       </ul>
     </li>
-    <li><a href="#2-kubernetes集群环境搭建">2. kubernetes集群环境搭建</a></li>
+    <li><a href="#二-kubernetes集群环境搭建">二. kubernetes集群环境搭建</a>
+      <ul>
+        <li><a href="#1--环境规划">1.  环境规划</a>
+          <ul>
+            <li><a href="#11集群类型">1.1集群类型</a></li>
+            <li><a href="#12安装方式">1.2安装方式</a></li>
+            <li><a href="#13-主机规划">1.3 主机规划</a></li>
+          </ul>
+        </li>
+        <li><a href="#2-环境搭建">2. 环境搭建</a>
+          <ul>
+            <li><a href="#21-环境初始化">2.1 环境初始化</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><h1 id="1-kubernetes介绍">1. Kubernetes介绍</h1>
-<h2 id="11-应用部署方式演变">1.1 应用部署方式演变</h2>
+            </div><div class="content" id="content"><h1 id="一-kubernetes介绍">一. Kubernetes介绍</h1>
+<h2 id="1-应用部署方式演变">1 应用部署方式演变</h2>
 <p>在部署应用程序的方式上，主要经历了三个时代：</p>
 <ul>
 <li>
@@ -131,7 +146,7 @@
 <li><strong>Mesos</strong>：Apache的一个资源统一管控的工具，需要和Marathon结合使用</li>
 <li><strong>Kubernetes</strong>：Google开源的的容器编排工具(最强大，应用最广)</li>
 </ul>
-<h2 id="12-kubernetes简介">1.2 kubernetes简介</h2>
+<h2 id="2-kubernetes简介">2 kubernetes简介</h2>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -150,7 +165,7 @@
 <li><strong>版本回退</strong>：如果发现新发布的程序版本有问题，可以立即回退到原来的版本</li>
 <li><strong>存储编排</strong>：可以根据容器自身的需求自动创建存储卷</li>
 </ul>
-<h2 id="13-kubernetes组件">1.3 kubernetes组件</h2>
+<h2 id="3-kubernetes组件">3 kubernetes组件</h2>
 <p>一个kubernetes集群主要是由<strong>控制节点(master)</strong>、 <strong>工作节点(node)</strong> 构成，每个节点上都会安装不同的组件。</p>
 <p><strong>master：集群的控制平面，负责集群的决策 ( 管理 )</strong></p>
 <blockquote>
@@ -197,7 +212,7 @@
 </li>
 </ol>
 <p>这样，外界用户就可以访问集群中的nginx服务了。</p>
-<h2 id="14-kubernetes概念">1.4 kubernetes概念</h2>
+<h2 id="4-kubernetes概念">4 kubernetes概念</h2>
 <p><strong>Master</strong>：集群控制节点，每个集群需要至少一个master节点负责集群的管控</p>
 <p><strong>Node</strong>：工作负载节点，由master分配容器到这些node工作节点上，然后node节点上的docker负责容器的运行</p>
 <p><strong>Pod</strong>：kubernetes的最小控制单元，容器都是运行在pod中的，一个pod中可以有1个或者多个容器</p>
@@ -205,7 +220,174 @@
 <p><strong>Service</strong>：pod对外服务的统一入口，其下面可以维护同一类的多个 Pod</p>
 <p><strong>Label</strong>：标签，用于对pod进行分类，同一类pod会拥有相同的标签</p>
 <p><strong>NameSpace</strong>：命名空间，用来隔离pod的运行环境</p>
-<h1 id="2-kubernetes集群环境搭建">2. kubernetes集群环境搭建</h1>
+<h1 id="二-kubernetes集群环境搭建">二. kubernetes集群环境搭建</h1>
+<h2 id="1--环境规划">1.  环境规划</h2>
+<h3 id="11集群类型">1.1集群类型</h3>
+<ul>
+<li>
+<p>Kubernetes集群大致分为两类：一主多从和多主多从。</p>
+</li>
+<li>
+<p>一主多从：一个Master节点和多台Node节点，搭建简单，但是有<strong>单机故障风险</strong>，适合用于测试环境。</p>
+</li>
+<li>
+<p>多主多从：多台Master和多台Node节点，搭建麻烦，安全性高，适合用于生产环境。</p>
+</li>
+</ul>
+<blockquote>
+<p>因为刚学，我还是准备在VMware装三个虚拟机进行测试，采用是<strong>一主多从</strong>类型的集群。等过一遍k8s后，再用两台腾讯云+一台实验室自己配的服务器，搭建生产环境的k8s。</p>
+</blockquote>
+<h3 id="12安装方式">1.2安装方式</h3>
+<p>kubernetes有多种部署方式，目前主流的方式有kubeadm、minikube、二进制包。</p>
+<ul>
+<li>
+<p>① minikube：一个用于快速搭建单节点的kubernetes工具。</p>
+</li>
+<li>
+<p>② kubeadm：一个用于快速搭建kubernetes集群的工具。</p>
+</li>
+<li>
+<p>③ 二进制包：从官网上下载每个组件的二进制包，依次去安装，此方式对于理解kubernetes组件更加有效。</p>
+</li>
+</ul>
+<p>我们需要安装kubernetes的集群环境，但是又不想过于麻烦，所以选择kubeadm方式。可以参考<a href="https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/install-kubeadm/" target="_blank" rel="noopener noreffer">官网</a>
+安装。</p>
+<h3 id="13-主机规划">1.3 主机规划</h3>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>IP地址</th>
+<th>操作系统</th>
+<th>配置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Master</td>
+<td>192.168.18.100</td>
+<td>CentOS7.9</td>
+<td>2核CPU，4G内存，20G硬盘</td>
+</tr>
+<tr>
+<td>Node1</td>
+<td>192.168.18.101</td>
+<td>CentOS7.9</td>
+<td>2核CPU，2G内存，20G硬盘</td>
+</tr>
+<tr>
+<td>Node2</td>
+<td>192.168.18.102</td>
+<td>CentOS7.9</td>
+<td>2核CPU，2G内存，20G硬盘</td>
+</tr>
+</tbody>
+</table>
+<p>每台机器要求：</p>
+<ul>
+<li>cpu 两核以上</li>
+<li>内存 至少2GB</li>
+<li>三台机器网络要能互通（公网和内网都可以）</li>
+<li>系统内核版本在7.5以上</li>
+</ul>
+<p>其他要求（在安装过程中进行即可，见下节<code>环境搭建</code>）：</p>
+<ul>
+<li>开启机器上的某些端口，见<a href="https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports" target="_blank" rel="noopener noreffer">k8s端口</a>
+。也可以直接关掉防火墙</li>
+<li>节点之中不可以有重复的主机名、MAC 地址或 product_uuid</li>
+<li>禁用SELinux</li>
+<li>关闭swap分区</li>
+<li>时间需要同步</li>
+</ul>
+<h2 id="2-环境搭建">2. 环境搭建</h2>
+<p>最终目标：</p>
+<ul>
+<li>在所有节点上安装Docker 和kubeadm</li>
+<li>部署Kubernetes Master</li>
+<li>部署容器网络插件</li>
+<li>部署Kubernetes Node，将节点加入Kubernetes 集群中</li>
+<li>部署Dashboard Web 页面，可视化查看Kubernetes 资源</li>
+</ul>
+<h3 id="21-环境初始化">2.1 环境初始化</h3>
+<p><strong>如果没有特殊说明，需要在三台主机上都操作</strong>。</p>
+<ol>
+<li>
+<p>检查操作系统的版本（要求操作系统的版本至少在7.5以上）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat /etc/redhat-release
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>关闭防火墙</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">systemctl stop firewalld
+</span></span><span class="line"><span class="cl">systemctl disable firewalld
+</span></span><span class="line"><span class="cl">systemctl status firewalld
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>设置主机名，防止三台主机的主机名相同</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 192.168.18.100执行</span>
+</span></span><span class="line"><span class="cl">hostnamectl set-hostname master
+</span></span><span class="line"><span class="cl"><span class="c1">#192.168.18.101执行</span>
+</span></span><span class="line"><span class="cl">hostnamectl set-hostname node1
+</span></span><span class="line"><span class="cl"><span class="c1"># 192.168.18.102执行</span>
+</span></span><span class="line"><span class="cl">hostnamectl set-hostname node2
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>配置主机名解析。为了方便后面集群节点间的直接调用，需要配置一下主机名解析，企业中推荐使用内部的DNS服务器</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat &gt;&gt; /etc/hosts<span class="s">&lt;&lt;EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">192.168.18.100 master
+</span></span></span><span class="line"><span class="cl"><span class="s">192.168.18.101 node1
+</span></span></span><span class="line"><span class="cl"><span class="s">192.168.18.102 node2
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>配置时间同步。kubernetes要求集群中的节点时间必须精确一致，所以在每个节点上添加时间同步</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"></code></pre></td></tr></table>
+</div>
+</div></li>
+<li></li>
+</ol>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">

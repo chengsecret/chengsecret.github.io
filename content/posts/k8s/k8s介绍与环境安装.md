@@ -12,9 +12,9 @@ tags: ["k8s","云原生"]
 featuredImage: ""
 ---
 
-# 1. Kubernetes介绍
+# 一. Kubernetes介绍
 
-## 1.1 应用部署方式演变
+## 1 应用部署方式演变
 
 在部署应用程序的方式上，主要经历了三个时代：
 
@@ -53,7 +53,7 @@ featuredImage: ""
 - **Mesos**：Apache的一个资源统一管控的工具，需要和Marathon结合使用
 - **Kubernetes**：Google开源的的容器编排工具(最强大，应用最广)
 
-## 1.2 kubernetes简介
+## 2 kubernetes简介
 
 ![image-20200406232838722](/k8s介绍与环境安装/image-20200406232838722.png)
 
@@ -68,7 +68,7 @@ kubernetes的本质是**一组服务器集群**，它可以在集群的每个节
 - **版本回退**：如果发现新发布的程序版本有问题，可以立即回退到原来的版本
 - **存储编排**：可以根据容器自身的需求自动创建存储卷
 
-## 1.3 kubernetes组件
+## 3 kubernetes组件
 
 一个kubernetes集群主要是由**控制节点(master)**、 **工作节点(node)** 构成，每个节点上都会安装不同的组件。
 
@@ -112,7 +112,7 @@ kubernetes的本质是**一组服务器集群**，它可以在集群的每个节
 
 这样，外界用户就可以访问集群中的nginx服务了。
 
-## 1.4 kubernetes概念
+## 4 kubernetes概念
 
 **Master**：集群控制节点，每个集群需要至少一个master节点负责集群的管控
 
@@ -130,7 +130,126 @@ kubernetes的本质是**一组服务器集群**，它可以在集群的每个节
 
 
 
-# 2. kubernetes集群环境搭建
+# 二. kubernetes集群环境搭建
+
+## 1.  环境规划
+
+### 1.1集群类型
+
+- Kubernetes集群大致分为两类：一主多从和多主多从。
+
+- 一主多从：一个Master节点和多台Node节点，搭建简单，但是有**单机故障风险**，适合用于测试环境。
+
+- 多主多从：多台Master和多台Node节点，搭建麻烦，安全性高，适合用于生产环境。
+
+> 因为刚学，我还是准备在VMware装三个虚拟机进行测试，采用是**一主多从**类型的集群。等过一遍k8s后，再用两台腾讯云+一台实验室自己配的服务器，搭建生产环境的k8s。
+
+
+
+### 1.2安装方式
+
+kubernetes有多种部署方式，目前主流的方式有kubeadm、minikube、二进制包。
+
+- ① minikube：一个用于快速搭建单节点的kubernetes工具。
+
+- ② kubeadm：一个用于快速搭建kubernetes集群的工具。
+
+- ③ 二进制包：从官网上下载每个组件的二进制包，依次去安装，此方式对于理解kubernetes组件更加有效。
+
+我们需要安装kubernetes的集群环境，但是又不想过于麻烦，所以选择kubeadm方式。可以参考[官网](https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)安装。
+
+
+
+### 1.3 主机规划
+
+| 角色   | IP地址         | 操作系统  | 配置                    |
+| ------ | -------------- | --------- | ----------------------- |
+| Master | 192.168.18.100 | CentOS7.9 | 2核CPU，4G内存，20G硬盘 |
+| Node1  | 192.168.18.101 | CentOS7.9 | 2核CPU，2G内存，20G硬盘 |
+| Node2  | 192.168.18.102 | CentOS7.9 | 2核CPU，2G内存，20G硬盘 |
+
+每台机器要求：
+
+- cpu 两核以上
+- 内存 至少2GB
+- 三台机器网络要能互通（公网和内网都可以）
+- 系统内核版本在7.5以上
+
+其他要求（在安装过程中进行即可，见下节`环境搭建`）：
+
+- 开启机器上的某些端口，见[k8s端口](https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports)。也可以直接关掉防火墙
+- 节点之中不可以有重复的主机名、MAC 地址或 product_uuid
+- 禁用SELinux
+- 关闭swap分区
+- 时间需要同步
+
+## 2. 环境搭建
+
+最终目标：
+
+- 在所有节点上安装Docker 和kubeadm
+- 部署Kubernetes Master
+- 部署容器网络插件
+- 部署Kubernetes Node，将节点加入Kubernetes 集群中
+- 部署Dashboard Web 页面，可视化查看Kubernetes 资源
+
+### 2.1 环境初始化
+
+**如果没有特殊说明，需要在三台主机上都操作**。
+
+1. 检查操作系统的版本（要求操作系统的版本至少在7.5以上）
+
+   ```bash
+   cat /etc/redhat-release
+   ```
+
+2. 关闭防火墙
+
+   ```bash
+   systemctl stop firewalld
+   systemctl disable firewalld
+   systemctl status firewalld
+   ```
+
+3. 设置主机名，防止三台主机的主机名相同
+
+   ```bash
+   # 192.168.18.100执行
+   hostnamectl set-hostname master
+   #192.168.18.101执行
+   hostnamectl set-hostname node1
+   # 192.168.18.102执行
+   hostnamectl set-hostname node2
+   ```
+
+4. 配置主机名解析。为了方便后面集群节点间的直接调用，需要配置一下主机名解析，企业中推荐使用内部的DNS服务器
+
+   ```bash
+   cat >> /etc/hosts<<EOF
+   192.168.18.100 master
+   192.168.18.101 node1
+   192.168.18.102 node2
+   EOF
+   ```
+
+5. 配置时间同步。kubernetes要求集群中的节点时间必须精确一致，所以在每个节点上添加时间同步
+
+   ```bash
+   ```
+
+   
+
+6. 
+
+
+
+
+
+
+
+
+
+
 
 
 

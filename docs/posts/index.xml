@@ -10,7 +10,7 @@
     <pubDate>Mon, 07 Nov 2022 13:31:29 &#43;0800</pubDate>
     <author>chengsecret</author>
     <guid>https://blog.koisecret.site/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/</guid>
-    <description><![CDATA[1. Kubernetes介绍 1.1 应用部署方式演变 在部署应用程序的方式上，主要经历了三个时代： 传统部署：互联网早期，会直接将应用程序部署在物理机上]]></description>
+    <description><![CDATA[一. Kubernetes介绍 1 应用部署方式演变 在部署应用程序的方式上，主要经历了三个时代： 传统部署：互联网早期，会直接将应用程序部署在物理机]]></description>
 </item>
 <item>
     <title>记录第一次开源经历</title>

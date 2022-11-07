@@ -107,17 +107,31 @@ Docker 本身则是一个容器运行载体或称之为管理引擎。是一个C
 
    ```bash
    sudo systemctl start docker
+   sudo systemctl enable  docker
    ```
 
    通过`docker version `判断是否启动成功。
 
-6. 查看镜像(空的)
+6. 将用户加入到docker组
+
+   ```bash
+   # 添加docker用户组，一般已存在，不需要执行
+   sudo groupadd docker
+   # 将登陆用户加入到docker用户组中
+   sudo gpasswd -a $USER docker
+   # 更新用户组
+   newgrp docker
+   # 测试docker命令是否可以使用sudo正常使用
+   docker version
+   ```
+
+7. 查看镜像(空的)
 
    ```bash
    docker images
    ```
 
-7. 卸载（只教别做）
+8. 卸载（只教别做）
 
    ```bash
    systemctl stop docker

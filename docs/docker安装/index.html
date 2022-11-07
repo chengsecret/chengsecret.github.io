@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.koisecret.site\/docker%E5%AE%89%E8%A3%85\/"
-        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 入门, 云原生","wordcount":  1488 ,
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 入门, 云原生","wordcount":  1600 ,
         "url": "https:\/\/blog.koisecret.site\/docker%E5%AE%89%E8%A3%85\/","datePublished": "2022-09-18T20:29:23+08:00","dateModified": "2022-09-18T20:29:23+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
@@ -72,8 +72,8 @@
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Docker入门</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
 </span>&nbsp;<span class="post-category">收录于 <a href="/categories/docker/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>docker</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-18">2022-09-18</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1488 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-18">2022-09-18</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1600 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
@@ -246,13 +246,40 @@
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo systemctl start docker
+</span></span><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span>  docker
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>通过<code>docker version </code>判断是否启动成功。</p>
 </li>
+<li>
+<p>将用户加入到docker组</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 添加docker用户组，一般已存在，不需要执行</span>
+</span></span><span class="line"><span class="cl">sudo groupadd docker
+</span></span><span class="line"><span class="cl"><span class="c1"># 将登陆用户加入到docker用户组中</span>
+</span></span><span class="line"><span class="cl">sudo gpasswd -a <span class="nv">$USER</span> docker
+</span></span><span class="line"><span class="cl"><span class="c1"># 更新用户组</span>
+</span></span><span class="line"><span class="cl">newgrp docker
+</span></span><span class="line"><span class="cl"><span class="c1"># 测试docker命令是否可以使用sudo正常使用</span>
+</span></span><span class="line"><span class="cl">docker version
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
 <li>
 <p>查看镜像(空的)</p>
 <div class="highlight"><div class="chroma">
