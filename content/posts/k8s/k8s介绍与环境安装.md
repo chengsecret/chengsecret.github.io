@@ -304,9 +304,77 @@ kubernetes有多种部署方式，目前主流的方式有kubeadm、minikube、�
 
 ### 2.2 每个节点安装Docker、kubeadm、kubelet和kubectl
 
+#### 2.2.1安装Docker
 
+安装可参考： https://blog.koisecret.site/docker%E5%AE%89%E8%A3%85/#centos%E5%AE%89%E8%A3%85docker，需要注意的点如下：
 
+- 最好指定docker的安装版本，否则安装最新版（万一不兼容呢
 
+  ```bash
+  # 查看存储库中 Docker 的版本
+  yum list docker-ce --showduplicates | sort -r
+  yum list docker-ce-cli --showduplicates | sort -r
+  # 安装指定版本的 Docker,如20.10.8-3
+  yum -y install docker-ce-3:20.10.8-3.el7.x86_64 docker-ce-cli-1:20.10.8-3.el7.x86_64 containerd.io
+  ```
+
+- Docker 在默认情况下使用Vgroup Driver为cgroupfs，而Kubernetes推荐使用systemd来替代cgroupfs
+
+  ```bash
+  # 可以与 配置阿里云镜像加速 的操作合并
+  sudo tee /etc/docker/daemon.json <<-'EOF'
+  {
+      "exec-opts": ["native.cgroupdriver=systemd"],
+  	"registry-mirrors": ["https://kn0t2bca.mirror.aliyuncs.com"]
+  }
+  EOF
+  ```
+
+#### 2.2.2添加阿里云的YUM软件源
+
+- 由于kubernetes的镜像在国外，速度比较慢，这里切换成国内的镜像源。
+
+```bash
+cat > /etc/yum.repos.d/kubernetes.repo << EOF
+[kubernetes]
+name=Kubernetes
+baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+EOF
+```
+
+#### 2.2.3安装kubeadm、kubelet和kubectl
+
+- yum安装，注意指定版本
+
+  ```bash
+  yum install -y kubelet-1.23.9 kubectl-1.23.9 kubeadm-1.23.9
+  ```
+
+  - `kubeadm`：用来初始化集群的指令。
+  - `kubelet`：在集群中的每个节点上用来启动 Pod 和容器等。
+  - `kubectl`：用来与集群通信的命令行工具。
+
+- 为了实现 Docker 使用的 cgroup drvier 和 kubelet 使用的 cgroup drver 一致，建议修改 `/etc/sysconfig/kubelet` 文件的内容
+
+  ```bash
+  vim /etc/sysconfig/kubelet
+  
+  # 修改
+  KUBELET_EXTRA_ARGS="--cgroup-driver=systemd"
+  KUBE_PROXY_MODE="ipvs"
+  ```
+
+- 设置为开机自启动即可，由于没有生成配置文件，集群初始化后自动启动
+
+  ```bash
+  systemctl enable kubelet
+  ```
+
+### 2.3 准备集群镜像
 
 
 
