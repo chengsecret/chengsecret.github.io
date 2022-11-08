@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.koisecret.site\/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85\/"
-        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k8s, 云原生","wordcount":  3104 ,
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k8s, 云原生","wordcount":  3879 ,
         "url": "https:\/\/blog.koisecret.site\/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85\/","datePublished": "2022-11-07T13:31:29+08:00","dateModified": "2022-11-07T13:31:29+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
@@ -72,8 +72,8 @@
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">K8s介绍与环境安装</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
 </span>&nbsp;<span class="post-category">收录于 <a href="/categories/k8s/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>k8s</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-07">2022-11-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3104 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-07">2022-11-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3879 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
@@ -101,6 +101,7 @@
         <li><a href="#2-环境搭建">2. 环境搭建</a>
           <ul>
             <li><a href="#21-环境初始化">2.1 环境初始化</a></li>
+            <li><a href="#22-每个节点安装dockerkubeadmkubelet和kubectl">2.2 每个节点安装Docker、kubeadm、kubelet和kubectl</a></li>
           </ul>
         </li>
       </ul>
@@ -265,19 +266,19 @@
 <tbody>
 <tr>
 <td>Master</td>
-<td>192.168.18.100</td>
+<td>192.168.18.130</td>
 <td>CentOS7.9</td>
-<td>2核CPU，4G内存，20G硬盘</td>
+<td>2核CPU，2G内存，20G硬盘</td>
 </tr>
 <tr>
 <td>Node1</td>
-<td>192.168.18.101</td>
+<td>192.168.18.103</td>
 <td>CentOS7.9</td>
 <td>2核CPU，2G内存，20G硬盘</td>
 </tr>
 <tr>
 <td>Node2</td>
-<td>192.168.18.102</td>
+<td>192.168.18.104</td>
 <td>CentOS7.9</td>
 <td>2核CPU，2G内存，20G硬盘</td>
 </tr>
@@ -323,7 +324,8 @@
 </div>
 </div></li>
 <li>
-<p>关闭防火墙</p>
+<p><strong>关闭防火墙</strong>（如果不关闭防火墙，就需要开启对应端口，见<a href="https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports" target="_blank" rel="noopener noreffer">k8s端口</a>
+，目前没试过开端口的方式，以后在服务器部署k8s的时候试试）</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -338,7 +340,7 @@
 </div>
 </div></li>
 <li>
-<p>设置主机名，防止三台主机的主机名相同</p>
+<p><strong>设置主机名</strong>。防止三台主机的主机名相同</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -349,17 +351,17 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 192.168.18.100执行</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 192.168.18.130执行</span>
 </span></span><span class="line"><span class="cl">hostnamectl set-hostname master
-</span></span><span class="line"><span class="cl"><span class="c1">#192.168.18.101执行</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#192.168.18.103执行</span>
 </span></span><span class="line"><span class="cl">hostnamectl set-hostname node1
-</span></span><span class="line"><span class="cl"><span class="c1"># 192.168.18.102执行</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 192.168.18.104执行</span>
 </span></span><span class="line"><span class="cl">hostnamectl set-hostname node2
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
-<p>配置主机名解析。为了方便后面集群节点间的直接调用，需要配置一下主机名解析，企业中推荐使用内部的DNS服务器</p>
+<p><strong>配置主机名解析</strong>。为了方便后面集群节点间的直接调用，需要配置一下主机名解析，企业中推荐使用内部的DNS服务器</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -370,24 +372,146 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat &gt;&gt; /etc/hosts<span class="s">&lt;&lt;EOF
-</span></span></span><span class="line"><span class="cl"><span class="s">192.168.18.100 master
-</span></span></span><span class="line"><span class="cl"><span class="s">192.168.18.101 node1
-</span></span></span><span class="line"><span class="cl"><span class="s">192.168.18.102 node2
+</span></span></span><span class="line"><span class="cl"><span class="s">192.168.18.130 master
+</span></span></span><span class="line"><span class="cl"><span class="s">192.168.18.103 node1
+</span></span></span><span class="line"><span class="cl"><span class="s">192.168.18.104 node2
 </span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
-<p>配置时间同步。kubernetes要求集群中的节点时间必须精确一致，所以在每个节点上添加时间同步</p>
+<p><strong>配置时间同步</strong>。kubernetes要求集群中的节点时间必须精确一致，所以在每个节点上添加时间同步。企业中建议配置内部的会见同步服务器</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code></code></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">yum install ntpdate -y
+</span></span><span class="line"><span class="cl"><span class="c1"># 使用阿里服务器进行时间更新</span>
+</span></span><span class="line"><span class="cl">ntpdate ntp1.aliyun.com
+</span></span><span class="line"><span class="cl"><span class="c1">#查看当前时间</span>
+</span></span><span class="line"><span class="cl">date
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果是杭电佬，主机使用的是hdu内网，上述同步时间命令极有可能失败（hdu内网是真的辣鸡），暂时没找到解决办法。（我是在虚拟机安装k8s的，装虚拟机的时候同步好了时间）</p>
+</li>
+<li>
+<p><strong>关闭selinux</strong>。让容器可以读取主机文件系统</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sed -i <span class="s1">&#39;s/enforcing/disabled/&#39;</span> /etc/selinux/config <span class="c1">#永久关闭</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li></li>
+<li>
+<p><strong>关闭swap分区</strong>。swap分区指的是虚拟内存分区，它的作用是物理内存使用完，之后将磁盘空间虚拟成内存来使用，启用swap设备会对系统的性能产生非常负面的影响，因此kubernetes要求每个节点都要禁用swap设备，但是如果因为某些原因确实不能关闭swap分区，就需要在集群安装过程中通过明确的参数进行配置说明</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">free -m  <span class="c1"># 查看swap分区</span>
+</span></span><span class="line"><span class="cl">swapoff -a
+</span></span><span class="line"><span class="cl">sed -ri <span class="s1">&#39;s/.*swap.*/#&amp;/&#39;</span> /etc/fstab <span class="c1">#永久关闭</span>
+</span></span><span class="line"><span class="cl">free -m 
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>修改linux的内核参数，将桥接的IPv4流量传递到iptables的链</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">#添加网桥过滤和地址转发功能</span>
+</span></span><span class="line"><span class="cl">cat &gt; /etc/sysctl.d/k8s.conf <span class="s">&lt;&lt; EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">net.bridge.bridge-nf-call-ip6tables = 1
+</span></span></span><span class="line"><span class="cl"><span class="s">net.bridge.bridge-nf-call-iptables = 1
+</span></span></span><span class="line"><span class="cl"><span class="s">net.ipv4.ip_forward = 1
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 加载br_netfilter模块</span>
+</span></span><span class="line"><span class="cl">modprobe br_netfilter
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看是否加载</span>
+</span></span><span class="line"><span class="cl">lsmod <span class="p">|</span> grep br_netfilter
+</span></span><span class="line"><span class="cl"><span class="c1"># 生效</span>
+</span></span><span class="line"><span class="cl">sysctl --system
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>开启ipvs</strong>。在Kubernetes中Service有两种带来模型，一种是基于iptables的，一种是基于ipvs的两者比较的话，ipvs的性能明显要高一些，但是如果要使用它，需要手动载入ipvs模块</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">#安装ipset和ipvsadm</span>
+</span></span><span class="line"><span class="cl">yum -y install ipset ipvsadm
+</span></span><span class="line"><span class="cl"><span class="c1">#添加需要加载的模块写入脚本文件</span>
+</span></span><span class="line"><span class="cl">cat &gt; /etc/sysconfig/modules/ipvs.modules <span class="s">&lt;&lt;EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="s">modprobe -- ip_vs
+</span></span></span><span class="line"><span class="cl"><span class="s">modprobe -- ip_vs_rr
+</span></span></span><span class="line"><span class="cl"><span class="s">modprobe -- ip_vs_wrr
+</span></span></span><span class="line"><span class="cl"><span class="s">modprobe -- ip_vs_sh
+</span></span></span><span class="line"><span class="cl"><span class="s">modprobe -- nf_conntrack_ipv4
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 授权、运行、检查是否加载</span>
+</span></span><span class="line"><span class="cl">chmod <span class="m">755</span> /etc/sysconfig/modules/ipvs.modules <span class="o">&amp;&amp;</span> bash /etc/sysconfig/modules/ipvs.modules <span class="o">&amp;&amp;</span> lsmod <span class="p">|</span> grep -e ip_vs -e nf_conntrack_ipv4
+</span></span><span class="line"><span class="cl"><span class="c1">#检查是否加载</span>
+</span></span><span class="line"><span class="cl">lsmod <span class="p">|</span> grep -e ipvs -e nf_conntrack_ipv4
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>重启</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">reboot
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
 </ol>
+<h3 id="22-每个节点安装dockerkubeadmkubelet和kubectl">2.2 每个节点安装Docker、kubeadm、kubelet和kubectl</h3>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
