@@ -308,7 +308,7 @@ kubernetes有多种部署方式，目前主流的方式有kubeadm、minikube、�
 
 安装可参考： https://blog.koisecret.site/docker%E5%AE%89%E8%A3%85/#centos%E5%AE%89%E8%A3%85docker，需要注意的点如下：
 
-- 最好指定docker的安装版本，否则安装最新版（万一不兼容呢
+- 最好指定docker的安装版本，否则会安装最新版（可能有不兼容问题
 
   ```bash
   # 查看存储库中 Docker 的版本
@@ -681,7 +681,7 @@ kubernetes支持多种网络插件，比如flannel、calico、canal等，任选�
             name: kube-flannel-cfg
   ```
 
-  - "Network": "10.244.0.0/16"需要与上述`--pod-network-cidr`中一致。
+  - 文件中的"Network": "10.244.0.0/16"需要与上面的`--pod-network-cidr=10.244.0.0/16`中的ip一致。
 
 - 使用kubectl 安装网络插件
 
@@ -696,6 +696,16 @@ kubernetes支持多种网络插件，比如flannel、calico、canal等，任选�
   ```
 
   如果安装失败可以使用`kubeadm reset` 恢复原状重新安装。
+
+
+
+>k8s环境搭建参考链接：
+>
+>- https://www.yuque.com/fairy-era/yg511q/hg3u04
+>
+>- https://gitee.com/yooome/golang/blob/main/k8s%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B/Kubernetes%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B.md#273-%E6%9F%A5%E7%9C%8B%E6%9C%8D%E5%8A%A1
+>
+>- https://zhuanlan.zhihu.com/p/580142797
 
 
 
