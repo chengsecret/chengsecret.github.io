@@ -9,7 +9,6 @@ toc:
 weight: false
 categories: ["k8s"]
 tags: ["k8s"]
-featuredImage: ""
 ---
 
 
@@ -114,7 +113,7 @@ kubectl api-resources
 
 **操作**
 
-kubernetes允许对资源进行多种操作，可以通过--help查看详细的操作命令
+kubernetes允许对资源进行多种操作，可以通过--help查看详细的操作命令：
 
 ```
 kubectl --help
