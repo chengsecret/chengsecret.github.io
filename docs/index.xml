@@ -4,9 +4,17 @@
         <link>https://blog.koisecret.site/</link>
         <description>燎原的博客网站</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 12 Mar 2023 16:59:39 &#43;0800</lastBuildDate>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 15 Mar 2023 13:33:14 &#43;0800</lastBuildDate>
             <atom:link href="https://blog.koisecret.site/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>K8s企业级高可用集群</title>
+    <link>https://blog.koisecret.site/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/</link>
+    <pubDate>Wed, 15 Mar 2023 13:33:14 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.koisecret.site/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/</guid>
+    <description><![CDATA[之前部署的k8s集群是单master结构，显然不可能用于生产中。之前搭建的时候就在想，生产环境中的k8s集群仅仅是多个master节点那么简]]></description>
+</item>
+<item>
     <title>在云服务器安装k8s集群</title>
     <link>https://blog.koisecret.site/%E5%9C%A8%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/</link>
     <pubDate>Sun, 12 Mar 2023 16:59:39 &#43;0800</pubDate>
@@ -79,14 +87,6 @@
     <author>chengsecret</author>
     <guid>https://blog.koisecret.site/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/</guid>
     <description><![CDATA[之前师兄在群里发了学校实验室两台服务器和之江实验室两台服务器的SSH连接方法，讲了在实验室怎么连和在外面怎么连。当时就觉得很高级，也没有细品]]></description>
-</item>
-<item>
-    <title>Docker配置redis集群</title>
-    <link>https://blog.koisecret.site/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/</link>
-    <pubDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</pubDate>
-    <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/docker%E9%85%8D%E7%BD%AEredis%E9%9B%86%E7%BE%A4/</guid>
-    <description><![CDATA[当有上亿条数据需要缓存，该如何解决这个问题？ ——分布式存储 一 redis回顾 持久化 RDB快照：默认情况下，Redis将内存数据库快照保存为du]]></description>
 </item>
 </channel>
 </rss>

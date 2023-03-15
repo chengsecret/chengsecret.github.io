@@ -262,18 +262,32 @@ kubernetes有多种部署方式，目前主流的方式有kubeadm、minikube、�
 8. 修改linux的内核参数，将桥接的IPv4流量传递到iptables的链
 
    ```bash
-   #添加网桥过滤和地址转发功能
-   cat > /etc/sysctl.d/k8s.conf << EOF
-   net.bridge.bridge-nf-call-ip6tables = 1
-   net.bridge.bridge-nf-call-iptables = 1
-   net.ipv4.ip_forward = 1
+   cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+   overlay
+   br_netfilter
    EOF
-   # 加载br_netfilter模块
-   modprobe br_netfilter
-   # 查看是否加载
+   
+   sudo modprobe overlay
+   sudo modprobe br_netfilter
+   
+   # 设置所需的 sysctl 参数，参数在重新启动后保持不变
+   cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+   net.bridge.bridge-nf-call-iptables  = 1
+   net.bridge.bridge-nf-call-ip6tables = 1
+   net.ipv4.ip_forward                 = 1
+   EOF
+   
+   # 应用 sysctl 参数而不重新启动
+   sudo sysctl --system
+   
+   #通过运行以下指令确认 br_netfilter 和 overlay 模块被加载
    lsmod | grep br_netfilter
-   # 生效
-   sysctl --system
+   lsmod | grep overla
+   
+   #通过运行以下指令确认 net.bridge.bridge-nf-call-iptables、
+   #net.bridge.bridge-nf-call-ip6tables 和 net.ipv4.ip_forward 系统变量
+   #在你的 sysctl 配置中被设置为 1
+   sysctl net.bridge.bridge-nf-call-iptables net.bridge.bridge-nf-call-ip6tables net.ipv4.ip_forward
    ```
 
 9. **开启ipvs**。在Kubernetes中Service有两种带来模型，一种是基于iptables的，一种是基于ipvs的两者比较的话，ipvs的性能明显要高一些，但是如果要使用它，需要手动载入ipvs模块

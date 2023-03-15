@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>K8s企业级高可用集群 - 燎原 - 遇见你已经是很不可思议了</title><meta name="Description" content="燎原的博客网站"><meta property="og:title" content="K8s企业级高可用集群" />
+<meta property="og:description" content="之前部署的k8s集群是单master结构，显然不可能用于生产中。之前搭建的时候就在想，生产环境中的k8s集群仅仅是多个master节点那么简" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.koisecret.site/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/" /><meta property="og:image" content="https://blog.koisecret.site/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-03-15T13:33:14+08:00" />
+<meta property="article:modified_time" content="2023-03-15T13:33:14+08:00" /><meta property="og:site_name" content="My cool site" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.koisecret.site/logo.png"/>
+
+<meta name="twitter:title" content="K8s企业级高可用集群"/>
+<meta name="twitter:description" content="之前部署的k8s集群是单master结构，显然不可能用于生产中。之前搭建的时候就在想，生产环境中的k8s集群仅仅是多个master节点那么简"/>
+<meta name="application-name" content="燎原の博客">
+<meta name="apple-mobile-web-app-title" content="燎原の博客"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.koisecret.site/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/" /><link rel="prev" href="https://blog.koisecret.site/%E5%9C%A8%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "K8s企业级高可用集群",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.koisecret.site\/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4\/"
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k8s","wordcount":  860 ,
+        "url": "https:\/\/blog.koisecret.site\/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4\/","datePublished": "2023-03-15T13:33:14+08:00","dateModified": "2023-03-15T13:33:14+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "chengsecret"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i> Github </a><a class="menu-item" href="/friend/"><i class='fas fa-user-friends'></i> 友链 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>Github</a><a class="menu-item" href="/friend/" title=""><i class='fas fa-user-friends'></i>友链</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">K8s企业级高可用集群</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
+</span>&nbsp;<span class="post-category">收录于 <a href="/categories/k8s/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>k8s</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-15">2023-03-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 860 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#一搭建方式">一、搭建方式</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>之前部署的k8s集群是单master结构，显然不可能用于生产中。之前搭建的时候就在想，生产环境中的k8s集群仅仅是多个master节点那么简单吗？显然不是。这两天翻了很多博客，也看了k8s官网，对如何构建一个高可用集群已经心中有数了（虽然我还没搭过）。</p>
+<h3 id="一搭建方式">一、搭建方式</h3>
+<p>生产环境搭建k8s集群的方式一般是两种：kubeadm方式、二进制方式，对比一下就会发现，二进制部署实在太太太麻烦了。因此，我会选择用kubeadm进行部署。</p>
+<p>Kubernetes 采用的是中心辐射型（Hub-and-Spoke）API 模式。 所有从集群（或所运行的 Pods）发出的 API 调用都终止于 API server，而API Server直接与ETCD数据库通讯。若仅部署单一的API server ，当API server所在的 VM 关机或者 API 服务器崩溃将导致不能停止、更新或者启动新的 Pod、服务或副本控制器；而ETCD存储若发生丢失，API 服务器将不能启动。若要实现Kubernetes高可用，则Master组件必须是冗余的，尤其是ETCD、ApiServer必须部署在多个节点上。</p>
+<p><strong>在正式环境中确保Master高可用，并启用访问安全机制，至少应包括以下几个方面</strong>：</p>
+<ol>
+<li>
+<p>Master的kube-apiserver、kube-controller-mansger和kube-scheduler服务至少三个结点的多实例方式部署。</p>
+</li>
+<li>
+<p>ETCD至少以3个结点的集群模式部署</p>
+</li>
+<li>
+<p>Load Balance使用双机热备，向Node暴露虚拟IP作为入口地址，供客户端访问。负载均衡节点承担着Worker Node集群和Master集群通讯的职责。</p>
+</li>
+</ol>
+<p>细节架构图如下：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/k8s%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4/%e6%9e%b6%e6%9e%84.png"
+        data-srcset="/k8s%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4/%e6%9e%b6%e6%9e%84.png, /k8s%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4/%e6%9e%b6%e6%9e%84.png 1.5x, /k8s%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4/%e6%9e%b6%e6%9e%84.png 2x"
+        data-sizes="auto"
+        alt="/k8s高可用集群/架构.png"
+        title="image-20200406232838722" /></p>
+<p>为了看的更清晰，服务器情况如下：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/k8s%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4/node.png"
+        data-srcset="/k8s%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4/node.png, /k8s%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4/node.png 1.5x, /k8s%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4/node.png 2x"
+        data-sizes="auto"
+        alt="/k8s高可用集群/node.png"
+        title="image-20200406232838722" /></p>
+<p>为什么master和etcd最少要三个？这和redis集群master节点最少三个的原因是一样的，都是因为选举。负载均衡是为了node节点与master节点的通信，若不配置，则所有node只能和一台master通信，那台master挂了，集群也就挂了，因此必须配置。VIP是node访问master的地址，用于负载均衡。负载均衡与VIP后面会细讲。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2023-03-15</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://blog.koisecret.site/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/" data-title="K8s企业级高可用集群" data-hashtags="k8s"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://blog.koisecret.site/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/" data-hashtag="k8s"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://blog.koisecret.site/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/" data-title="K8s企业级高可用集群"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://blog.koisecret.site/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/" data-title="K8s企业级高可用集群"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://blog.koisecret.site/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/" data-title="K8s企业级高可用集群"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/k8s/">k8s</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/%E5%9C%A8%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/" class="prev" rel="prev" title="在云服务器安装k8s集群"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>在云服务器安装k8s集群</a></div>
+</div>
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">chengsecret</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.5.4/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"chengsecret/chengsecret.github.io"}},"data":{"id-1":"燎原の博客","id-2":"燎原の博客"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
