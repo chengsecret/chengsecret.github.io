@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.koisecret.site\/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4\/"
-        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k8s","wordcount":  860 ,
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k8s","wordcount":  3480 ,
         "url": "https:\/\/blog.koisecret.site\/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4\/","datePublished": "2023-03-15T13:33:14+08:00","dateModified": "2023-03-15T13:33:14+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
@@ -72,8 +72,8 @@
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">K8s企业级高可用集群</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
 </span>&nbsp;<span class="post-category">收录于 <a href="/categories/k8s/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>k8s</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-15">2023-03-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 860 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-15">2023-03-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3480 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
@@ -86,6 +86,14 @@
         <li>
           <ul>
             <li><a href="#一搭建方式">一、搭建方式</a></li>
+            <li><a href="#二etcd的两种部署方式">二、etcd的两种部署方式</a>
+              <ul>
+                <li><a href="#1堆叠stackedetcd-拓扑">1.堆叠（Stacked）etcd 拓扑</a></li>
+                <li><a href="#2外部-etcd-拓扑">2.外部 etcd 拓扑</a></li>
+              </ul>
+            </li>
+            <li><a href="#三高可用负载均衡器">三、高可用负载均衡器</a></li>
+            <li><a href="#四service-loadbalancer类型">四、service LoadBalancer类型</a></li>
           </ul>
         </li>
       </ul>
@@ -108,7 +116,7 @@
 <p>Load Balance使用双机热备，向Node暴露虚拟IP作为入口地址，供客户端访问。负载均衡节点承担着Worker Node集群和Master集群通讯的职责。</p>
 </li>
 </ol>
-<p>细节架构图如下：</p>
+<p><strong>细节架构图如下：</strong></p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -117,7 +125,7 @@
         data-sizes="auto"
         alt="/k8s高可用集群/架构.png"
         title="image-20200406232838722" /></p>
-<p>为了看的更清晰，服务器情况如下：</p>
+<p><strong>为了看的更清晰，服务器情况如下：</strong></p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -127,6 +135,140 @@
         alt="/k8s高可用集群/node.png"
         title="image-20200406232838722" /></p>
 <p>为什么master和etcd最少要三个？这和redis集群master节点最少三个的原因是一样的，都是因为选举。负载均衡是为了node节点与master节点的通信，若不配置，则所有node只能和一台master通信，那台master挂了，集群也就挂了，因此必须配置。VIP是node访问master的地址，用于负载均衡。负载均衡与VIP后面会细讲。</p>
+<h3 id="二etcd的两种部署方式">二、etcd的两种部署方式</h3>
+<h4 id="1堆叠stackedetcd-拓扑">1.堆叠（Stacked）etcd 拓扑</h4>
+<p>使用堆叠（stacked）控制平面节点，其中 etcd 节点与控制平面节点共存。每个控制平面节点创建一个本地 etcd 成员（member），这个 etcd 成员只与该节点的 <code>kube-apiserver</code> 通信。</p>
+<p><a href="https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/ha-topology/" target="_blank" rel="noopener noreffer">官网</a>
+描述如下：</p>
+<blockquote>
+<p>这种拓扑将控制平面和 etcd 成员耦合在同一节点上。相对使用外部 etcd 集群， 设置起来更简单，而且更易于副本管理。</p>
+<p>然而，堆叠集群存在耦合失败的风险。如果一个节点发生故障，则 etcd 成员和控制平面实例都将丢失， 并且冗余会受到影响。你可以通过添加更多控制平面节点来降低此风险。</p>
+<p>因此，你应该为 HA 集群运行至少三个堆叠的控制平面节点。</p>
+<p><strong>这是 kubeadm 中的默认拓扑</strong>。当使用 <code>kubeadm init</code> 和 <code>kubeadm join --control-plane</code> 时， 在控制平面节点上会自动创建本地 etcd 成员。</p>
+</blockquote>
+<h4 id="2外部-etcd-拓扑">2.外部 etcd 拓扑</h4>
+<p>使用外部 etcd 节点，其中 etcd 在与控制平面不同的节点上运行。</p>
+<p><a href="https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/ha-topology/" target="_blank" rel="noopener noreffer">官网</a>
+描述如下：</p>
+<blockquote>
+<p>就像堆叠的 etcd 拓扑一样，外部 etcd 拓扑中的每个控制平面节点都会运行 <code>kube-apiserver</code>、<code>kube-scheduler</code> 和 <code>kube-controller-manager</code> 实例。 同样，<code>kube-apiserver</code> 使用负载均衡器暴露给工作节点。但是 etcd 成员在不同的主机上运行， 每个 etcd 主机与每个控制平面节点的 <code>kube-apiserver</code> 通信。</p>
+<p>这种拓扑结构解耦了控制平面和 etcd 成员。因此它提供了一种 HA 设置， 其中失去控制平面实例或者 etcd 成员的影响较小，并且不会像堆叠的 HA 拓扑那样影响集群冗余。</p>
+<p>但此拓扑需要两倍于堆叠 HA 拓扑的主机数量。 具有此拓扑的 HA 集群至少需要三个用于控制平面节点的主机和三个用于 etcd 节点的主机。</p>
+</blockquote>
+<p>chatGPT给出的两者间的比较：</p>
+<blockquote>
+<p><strong>单独部署：</strong></p>
+<p>单独部署是指将etcd作为一个独立的进程运行在集群之外。这种方式的优点是：</p>
+<ul>
+<li>独立部署可以为etcd提供更好的资源隔离，以保障其稳定性。</li>
+<li>可以单独升级etcd而无需影响其他服务。</li>
+<li>可以将etcd部署到其他机器或云服务上，以降低硬件成本。</li>
+</ul>
+<p>不过，单独部署的缺点也是显而易见的：</p>
+<ul>
+<li>部署和维护etcd需要一些额外的工作。</li>
+<li>etcd的性能和可用性可能会受到网络延迟和带宽限制的影响。</li>
+</ul>
+<p><strong>内嵌部署：</strong></p>
+<p>内嵌部署是将etcd作为一个容器或进程内的模块运行在Kubernetes集群中。这种方式的优点是：</p>
+<ul>
+<li>简化了部署和维护etcd的工作，因为etcd与Kubernetes一起打包并升级。</li>
+<li>可以直接访问Kubernetes集群中的网络，以获得更好的性能和可用性。</li>
+</ul>
+<p>不过，内嵌部署的缺点也是显而易见的：</p>
+<ul>
+<li>etcd与其他Kubernetes组件共享资源，可能会受到其他组件的影响。</li>
+<li>如果Kubernetes本身出现故障，则etcd也可能受到影响。</li>
+</ul>
+<p>综合来说，单独部署适用于那些需要对etcd进行更精细化控制和管理的场景，而内嵌部署则更适用于那些需要快速部署和简化管理的场景。</p>
+</blockquote>
+<h3 id="三高可用负载均衡器">三、高可用负载均衡器</h3>
+<p><a href="https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/ha-topology/" target="_blank" rel="noopener noreffer">官网</a>
+文档主要是解决了高可用场景下apiserver与etcd集群的关系, 三master节点防止单点故障。但是集群master访问接口不可能将三个apiserver都暴露出去，一个挂掉时还是不能自动切换到其他节点。官方文档只提到了一句“使用负载均衡器将apiserver暴露给工作程序节点”，而这恰恰是生产环境中需要解决的重点问题。</p>
+<p><strong>Notes:</strong> <strong>此处的负载均衡器并不是kube-proxy，也不是提供service外部访问的Load Balance，此处的Load Balancer是针对apiserver的。</strong></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/k8s%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4/vip.png"
+        data-srcset="/k8s%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4/vip.png, /k8s%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4/vip.png 1.5x, /k8s%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4/vip.png 2x"
+        data-sizes="auto"
+        alt="/k8s高可用集群/vip.png"
+        title="image-20200406232838722" /></p>
+<ol>
+<li>图中的keepalived+haproxy就是充当负载均衡器的，也可以用nginx+keepalived实现。当然也可以购买云服务商的负载均衡器。公有云部署的话要用公有云自带的负载均衡，比如阿里云的 SLB，腾讯云的 ELB，用来替代 haproxy 和 keepalived ，因为公有云大部分都是不支持 keepalived 的。结合上面的图就可以发现，VIP是给工作节点来访问的。</li>
+<li>由负载均衡器提供一个vip（虚拟ip），流量负载到keepalived master节点上。vip只要和网络中的其他ip不冲突即可。</li>
+<li>当keepalived节点出现故障, vip自动漂到其他可用节点。所以说负载均衡器也要建一个集群，不然负载均衡器挂了集群也就挂了。</li>
+<li>haproxy负责将流量负载到apiserver节点。</li>
+<li>负载均衡器如何部署，本文不做探究。</li>
+</ol>
+<p><a href="" rel="">官网</a>
+中使用kubeadm部署高可用k8s集群时，在<code>kubeadm init</code>命令中使用了负载均衡器：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo kubeadm init --control-plane-endpoint <span class="s2">&#34;LOAD_BALANCER_DNS:LOAD_BALANCER_PORT&#34;</span> --upload-certs 
+</span></span><span class="line"><span class="cl"><span class="c1">#实际部署过程中，还要其他参数，如--pod-network-cidr</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><a href="https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/" target="_blank" rel="noopener noreffer">官网</a>
+是这么描述的：</p>
+<blockquote>
+<p>(推荐）如果计划将单个控制平面 kubeadm 集群升级成高可用， 你应该指定 <code>--control-plane-endpoint</code> 为所有控制平面节点设置共享端点。 端点可以是负载均衡器的 DNS 名称或 IP 地址。</p>
+<p>kubeadm 不支持将没有 <code>--control-plane-endpoint</code> 参数的单个控制平面集群转换为高可用性集群。</p>
+</blockquote>
+<p><code>--control-plane-endpoint</code>也可以指定为一个master节点的ip，单master应该默认就是如此。当有多个master时，若指定的是中一个master的ip地址，那个master挂了，集群就狗带了。这就是要配置负载均衡器的原因了。</p>
+<p>使用<code>kubeadm</code>命令添加master节点：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 原master执行 获取certificate-key</span>
+</span></span><span class="line"><span class="cl">kubeadm init phase upload-certs --upload-certs
+</span></span><span class="line"><span class="cl"><span class="c1"># 原master执行 获取token</span>
+</span></span><span class="line"><span class="cl">kubeadm token create --print-join-command
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 想加入集群的master执行</span>
+</span></span><span class="line"><span class="cl">kubeadm join &lt;原masterIP&gt;:6443 --token 9vr73a.a8uxyaju799qwdjv --discovery-token-ca-cert-hash sha256:7c2e69131a36ae2a042a339b33381c6d0d43887e2de83720eff5359e26aec866 --control-plane --certificate-key f8902e114ef118304e561c3ecd4d0b543adc226b7a07f675f56564185ffe0c07
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>这个 <code>--control-plane</code> 标志通知 <code>kubeadm join</code> 创建一个新的控制平面。</li>
+<li><code>--certificate-key ...</code> 将导致从集群中的 <code>kubeadm-certs</code> Secret 下载控制平面证书并使用给定的密钥进行解密。</li>
+</ul>
+<h3 id="四service-loadbalancer类型">四、service LoadBalancer类型</h3>
+<p>为什么还将这个呢，因为这个load balance容易跟上文的负载均衡器搞混，我本人一开始就以为是同一个。</p>
+<p><strong>这里的LoadBalancer是为了暴露内部服务给外部访问的，而上文的负载均衡器是为访问master节点中的apiserver。</strong></p>
+<p>k8s中创建service时，需要指定<code>type</code>类型，可以分别指定<code>ClustrerIP,NodePort,LoadBalancer</code>三种，其中前面两种无论在内网还是公网环境下使用都很常见，只有<code>LoadBalancer</code>大部分情况下只适用于支持外部负载均衡器的云提供商（AWS,阿里云,华为云等）使用。</p>
+<p>如果想要在内网环境中使用<code>type=LoadBalancer</code>就需要部署另外的插件，比如MetalLB组件。</p>
+<blockquote>
+<p>参考文章：</p>
+</blockquote>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/266422557" target="_blank" rel="noopener noreffer"> MetalLB</a>
+</li>
+<li><a href="https://www.zhihu.com/question/526869937" target="_blank" rel="noopener noreffer">K8S集群中的服务发现和流量暴露机制</a>
+</li>
+<li><a href="https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/high-availability/" target="_blank" rel="noopener noreffer">利用 kubeadm 创建高可用集群</a>
+</li>
+<li><a href="https://www.yuque.com/fairy-era/yg511q/gf89ub" target="_blank" rel="noopener noreffer">kubeadm安装k8s高可用集群</a>
+</li>
+<li><a href="https://zhuanlan.zhihu.com/p/444114515" target="_blank" rel="noopener noreffer">Kubernetes核心架构与高可用集群详解</a>
+</li>
+<li><a href="https://kubernetes.io/zh-cn/docs/setup/production-environment/" target="_blank" rel="noopener noreffer">k8s生产环境</a>
+</li>
+<li><a href="https://www.kubernetes.org.cn/6964.html" target="_blank" rel="noopener noreffer">k8s高可用部署：keepalived + haproxy</a>
+</li>
+</ul>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
