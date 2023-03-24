@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Es集群搭建 - 燎原 - 遇见你已经是很不可思议了</title><meta name="Description" content="燎原的博客网站"><meta property="og:title" content="Es集群搭建" />
+<meta property="og:description" content="es8集群搭建 三台主机进行部署，由于es集群的master是自己选举产生的，所以搭建时无需关心master和普通节点的区别。 一、搭建步骤 下载" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.koisecret.site/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" /><meta property="og:image" content="https://blog.koisecret.site/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-03-24T21:09:13+08:00" />
+<meta property="article:modified_time" content="2023-03-24T21:09:13+08:00" /><meta property="og:site_name" content="My cool site" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.koisecret.site/logo.png"/>
+
+<meta name="twitter:title" content="Es集群搭建"/>
+<meta name="twitter:description" content="es8集群搭建 三台主机进行部署，由于es集群的master是自己选举产生的，所以搭建时无需关心master和普通节点的区别。 一、搭建步骤 下载"/>
+<meta name="application-name" content="燎原の博客">
+<meta name="apple-mobile-web-app-title" content="燎原の博客"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.koisecret.site/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" /><link rel="prev" href="https://blog.koisecret.site/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Es集群搭建",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.koisecret.site\/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA\/"
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "elasticsearch","wordcount":  1888 ,
+        "url": "https:\/\/blog.koisecret.site\/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA\/","datePublished": "2023-03-24T21:09:13+08:00","dateModified": "2023-03-24T21:09:13+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "chengsecret"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i> Github </a><a class="menu-item" href="/friend/"><i class='fas fa-user-friends'></i> 友链 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>Github</a><a class="menu-item" href="/friend/" title=""><i class='fas fa-user-friends'></i>友链</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Es集群搭建</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
+</span>&nbsp;<span class="post-category">收录于 <a href="/categories/elasticsearch/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>elasticsearch</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-24">2023-03-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1888 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#es8集群搭建">es8集群搭建</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#一搭建步骤">一、搭建步骤</a>
+              <ul>
+                <li><a href="#1-预处理">1. 预处理</a></li>
+                <li><a href="#2-设置通信秘钥">2. 设置通信秘钥</a></li>
+                <li><a href="#3-修改配置文件">3. 修改配置文件</a></li>
+                <li><a href="#4修改参数">4.修改参数</a></li>
+                <li><a href="#5启动">5.启动</a></li>
+                <li><a href="#6-其他节点">6 其他节点</a></li>
+                <li><a href="#7设置集群访问密码">7.设置集群访问密码</a></li>
+              </ul>
+            </li>
+            <li><a href="#二安装ik分词器">二、安装ik分词器</a></li>
+            <li><a href="#三安装kibana可视化平台">三、安装kibana可视化平台</a></li>
+          </ul>
+        </li>
+        <li><a href="#es集群k8s集群redis集群">es集群、k8s集群、redis集群</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="es8集群搭建">es8集群搭建</h1>
+<p>三台主机进行部署，由于es集群的master是自己选举产生的，所以搭建时无需关心master和普通节点的区别。</p>
+<h3 id="一搭建步骤">一、搭建步骤</h3>
+<blockquote>
+<p>下载解压</p>
+</blockquote>
+<p>下载地址： <a href="https://www.elastic.co/cn/downloads/past-releases#elasticsearch" target="_blank" rel="noopener noreffer">https://www.elastic.co/cn/downloads/past-releases#elasticsearch</a>
+</p>
+<h4 id="1-预处理">1. 预处理</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo tar -zxvf elasticsearch-8.1.1-linux-x86_64.tar.gz -C /usr/local/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 创建数据文件目录 </span>
+</span></span><span class="line"><span class="cl">mkdir /usr/local/elasticsearch-8.1.1/data 
+</span></span><span class="line"><span class="cl"><span class="c1"># 创建证书目录 </span>
+</span></span><span class="line"><span class="cl">mkdir /usr/local/elasticsearch-8.1.1/config/certs
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#不可使用root用户直接启动elasticsearch,所以要用其他用户启动</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#创建用户组</span>
+</span></span><span class="line"><span class="cl">groupadd ct
+</span></span><span class="line"><span class="cl"><span class="c1">#创建用户</span>
+</span></span><span class="line"><span class="cl">useradd ct -g ct -p <span class="m">123456</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#授予用户权限</span>
+</span></span><span class="line"><span class="cl">chown -R ct:ct /usr/local/elasticsearch-8.1.1/
+</span></span><span class="line"><span class="cl"><span class="c1">#切换用户</span>
+</span></span><span class="line"><span class="cl">su - ct
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="2-设置通信秘钥">2. 设置通信秘钥</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">#然后进入安装bin目录</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /usr/local/elasticsearch-8.1.1/
+</span></span><span class="line"><span class="cl"><span class="c1">#会有两次回车，第一个是描述，不填跳过；第二是密码，输入123456（你可以设置你自己的密码）</span>
+</span></span><span class="line"><span class="cl">./bin/elasticsearch-certutil ca
+</span></span><span class="line"><span class="cl"><span class="c1">#生成密匙，输入刚刚的密码123456，要输入路径直接回车，生成在当前目录下</span>
+</span></span><span class="line"><span class="cl">./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+</span></span><span class="line"><span class="cl"><span class="c1"># 将生成的证书文件移动到 config/certs 目录中</span>
+</span></span><span class="line"><span class="cl">mv elastic-stack-ca.p12 elastic-certificates.p12 config/certs
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>凭证移动至每一台集群下面，此处省略各种scp，就是把elastic-certificates.p12这个文件移动到每一个es安装目录的相同路径下。</p>
+<p>各个节点添加keystore密码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">#如果节点证书配置密码的话，这里要加入密码库：</span>
+</span></span><span class="line"><span class="cl">./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
+</span></span><span class="line"><span class="cl">./bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>生产环境中，还要生成https证书，这里就不做了。</p>
+<h4 id="3-修改配置文件">3. 修改配置文件</h4>
+<p>文件地址：config/elasticsearch.yml</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">#集群名称</span>
+</span></span><span class="line"><span class="cl">cluster.name: ctES
+</span></span><span class="line"><span class="cl"><span class="c1">#结点名称 多个结点名称不同</span>
+</span></span><span class="line"><span class="cl">node.name: es_node_1
+</span></span><span class="line"><span class="cl"><span class="c1">#服务器地址</span>
+</span></span><span class="line"><span class="cl">network.host: 10.4.xx.xx
+</span></span><span class="line"><span class="cl"><span class="c1">#端口号</span>
+</span></span><span class="line"><span class="cl">http.port: <span class="m">9200</span>
+</span></span><span class="line"><span class="cl">transport.profiles.default.port: <span class="m">9300</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#其他结点的路径</span>
+</span></span><span class="line"><span class="cl">discovery.seed_hosts: <span class="o">[</span><span class="s2">&#34;10.4.xx.xx:9300&#34;</span>, <span class="s2">&#34;10.4.xx.xx:9300&#34;</span>, <span class="s2">&#34;10.4.xx.xx:9300&#34;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#相当于指出有权利当master的节点，而不是说三个都是master</span>
+</span></span><span class="line"><span class="cl">cluster.initial_master_nodes: <span class="o">[</span><span class="s2">&#34;es_node_1&#34;</span>, <span class="s2">&#34;es_node_2&#34;</span>, <span class="s2">&#34;es_node_3&#34;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 允许通配符删除索引</span>
+</span></span><span class="line"><span class="cl">action.destructive_requires_name: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">bootstrap.memory_lock: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#设置证书密码访问 下面会说怎么生成证书</span>
+</span></span><span class="line"><span class="cl">xpack.security.enabled: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">xpack.security.transport.ssl.enabled: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">xpack.security.transport.ssl.verification_mode: certificate
+</span></span><span class="line"><span class="cl">xpack.security.transport.ssl.keystore.path: /usr/local/elasticsearch-8.1.1/config/certs/elastic-certificates.p12
+</span></span><span class="line"><span class="cl">xpack.security.transport.ssl.truststore.path: /usr/local/elasticsearch-8.1.1/config/certs/elastic-certificates.p12
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#日志和索引存储地址</span>
+</span></span><span class="line"><span class="cl">path.data: /usr/local/elasticsearch-8.1.1/data
+</span></span><span class="line"><span class="cl">path.logs: /usr/local/elasticsearch-8.1.1/logs
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#是否支持跨域</span>
+</span></span><span class="line"><span class="cl">http.cors.enabled: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">http.cors.allow-origin: <span class="s2">&#34;*&#34;</span>
+</span></span><span class="line"><span class="cl">http.cors.allow-headers: Authorization,X-Requested-With,Content-Type,Content-Length
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#不配会报错</span>
+</span></span><span class="line"><span class="cl">ingest.geoip.downloader.enabled: <span class="nb">false</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>注意：bootstrap.memory_lock项要设置为true，锁定物理内存地址，防止es内存被交换，从而提高ES性能；但是设置以后因为服务器配置不同可能会启动报错。报错内容：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">bootstrap checks failed. You must address the points described in the following <span class="o">[</span>1<span class="o">]</span> lines before starting Elasticsearch
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="4修改参数">4.修改参数</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">vim /etc/security/limits.conf
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#添加以下内容：</span>
+</span></span><span class="line"><span class="cl">* soft nofile <span class="m">65536</span>
+</span></span><span class="line"><span class="cl">* hard nofile <span class="m">131072</span>
+</span></span><span class="line"><span class="cl">* soft nproc <span class="m">4096</span>
+</span></span><span class="line"><span class="cl">* hard nproc <span class="m">4096</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 可以ulimit -Hn 和  ulimit -Sn查看是否生效</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 不生效的话，ssh重新连接即可</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在以下配置文件中添加参数：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">vim /etc/sysctl.conf
+</span></span><span class="line"><span class="cl"><span class="c1">#添加参数</span>
+</span></span><span class="line"><span class="cl">vm.max_map_count<span class="o">=</span><span class="m">655360</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#重启服务</span>
+</span></span><span class="line"><span class="cl">sysctl -p
+</span></span><span class="line"><span class="cl">systemctl daemon-reload
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>调整JVM运行内存：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">vim config/vm.options
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#增加参数(默认是4g，可以自行修改)</span>
+</span></span><span class="line"><span class="cl">-Xms2g
+</span></span><span class="line"><span class="cl">-Xmx2g
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="5启动">5.启动</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">#后台启动</span>
+</span></span><span class="line"><span class="cl">./bin/elasticsearch -d
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="6-其他节点">6 其他节点</h4>
+<p>只需更改config/elasticsearch.yml中的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">node.name: es_node_n
+</span></span><span class="line"><span class="cl">network.host: 10.4.xx.xxx
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>剩下操作都一样，证书只需要用第一台节点生成的就行，放到对应的目录<code>config/certs</code>下。</p>
+<h4 id="7设置集群访问密码">7.设置集群访问密码</h4>
+<p>会设置很多密码 elastic，apm_system，kibana，kibana_system，logstash_system，beats_system，我本地环境全部设置成了123456</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./bin/elasticsearch-setup-passwords  interactive
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="二安装ik分词器">二、安装ik分词器</h3>
+<p>github地址：https://github.com/medcl/elasticsearch-analysis-ik</p>
+<p>ik包下载地址： <a href="https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v8.1.1/elasticsearch-analysis-ik-8.1.1.zip" target="_blank" rel="noopener noreffer">https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v8.1.1/elasticsearch-analysis-ik-8.1.1.zip</a>
+</p>
+<p>中文想要分词，必须要安装一个分词器插件，这里选择ik。</p>
+<p>在集群的每台主机上都要安装ik。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> your-es-root/plugins/ <span class="o">&amp;&amp;</span> mkdir ik
+</span></span><span class="line"><span class="cl">mv elasticsearch-analysis-ik-8.1.1.zip your-es-root/plugins/ik
+</span></span><span class="line"><span class="cl">unzip your-es-root/plugins/ik/elasticsearch-analysis-ik-8.1.1.zip
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后重启es。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ps -aux <span class="p">|</span> grep elastic
+</span></span><span class="line"><span class="cl"><span class="nb">kill</span> -9 两个进程号
+</span></span><span class="line"><span class="cl">./bin/elasticsearch -d
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="三安装kibana可视化平台">三、安装kibana可视化平台</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">#下载 版本需要对应</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /usr/local/elasticsearch-8.1.1/kibana <span class="c1">#kibana文件夹是自己创的，放哪儿都行</span>
+</span></span><span class="line"><span class="cl">wget https://artifacts.elastic.co/downloads/kibana/kibana-8.1.1-linux-x86_64.tar.gz
+</span></span><span class="line"><span class="cl"><span class="c1">#解压到对应目录</span>
+</span></span><span class="line"><span class="cl">tar -zxvf kibana-8.1.1-linux-x86_64.tar.gz
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> kibana-8.1.1/config/
+</span></span><span class="line"><span class="cl">vim kibana.yml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="c">#端口号</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">server.port</span><span class="p">:</span><span class="w"> </span><span class="m">5601</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#任意地址都可以访问</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">server.host</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0.0.0.0&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#查询的Elasticsearch实例的URL，我安装在本地，按实际的情况填写</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">elasticsearch.hosts</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;http://10.4.xx.xx:9200&#34;</span><span class="p">,</span><span class="s2">&#34;http://10.4.xx.xx:9200&#34;</span><span class="p">,</span><span class="s2">&#34;http://10.4.xx.xx:9200&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#访问elasticsearch开启了认证</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">elasticsearch.username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;kibana&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">elasticsearch.password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;123456&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#支持的语言设置</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">i18n.locale</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;zh-CN&#34;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"> <span class="c1">#保持后台启动</span>
+</span></span><span class="line"><span class="cl">nohup bin/kibana <span class="p">&amp;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#访问地址：10.4.xx.xx:5601</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="es集群k8s集群redis集群">es集群、k8s集群、redis集群</h2>
+<ul>
+<li>redis集群需要多个master节点，它的目的是提高存储容量以及提高并发量（槽机制），而高可用是通过slave节点和哨兵模式实现的。</li>
+<li>k8s集群需要多个master节点，因为一个master挂了，其他node并不能自动变为master（master上的apisevice等组件其他node上根本没有），所以需要多个master来保证高可用。master用来管理集群，node用来承载服务。</li>
+<li>es集群中，只能有一个master节点，它挂了其他节点会自动选举出一个master，因此扩展起来非常方便。当集群只有两个节点时，一旦两个节点失去联系，就有可能产生两个master节点，称为“脑裂”，会导致集群数据不一致。</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2023-03-24</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://blog.koisecret.site/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" data-title="Es集群搭建" data-hashtags="elasticsearch"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://blog.koisecret.site/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" data-hashtag="elasticsearch"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://blog.koisecret.site/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" data-title="Es集群搭建"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://blog.koisecret.site/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" data-title="Es集群搭建"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://blog.koisecret.site/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" data-title="Es集群搭建"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/elasticsearch/">elasticsearch</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/" class="prev" rel="prev" title="K8s企业级高可用集群"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>K8s企业级高可用集群</a></div>
+</div>
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">chengsecret</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.5.4/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"chengsecret/chengsecret.github.io"}},"data":{"id-1":"燎原の博客","id-2":"燎原の博客"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

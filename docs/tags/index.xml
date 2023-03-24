@@ -4,7 +4,15 @@
         <link>https://blog.koisecret.site/tags/</link>
         <description>Tags - 标签 - 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 15 Mar 2023 13:33:14 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 24 Mar 2023 21:09:13 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>elasticsearch</title>
+    <link>https://blog.koisecret.site/tags/elasticsearch/</link>
+    <pubDate>Fri, 24 Mar 2023 21:09:13 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.koisecret.site/tags/elasticsearch/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>k8s</title>
     <link>https://blog.koisecret.site/tags/k8s/</link>
     <pubDate>Wed, 15 Mar 2023 13:33:14 &#43;0800</pubDate>
@@ -74,14 +82,6 @@
     <pubDate>Fri, 07 Oct 2022 22:41:49 &#43;0800</pubDate>
     <author>chengsecret</author>
     <guid>https://blog.koisecret.site/tags/%E5%AE%9E%E9%AA%8C%E5%AE%A4/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>redis</title>
-    <link>https://blog.koisecret.site/tags/redis/</link>
-    <pubDate>Tue, 27 Sep 2022 10:15:34 &#43;0800</pubDate>
-    <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/tags/redis/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

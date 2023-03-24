@@ -4,7 +4,15 @@
         <link>https://blog.koisecret.site/categories/</link>
         <description>Categories - 分类 - 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 15 Mar 2023 13:33:14 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/categories/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 24 Mar 2023 21:09:13 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/categories/" rel="self" type="application/rss+xml" /><item>
+    <title>elasticsearch</title>
+    <link>https://blog.koisecret.site/categories/elasticsearch/</link>
+    <pubDate>Fri, 24 Mar 2023 21:09:13 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.koisecret.site/categories/elasticsearch/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>k8s</title>
     <link>https://blog.koisecret.site/categories/k8s/</link>
     <pubDate>Wed, 15 Mar 2023 13:33:14 &#43;0800</pubDate>
