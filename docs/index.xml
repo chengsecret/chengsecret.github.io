@@ -4,9 +4,17 @@
         <link>https://blog.koisecret.site/</link>
         <description>燎原的博客网站</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 24 Mar 2023 21:09:13 &#43;0800</lastBuildDate>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 23 Apr 2023 20:00:05 &#43;0800</lastBuildDate>
             <atom:link href="https://blog.koisecret.site/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Python基础</title>
+    <link>https://blog.koisecret.site/python%E5%9F%BA%E7%A1%80/</link>
+    <pubDate>Sun, 23 Apr 2023 20:00:05 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.koisecret.site/python%E5%9F%BA%E7%A1%80/</guid>
+    <description><![CDATA[研一到现在一直没有一个研究方向，被老板push了。。。花了三天把python学了，会Java学python确实是轻松。以前被编程语言给限制了]]></description>
+</item>
+<item>
     <title>Es集群搭建</title>
     <link>https://blog.koisecret.site/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
     <pubDate>Fri, 24 Mar 2023 21:09:13 &#43;0800</pubDate>
@@ -79,14 +87,6 @@
     <author>chengsecret</author>
     <guid>https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/</guid>
     <description><![CDATA[docker网络模式介绍 网络模式的具体情况可以参考下面的博客（不想自己写一遍了。。。太长了。。。）： https://blog.csdn.net/heian_99/article/details/104914945 https://blog.csdn.net/heian_99/article/details/104944575 https://blog.csdn.net/heian_99/article/details/104993333 个人总结如下，如果有不正确的地方，]]></description>
-</item>
-<item>
-    <title>Dockerfile解析与服务部署</title>
-    <link>https://blog.koisecret.site/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2/</link>
-    <pubDate>Sat, 08 Oct 2022 16:43:10 &#43;0800</pubDate>
-    <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/dockerfile%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2/</guid>
-    <description><![CDATA[Dockerfile是什么 DockerFile是用来构建docker镜像的文本文件，是一条条构建镜像所需的指令和参数构成的脚本。 每条保留字指]]></description>
 </item>
 </channel>
 </rss>
