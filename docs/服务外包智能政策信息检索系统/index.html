@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>服务外包——智能政策信息检索系统 - 燎原 - 遇见你已经是很不可思议了</title><meta name="Description" content="燎原的博客网站"><meta property="og:title" content="服务外包——智能政策信息检索系统" />
+<meta property="og:description" content="稍微写一下这次服务外包经历，主要从我自身所用到的技术出发，需求和具体实现不会详细说。因为我们准备的时间太晚了，4月17号结束，我们是3月22" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/" /><meta property="og:image" content="https://blog.koisecret.site/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-04-24T13:49:00+08:00" />
+<meta property="article:modified_time" content="2023-04-24T13:49:00+08:00" /><meta property="og:site_name" content="My cool site" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.koisecret.site/logo.png"/>
+
+<meta name="twitter:title" content="服务外包——智能政策信息检索系统"/>
+<meta name="twitter:description" content="稍微写一下这次服务外包经历，主要从我自身所用到的技术出发，需求和具体实现不会详细说。因为我们准备的时间太晚了，4月17号结束，我们是3月22"/>
+<meta name="application-name" content="燎原の博客">
+<meta name="apple-mobile-web-app-title" content="燎原の博客"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/" /><link rel="prev" href="https://blog.koisecret.site/python%E5%9F%BA%E7%A1%80/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "服务外包——智能政策信息检索系统",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.koisecret.site\/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F\/"
+        },"image": ["https:\/\/blog.koisecret.site\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "","wordcount":  3085 ,
+        "url": "https:\/\/blog.koisecret.site\/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F\/","datePublished": "2023-04-24T13:49:00+08:00","dateModified": "2023-04-24T13:49:00+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/blog.koisecret.site\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "chengsecret"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i> Github </a><a class="menu-item" href="/friend/"><i class='fas fa-user-friends'></i> 友链 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>Github</a><a class="menu-item" href="/friend/" title=""><i class='fas fa-user-friends'></i>友链</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">服务外包——智能政策信息检索系统</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
+</span>&nbsp;<span class="post-category">收录于 <a href="/categories/program/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>program</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-04-24">2023-04-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3085 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#一-技术选型">一. 技术选型</a></li>
+            <li><a href="#二pom文件相关">二、Pom文件相关</a>
+              <ul>
+                <li><a href="#总pom文件解析">总pom文件解析</a></li>
+                <li><a href="#插件解析">插件解析</a></li>
+              </ul>
+            </li>
+            <li><a href="#三-异步">三、 异步</a></li>
+            <li><a href="#四-部署">四、 部署</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>    稍微写一下这次服务外包经历，主要从我自身所用到的技术出发，需求和具体实现不会详细说。因为我们准备的时间太晚了，4月17号结束，我们是3月22号才开始的，所以说很多我想实现的东西最后也没有去做，这些会在博客中说明，用来督促一下自己，之后去做做完。</p>
+<h3 id="一-技术选型">一. 技术选型</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/program/policy/%e8%bf%90%e8%a1%8c%e6%9e%b6%e6%9e%84.png"
+        data-srcset="/program/policy/%e8%bf%90%e8%a1%8c%e6%9e%b6%e6%9e%84.png, /program/policy/%e8%bf%90%e8%a1%8c%e6%9e%b6%e6%9e%84.png 1.5x, /program/policy/%e8%bf%90%e8%a1%8c%e6%9e%b6%e6%9e%84.png 2x"
+        data-sizes="auto"
+        alt="/program/policy/运行架构.png"
+        title="架构图" /></p>
+<blockquote>
+<p><strong>微服务架构</strong></p>
+</blockquote>
+<p>技术选型主要是：Nacos + Gateway + Sentinel + OpenFeign</p>
+<ul>
+<li>
+<p>Nacos兼具注册中心和配置中心两大功能，相比Zuul来说功能强大了很多，不用重启项目就可以在线更改配置文件，纵享丝滑了。</p>
+</li>
+<li>
+<p>Gateway主要负责路由，并结合JWT实现登录授权；结合Sentinel实现限流。</p>
+</li>
+</ul>
+<blockquote>
+<p>存储层</p>
+</blockquote>
+<p>技术选型主要是：Elasticsearch + Redis + mysql + 七牛云对象存储</p>
+<ul>
+<li>
+<p>Elasticsearch：保存政策信息，分布式全文检索</p>
+<p>我在些写项目时，主要遇到了两个坑：</p>
+<ul>
+<li>
+<p>版本问题。我服务器中部署的es集群是8.1.1版本的，项目中用的依赖还是7.x的，每次执行es查询请求时，都会有一条【warn】日志，导致了日志文件中基本塞满了这些无用的日志信息。试了很多种方法都没解决，后面也没去管这个问题。</p>
+<p>为什么我不升降es依赖的版本？主要还是时间问题，7.x版本的es用的还是<strong>High Level API</strong> （在官方文档中，已经显示为 deprecated），我用的比较熟；8.x版本的es用是<strong>Java client</strong>，有学习成本，而且这个项目的es查询方式挺多的，万一再报什么错，我怕进度上来不及。。</p>
+</li>
+<li>
+<p>相同查询条件，查询结果会变化。这种问题在es官网解释为“<strong><em>bouncing results</em> 问题</strong>”，通俗来讲就是，es查询到的结果会根据评分来排序，评分相同时会根据时间戳字段来排序，时间戳也相同时，就会根据文档在分片中的顺序来排序。所以请求发到不同的分片时，查询到的结果可能是不同的，可以通过<code>new SearchRequest(index).source(searchSourceBuilder).preference(&quot;sessionID&quot;)</code>中的<code>preference</code>函数，传入一个字符串，es会根据该字符串的哈希值确定访问的分片。该字符串可以是sessionId、userId等。由于并不是每次查询时用户都登录了，以及分布式session问题，我偷懒直接传了用户查询DTO的toString()字符串。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Redis: 存放验证码，存放一些数据库查询到的信息，减少查询数据库的次数。注意修改了的信息要在redis中删掉。</p>
+</li>
+<li>
+<p>七牛云对象存储：存储多模态功能的图片。</p>
+</li>
+</ul>
+<blockquote>
+<p>工作流</p>
+</blockquote>
+<p>    其实并没有配CI/CD，只是用<code>docker-maven-plugin</code>插件，能直接生成镜像并push到服务器的Register私服库中。然后写了个<code>docker-compose.yml</code>文件，能一键启动。</p>
+<p>    后续的话，会将项目部署到k8s上，然后用Jekenis构建一个自动化部署的流水线，并实现金丝雀发布。</p>
+<blockquote>
+<p>监控</p>
+</blockquote>
+<p>    目前的监控靠的是druid和hystrix中的监控，我觉得还是很鸡肋的。我用jmeter进行测试的时候，仍旧感觉整个项目的运行情况我是不可见的。</p>
+<p>   后续部署到k8s后，打算试试kubesphere，它内置了Prometheus实现项目的监控。也准备试试链路追踪的监控方案，如Skywalking。</p>
+<h3 id="二pom文件相关">二、Pom文件相关</h3>
+<p>这是我项目的总pom文件：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0&#34;</span>
+</span></span><span class="line"><span class="cl">         <span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span class="line"><span class="cl">         <span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>site.koisecret<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>policy<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>1.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;modules&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;module&gt;</span>policy-search<span class="nt">&lt;/module&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;module&gt;</span>policy-auth<span class="nt">&lt;/module&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;module&gt;</span>policy-gateway<span class="nt">&lt;/module&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;module&gt;</span>policy-commons<span class="nt">&lt;/module&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;module&gt;</span>es-operation<span class="nt">&lt;/module&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/modules&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;name&gt;</span>${project.artifactId}<span class="nt">&lt;/name&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;packaging&gt;</span>pom<span class="nt">&lt;/packaging&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;properties&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;maven.compiler.source&gt;</span>8<span class="nt">&lt;/maven.compiler.source&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;maven.compiler.target&gt;</span>8<span class="nt">&lt;/maven.compiler.target&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;project.build.sourceEncoding&gt;</span>UTF-8<span class="nt">&lt;/project.build.sourceEncoding&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;spring-boot.version&gt;</span>2.3.2.RELEASE<span class="nt">&lt;/spring-boot.version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;spring-cloud-alibaba.version&gt;</span>2.2.6.RELEASE<span class="nt">&lt;/spring-cloud-alibaba.version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;spring-cloud.version&gt;</span>Hoxton.SR9<span class="nt">&lt;/spring-cloud.version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;maven.compiler.version&gt;</span>3.8.1<span class="nt">&lt;/maven.compiler.version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;spring.checkstyle.version&gt;</span>0.0.28<span class="nt">&lt;/spring.checkstyle.version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;docker.plugin.version&gt;</span>1.0.0<span class="nt">&lt;/docker.plugin.version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;docker.registry&gt;</span>10.4.xx.xx:5000<span class="nt">&lt;/docker.registry&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;docker.namespace&gt;</span>policy<span class="nt">&lt;/docker.namespace&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;docker.host&gt;</span>http://10.4.xx.xx:2375<span class="nt">&lt;/docker.host&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;tag&gt;</span>1.0<span class="nt">&lt;/tag&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/properties&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;dependencyManagement&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;dependencies&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;artifactId&gt;</span>spring-boot-dependencies<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;version&gt;</span>${spring-boot.version}<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;type&gt;</span>pom<span class="nt">&lt;/type&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;scope&gt;</span>import<span class="nt">&lt;/scope&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;groupId&gt;</span>com.alibaba.cloud<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;artifactId&gt;</span>spring-cloud-alibaba-dependencies<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;version&gt;</span>${spring-cloud-alibaba.version}<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;type&gt;</span>pom<span class="nt">&lt;/type&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;scope&gt;</span>import<span class="nt">&lt;/scope&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;groupId&gt;</span>org.springframework.cloud<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;artifactId&gt;</span>spring-cloud-dependencies<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;version&gt;</span>${spring-cloud.version}<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;type&gt;</span>pom<span class="nt">&lt;/type&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;scope&gt;</span>import<span class="nt">&lt;/scope&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependencies&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/dependencyManagement&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;dependencies&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!--监控--&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-actuator<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.projectlombok<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>lombok<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>1.16.18<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/dependencies&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;finalName&gt;</span>${project.name}<span class="nt">&lt;/finalName&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;resources&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;resource&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;directory&gt;</span>src/main/resources<span class="nt">&lt;/directory&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;filtering&gt;</span>true<span class="nt">&lt;/filtering&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/resource&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/resources&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;pluginManagement&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="c">&lt;!--spring boot 默认插件--&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;version&gt;</span>${spring-boot.version}<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;executions&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;execution&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;goals&gt;</span>
+</span></span><span class="line"><span class="cl">                                <span class="nt">&lt;goal&gt;</span>repackage<span class="nt">&lt;/goal&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;/goals&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;/execution&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;/executions&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="c">&lt;!--maven  docker 打包插件 --&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;groupId&gt;</span>com.spotify<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;artifactId&gt;</span>docker-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;version&gt;</span>${docker.plugin.version}<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;imageName&gt;</span>${docker.registry}/${docker.namespace}/${project.name}<span class="nt">&lt;/imageName&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;dockerDirectory&gt;</span>${project.basedir}<span class="nt">&lt;/dockerDirectory&gt;</span> <span class="c">&lt;!-- 指定 Dockerfile 路径--&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;dockerHost&gt;</span>${docker.host}<span class="nt">&lt;/dockerHost&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;imageTags&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;imageTag&gt;</span>${tag}<span class="nt">&lt;/imageTag&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;imageTag&gt;</span>latest<span class="nt">&lt;/imageTag&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;/imageTags&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;forceTags&gt;</span>true<span class="nt">&lt;/forceTags&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;executions&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;execution&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;id&gt;</span>push<span class="nt">&lt;/id&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;phase&gt;</span>install<span class="nt">&lt;/phase&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;goals&gt;</span>
+</span></span><span class="line"><span class="cl">                                <span class="nt">&lt;goal&gt;</span>build<span class="nt">&lt;/goal&gt;</span>
+</span></span><span class="line"><span class="cl">                                <span class="nt">&lt;goal&gt;</span>push<span class="nt">&lt;/goal&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;/goals&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;/execution&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;/executions&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/pluginManagement&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="c">&lt;!--代码格式插件，默认使用spring 规则--&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;groupId&gt;</span>io.spring.javaformat<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;artifactId&gt;</span>spring-javaformat-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;version&gt;</span>${spring.checkstyle.version}<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="c">&lt;!--代码编译指定版本插件--&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;artifactId&gt;</span>maven-compiler-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;version&gt;</span>${maven.compiler.version}<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;target&gt;</span>${maven.compiler.target}<span class="nt">&lt;/target&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;source&gt;</span>${maven.compiler.source}<span class="nt">&lt;/source&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;encoding&gt;</span>UTF-8<span class="nt">&lt;/encoding&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;skip&gt;</span>true<span class="nt">&lt;/skip&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/build&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;profiles&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;profile&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;id&gt;</span>dev<span class="nt">&lt;/id&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;properties&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="c">&lt;!-- 环境标识，需要与配置文件的名称相对应 --&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;profiles.active&gt;</span>dev<span class="nt">&lt;/profiles.active&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/properties&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;activation&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="c">&lt;!-- 默认环境 --&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;activeByDefault&gt;</span>true<span class="nt">&lt;/activeByDefault&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/activation&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/profile&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;profile&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;id&gt;</span>prod<span class="nt">&lt;/id&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;properties&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;profiles.active&gt;</span>prod<span class="nt">&lt;/profiles.active&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/properties&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/profile&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;profile&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;id&gt;</span>test<span class="nt">&lt;/id&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;properties&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;profiles.active&gt;</span>test<span class="nt">&lt;/profiles.active&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/properties&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/profile&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/profiles&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repository&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;id&gt;</span>public<span class="nt">&lt;/id&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;name&gt;</span>aliyun nexus<span class="nt">&lt;/name&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;url&gt;</span>https://maven.aliyun.com/repository/public/<span class="nt">&lt;/url&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;releases&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;enabled&gt;</span>true<span class="nt">&lt;/enabled&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/releases&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repository&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;pluginRepositories&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;pluginRepository&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;id&gt;</span>aliyun-plugin<span class="nt">&lt;/id&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;url&gt;</span>https://maven.aliyun.com/repository/public<span class="nt">&lt;/url&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;releases&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;enabled&gt;</span>true<span class="nt">&lt;/enabled&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/releases&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;snapshots&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;enabled&gt;</span>false<span class="nt">&lt;/enabled&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/snapshots&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/pluginRepository&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/pluginRepositories&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/project&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="总pom文件解析">总pom文件解析</h4>
+<ul>
+<li>&lt;modules&gt;</li>
+</ul>
+<p>本项目包含的模块信息。</p>
+<ul>
+<li>
+<p>&lt;packaging&gt;pom</packaging></p>
+<p>打包方式，总pom文件、包含多个模块的目录中的pom文件，它的打包方式就是pom。单独模块下的打包方式默认是jar</p>
+</li>
+<li>
+<p>&lt;properties&gt;</p>
+<p>进行版本管理，方便后续修改版本</p>
+</li>
+<li>
+<p>&lt;dependencyManagement&gt;</p>
+<p>依赖管理，这里的依赖不会导入到各个模块之中，只是作为版本管理。当模块的pom文件导入依赖时，可以不指定版本，版本由&lt;dependencyManagement&gt;中指定。</p>
+</li>
+<li>
+<p>&lt;dependencies&gt;</p>
+<p>这里的依赖会导入到各个模块中，通常放一些通用的依赖。</p>
+</li>
+<li>
+<p>&lt;build&gt;</p>
+<p>放一些构建项目的的插件，最基本的就是 <code>spring-boot-maven-plugin</code> maven打包插件。</p>
+</li>
+<li>
+<p>&lt;profiles&gt;</p>
+<p>用于分隔多套环境，配合maven打包命令、application.yml使用。</p>
+</li>
+<li>
+<p>&lt;repositories&gt;和&lt;pluginRepositories&gt;</p>
+<p>配置依赖和插件的下载地址。</p>
+</li>
+</ul>
+<h4 id="插件解析">插件解析</h4>
+<blockquote>
+<p>spring-boot-maven-plugin</p>
+</blockquote>
+<p>spring boot 默认插件，用于maven打包。</p>
+<blockquote>
+<p>docker-maven-plugin</p>
+</blockquote>
+<p>docker打包镜像插件，配置好Dockerfle位置、docker服务器所在地址、私服库地址、镜像名称等信息后，可以通过命令行代码直接生成镜像并push到服务器。</p>
+<blockquote>
+<p>maven-assembly-plugin</p>
+</blockquote>
+<p>这个插件本项目中没用到，是用来生成zip包的，很多开源项目会有这种构建方式，可以配合shell脚本启动。</p>
+<h3 id="三-异步">三、 异步</h3>
+<p>为了加快响应速度，采用多线程的方式异步处理是很有必要的。我还没学过消息队列，目前仅用线程池进行异步处理。</p>
+<ul>
+<li>
+<p>为什么用线程池？</p>
+<ul>
+<li>1.减少系统频繁开辟线程关闭线程的开销</li>
+<li>2.防止用户过多时，系统开辟太多线程而资源耗尽</li>
+<li>3.线程池有阻塞队列，应该可以缓解数据库压力</li>
+</ul>
+</li>
+<li>
+<p>使用范例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ThreadConfig</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Bean</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">ThreadPoolExecutor</span> <span class="nf">threadPoolExecutor</span><span class="o">(</span><span class="n">ThreadPoolConfigProperties</span> <span class="n">threadPoolConfigProperties</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="k">new</span> <span class="n">ThreadPoolExecutor</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">                <span class="n">threadPoolConfigProperties</span><span class="o">.</span><span class="na">getCorePoolSize</span><span class="o">(),</span>
+</span></span><span class="line"><span class="cl">                <span class="n">threadPoolConfigProperties</span><span class="o">.</span><span class="na">getMaximumPoolSize</span><span class="o">(),</span>
+</span></span><span class="line"><span class="cl">                <span class="n">threadPoolConfigProperties</span><span class="o">.</span><span class="na">getKeepAliveTime</span><span class="o">(),</span>
+</span></span><span class="line"><span class="cl">                <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">                <span class="k">new</span> <span class="n">LinkedBlockingDeque</span><span class="o">&lt;&gt;(</span><span class="n">threadPoolConfigProperties</span><span class="o">.</span><span class="na">getDequeCapacity</span><span class="o">()),</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Executors</span><span class="o">.</span><span class="na">defaultThreadFactory</span><span class="o">(),</span>
+</span></span><span class="line"><span class="cl">                <span class="k">new</span> <span class="n">ThreadPoolExecutor</span><span class="o">.</span><span class="na">CallerRunsPolicy</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">        <span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">------------------------------------------------------------</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nd">@Component</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@ConfigurationProperties</span><span class="o">(</span><span class="n">prefix</span> <span class="o">=</span> <span class="s">&#34;thread&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Data</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RefreshScope</span>   
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ThreadPoolConfigProperties</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">corePoolSize</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">maximumPoolSize</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">keepAliveTime</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">dequeCapacity</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这么写可以在nacos中动态调整线程池的配置。corePoolSize可以参考服务器的cpu核数，dequeCapacity可以参考服务器内存大小。</p>
+</li>
+</ul>
+<h3 id="四-部署">四、 部署</h3>
+<p>主要是docker + docker-compose的方式。</p>
+<p>policy-search模块的bootstrap.yml文件：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">server</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">8001</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w">  </span>@<span class="l">artifactId@</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">profiles</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">active</span><span class="p">:</span><span class="w"> </span>@<span class="l">profiles.active@</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">cloud</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">nacos</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">discovery</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">server-addr</span><span class="p">:</span><span class="w"> </span><span class="l">${NACOS_HOST:policy-register}:${NACOS_PORT:8848}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">45735c42-3ca3-4f2c-b7a1-64axxx</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">server-addr</span><span class="p">:</span><span class="w"> </span><span class="l">${NACOS_HOST:policy-register}:${NACOS_PORT:8848}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">file-extension</span><span class="p">:</span><span class="w"> </span><span class="l">yml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">45735c42-3ca3-4f2c-b7a1-64axxx</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>有关policy-search模块的docker-compose.yml文件：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;3&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">services</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">policy-search</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l">always</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">policy-search</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="m">10.4</span><span class="l">.xx.xx:5000/policy/policy-search</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">NACOS_HOST</span><span class="p">:</span><span class="w"> </span><span class="m">10.4</span><span class="l">.xx.xx</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">NACOS_PORT</span><span class="p">:</span><span class="w"> </span><span class="m">8848</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">spring.cloud.nacos.discovery.namespace</span><span class="p">:</span><span class="w"> </span><span class="l">cfeacfb9-325b-494e-aa2c-axxxxxx</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">spring.cloud.nacos.discovery.config</span><span class="p">:</span><span class="w"> </span><span class="l">cfeacfb9-325b-494e-aa2c-a35xxxxxx</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#      spring.cloud.nacos.ip: ###</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="m">8001</span><span class="p">:</span><span class="m">8001</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>${NACOS_HOST:policy-register}</code>：这个写法的意思是，如果项目启动时传了变量<code>NACOS_HOST</code>，则使用传来的值；如果没有传值，则用<code>policy-register</code>作为值传入。<code>policy-register</code>在<code>host</code>文件中做了映射，可以理解为localhost.</li>
+<li>environment中，可以传入变量，用于覆盖项目配置文件中的值</li>
+<li>当用docker启动时，服务注册入nacos的ip地址是172.x.x.x，其他服务器上的服务是找不到该服务的，可以通过<code>spring.cloud.nacos.ip</code>指定暴露的ip地址</li>
+</ul>
+<p>测试 团队 证书</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2023-04-24</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/" data-title="服务外包——智能政策信息检索系统" data-hashtags=""><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/" data-hashtag=""><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/" data-title="服务外包——智能政策信息检索系统"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/" data-title="服务外包——智能政策信息检索系统"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/" data-title="服务外包——智能政策信息检索系统"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/">Tags</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/python%E5%9F%BA%E7%A1%80/" class="prev" rel="prev" title="Python基础"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Python基础</a></div>
+</div>
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">chengsecret</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span><span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
+                    <span class="icp"><a rel="" href="http://beian.miit.gov.cn/" target="_blank">浙ICP备2020042648号-3</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.5.4/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"chengsecret/chengsecret.github.io"}},"data":{"id-1":"燎原の博客","id-2":"燎原の博客"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

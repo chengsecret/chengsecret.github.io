@@ -4,7 +4,15 @@
         <link>https://blog.koisecret.site/posts/</link>
         <description>所有文章 | 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 23 Apr 2023 20:00:05 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 24 Apr 2023 13:49:00 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>服务外包——智能政策信息检索系统</title>
+    <link>https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/</link>
+    <pubDate>Mon, 24 Apr 2023 13:49:00 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/</guid>
+    <description><![CDATA[稍微写一下这次服务外包经历，主要从我自身所用到的技术出发，需求和具体实现不会详细说。因为我们准备的时间太晚了，4月17号结束，我们是3月22]]></description>
+</item>
+<item>
     <title>Python基础</title>
     <link>https://blog.koisecret.site/python%E5%9F%BA%E7%A1%80/</link>
     <pubDate>Sun, 23 Apr 2023 20:00:05 &#43;0800</pubDate>
@@ -77,14 +85,6 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/%e7%94%9f%e6%b4%bb/zjkx.png" referrerpolicy="no-referrer">
             </div>记录一下昨天晚上遇到的大无语事件。 事件一：电瓶车警报响彻夜空 午夜12点时分，楼下突然响起了电瓶车“wu ~wu~”警报声，因为住在二楼，声音就]]></description>
-</item>
-<item>
-    <title>Docker网络模式解析</title>
-    <link>https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/</link>
-    <pubDate>Thu, 13 Oct 2022 15:52:37 &#43;0800</pubDate>
-    <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/docker%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90/</guid>
-    <description><![CDATA[docker网络模式介绍 网络模式的具体情况可以参考下面的博客（不想自己写一遍了。。。太长了。。。）： https://blog.csdn.net/heian_99/article/details/104914945 https://blog.csdn.net/heian_99/article/details/104944575 https://blog.csdn.net/heian_99/article/details/104993333 个人总结如下，如果有不正确的地方，]]></description>
 </item>
 </channel>
 </rss>
