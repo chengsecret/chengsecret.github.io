@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>架构 - 标签 - 燎原 - 遇见你已经是很不可思议了</title>
-        <link>https://blog.koisecret.site/tags/%E6%9E%B6%E6%9E%84/</link>
+        <link>https://blog.liaoyuaner.cn/tags/%E6%9E%B6%E6%9E%84/</link>
         <description>架构 - 标签 - 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 24 Apr 2023 13:49:00 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/tags/%E6%9E%B6%E6%9E%84/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 24 Apr 2023 13:49:00 &#43;0800</lastBuildDate><atom:link href="https://blog.liaoyuaner.cn/tags/%E6%9E%B6%E6%9E%84/" rel="self" type="application/rss+xml" /><item>
     <title>服务外包——智能政策信息检索系统</title>
-    <link>https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/</link>
+    <link>https://blog.liaoyuaner.cn/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/</link>
     <pubDate>Mon, 24 Apr 2023 13:49:00 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/</guid>
+    <guid>https://blog.liaoyuaner.cn/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/</guid>
     <description><![CDATA[写一下这次服务外包经历，主要从我后端所用到的技术出发，而需求和具体实现不会细说。因为我们准备的时间有点晚，4月17号结束，我们是3月22号才]]></description>
 </item>
 </channel>

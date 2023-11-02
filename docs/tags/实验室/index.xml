@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>实验室 - 标签 - 燎原 - 遇见你已经是很不可思议了</title>
-        <link>https://blog.koisecret.site/tags/%E5%AE%9E%E9%AA%8C%E5%AE%A4/</link>
+        <link>https://blog.liaoyuaner.cn/tags/%E5%AE%9E%E9%AA%8C%E5%AE%A4/</link>
         <description>实验室 - 标签 - 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 07 Oct 2022 22:41:49 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/tags/%E5%AE%9E%E9%AA%8C%E5%AE%A4/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 07 Oct 2022 22:41:49 &#43;0800</lastBuildDate><atom:link href="https://blog.liaoyuaner.cn/tags/%E5%AE%9E%E9%AA%8C%E5%AE%A4/" rel="self" type="application/rss+xml" /><item>
     <title>实验室网络解析 （内网穿透）</title>
-    <link>https://blog.koisecret.site/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/</link>
+    <link>https://blog.liaoyuaner.cn/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/</link>
     <pubDate>Fri, 07 Oct 2022 22:41:49 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/</guid>
+    <guid>https://blog.liaoyuaner.cn/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/</guid>
     <description><![CDATA[之前师兄在群里发了学校实验室两台服务器和之江实验室两台服务器的SSH连接方法，讲了在实验室怎么连和在外面怎么连。当时就觉得很高级，也没有细品]]></description>
 </item>
 </channel>

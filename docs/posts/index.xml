@@ -1,87 +1,87 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>所有文章 - 燎原 - 遇见你已经是很不可思议了</title>
-        <link>https://blog.koisecret.site/posts/</link>
+        <link>https://blog.liaoyuaner.cn/posts/</link>
         <description>所有文章 | 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 24 Apr 2023 13:49:00 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 24 Apr 2023 13:49:00 &#43;0800</lastBuildDate><atom:link href="https://blog.liaoyuaner.cn/posts/" rel="self" type="application/rss+xml" /><item>
     <title>服务外包——智能政策信息检索系统</title>
-    <link>https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/</link>
+    <link>https://blog.liaoyuaner.cn/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/</link>
     <pubDate>Mon, 24 Apr 2023 13:49:00 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/</guid>
+    <guid>https://blog.liaoyuaner.cn/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/</guid>
     <description><![CDATA[写一下这次服务外包经历，主要从我后端所用到的技术出发，而需求和具体实现不会细说。因为我们准备的时间有点晚，4月17号结束，我们是3月22号才]]></description>
 </item>
 <item>
     <title>Python基础</title>
-    <link>https://blog.koisecret.site/python%E5%9F%BA%E7%A1%80/</link>
+    <link>https://blog.liaoyuaner.cn/python%E5%9F%BA%E7%A1%80/</link>
     <pubDate>Sun, 23 Apr 2023 20:00:05 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/python%E5%9F%BA%E7%A1%80/</guid>
+    <guid>https://blog.liaoyuaner.cn/python%E5%9F%BA%E7%A1%80/</guid>
     <description><![CDATA[研一到现在一直没有一个研究方向，被老板push了。。。花了三天把python学了，会Java学python确实是轻松。以前被编程语言给限制了]]></description>
 </item>
 <item>
     <title>Es集群搭建</title>
-    <link>https://blog.koisecret.site/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
+    <link>https://blog.liaoyuaner.cn/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
     <pubDate>Fri, 24 Mar 2023 21:09:13 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
+    <guid>https://blog.liaoyuaner.cn/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
     <description><![CDATA[es8集群搭建 三台主机进行部署，由于es集群的master是自己选举产生的，所以搭建时无需关心master和普通节点的区别。 一、搭建步骤 下载]]></description>
 </item>
 <item>
     <title>K8s企业级高可用集群</title>
-    <link>https://blog.koisecret.site/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/</link>
+    <link>https://blog.liaoyuaner.cn/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/</link>
     <pubDate>Wed, 15 Mar 2023 13:33:14 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/</guid>
+    <guid>https://blog.liaoyuaner.cn/k8s%E4%BC%81%E4%B8%9A%E7%BA%A7%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/</guid>
     <description><![CDATA[之前部署的k8s集群是单master结构，显然不可能用于生产中。之前搭建的时候就在想，生产环境中的k8s集群仅仅是多个master节点那么简]]></description>
 </item>
 <item>
     <title>在云服务器安装k8s集群</title>
-    <link>https://blog.koisecret.site/%E5%9C%A8%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/</link>
+    <link>https://blog.liaoyuaner.cn/%E5%9C%A8%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/</link>
     <pubDate>Sun, 12 Mar 2023 16:59:39 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/%E5%9C%A8%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/</guid>
+    <guid>https://blog.liaoyuaner.cn/%E5%9C%A8%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/</guid>
     <description><![CDATA[参考文章： https://blog.csdn.net/weixin_43988498/article/details/122639595 (主要参考) https://blog.koisecret.site/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/ 此次部署本人使用了三台阿里云服务器，系统都是Ubuntu，内网不互通。 主要问题 我主要是根据上述的第一篇博客来部署k]]></description>
 </item>
 <item>
     <title>k8s资源管理方式与实战</title>
-    <link>https://blog.koisecret.site/k8s%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F%E4%B8%8E%E5%AE%9E%E6%88%98/</link>
+    <link>https://blog.liaoyuaner.cn/k8s%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F%E4%B8%8E%E5%AE%9E%E6%88%98/</link>
     <pubDate>Mon, 19 Dec 2022 21:58:16 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/k8s%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F%E4%B8%8E%E5%AE%9E%E6%88%98/</guid>
+    <guid>https://blog.liaoyuaner.cn/k8s%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F%E4%B8%8E%E5%AE%9E%E6%88%98/</guid>
     <description><![CDATA[一、资源管理 1.资源管理介绍 在kubernetes中，所有的内容都抽象为资源，用户需要通过操作资源来管理kubernetes。 kuberne]]></description>
 </item>
 <item>
     <title>K8s介绍与环境安装</title>
-    <link>https://blog.koisecret.site/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/</link>
+    <link>https://blog.liaoyuaner.cn/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/</link>
     <pubDate>Mon, 07 Nov 2022 13:31:29 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/</guid>
+    <guid>https://blog.liaoyuaner.cn/k8s%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/</guid>
     <description><![CDATA[一. Kubernetes介绍 1 应用部署方式演变 在部署应用程序的方式上，主要经历了三个时代： 传统部署：互联网早期，会直接将应用程序部署在物理机]]></description>
 </item>
 <item>
     <title>记录第一次开源经历</title>
-    <link>https://blog.koisecret.site/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86/</link>
+    <link>https://blog.liaoyuaner.cn/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86/</link>
     <pubDate>Tue, 01 Nov 2022 15:49:19 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86/</guid>
+    <guid>https://blog.liaoyuaner.cn/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E7%BB%8F%E5%8E%86/</guid>
     <description><![CDATA[好久没写博客了，这半个月确实有点浪，剧本杀阿瓦隆喝酒唱歌聚餐样样没落下，还“努力”上了个王者，简直读了个假研究生。 不过这半个月里，我也完成了]]></description>
 </item>
 <item>
     <title>Compose容器编排</title>
-    <link>https://blog.koisecret.site/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/</link>
+    <link>https://blog.liaoyuaner.cn/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/</link>
     <pubDate>Sat, 15 Oct 2022 13:14:53 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/</guid>
+    <guid>https://blog.liaoyuaner.cn/compose%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/</guid>
     <description><![CDATA[一、docker-compose是什么 之前使用 Docker 的时候，定义 Dockerfile 文件，然后使用 docker build、docker run 等命令操作容器。然而微服务架构的应用]]></description>
 </item>
 <item>
     <title>走近科学之鬼敲门</title>
-    <link>https://blog.koisecret.site/%E8%B5%B0%E8%BF%91%E7%A7%91%E5%AD%A6%E4%B9%8B%E9%AC%BC%E6%95%B2%E9%97%A8/</link>
+    <link>https://blog.liaoyuaner.cn/%E8%B5%B0%E8%BF%91%E7%A7%91%E5%AD%A6%E4%B9%8B%E9%AC%BC%E6%95%B2%E9%97%A8/</link>
     <pubDate>Thu, 13 Oct 2022 19:40:19 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/%E8%B5%B0%E8%BF%91%E7%A7%91%E5%AD%A6%E4%B9%8B%E9%AC%BC%E6%95%B2%E9%97%A8/</guid>
+    <guid>https://blog.liaoyuaner.cn/%E8%B5%B0%E8%BF%91%E7%A7%91%E5%AD%A6%E4%B9%8B%E9%AC%BC%E6%95%B2%E9%97%A8/</guid>
     <description><![CDATA[<div class="featured-image">
                 <img src="/%e7%94%9f%e6%b4%bb/zjkx.png" referrerpolicy="no-referrer">
             </div>记录一下昨天晚上遇到的大无语事件。 事件一：电瓶车警报响彻夜空 午夜12点时分，楼下突然响起了电瓶车“wu ~wu~”警报声，因为住在二楼，声音就]]></description>

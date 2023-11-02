@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>python - 分类 - 燎原 - 遇见你已经是很不可思议了</title>
-        <link>https://blog.koisecret.site/categories/python/</link>
+        <link>https://blog.liaoyuaner.cn/categories/python/</link>
         <description>python - 分类 - 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 23 Apr 2023 20:00:05 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/categories/python/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 23 Apr 2023 20:00:05 &#43;0800</lastBuildDate><atom:link href="https://blog.liaoyuaner.cn/categories/python/" rel="self" type="application/rss+xml" /><item>
     <title>Python基础</title>
-    <link>https://blog.koisecret.site/python%E5%9F%BA%E7%A1%80/</link>
+    <link>https://blog.liaoyuaner.cn/python%E5%9F%BA%E7%A1%80/</link>
     <pubDate>Sun, 23 Apr 2023 20:00:05 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/python%E5%9F%BA%E7%A1%80/</guid>
+    <guid>https://blog.liaoyuaner.cn/python%E5%9F%BA%E7%A1%80/</guid>
     <description><![CDATA[研一到现在一直没有一个研究方向，被老板push了。。。花了三天把python学了，会Java学python确实是轻松。以前被编程语言给限制了]]></description>
 </item>
 </channel>

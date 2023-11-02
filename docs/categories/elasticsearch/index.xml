@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>elasticsearch - 分类 - 燎原 - 遇见你已经是很不可思议了</title>
-        <link>https://blog.koisecret.site/categories/elasticsearch/</link>
+        <link>https://blog.liaoyuaner.cn/categories/elasticsearch/</link>
         <description>elasticsearch - 分类 - 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 24 Mar 2023 21:09:13 &#43;0800</lastBuildDate><atom:link href="https://blog.koisecret.site/categories/elasticsearch/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 24 Mar 2023 21:09:13 &#43;0800</lastBuildDate><atom:link href="https://blog.liaoyuaner.cn/categories/elasticsearch/" rel="self" type="application/rss+xml" /><item>
     <title>Es集群搭建</title>
-    <link>https://blog.koisecret.site/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
+    <link>https://blog.liaoyuaner.cn/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
     <pubDate>Fri, 24 Mar 2023 21:09:13 &#43;0800</pubDate>
     <author>chengsecret</author>
-    <guid>https://blog.koisecret.site/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
+    <guid>https://blog.liaoyuaner.cn/es%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
     <description><![CDATA[es8集群搭建 三台主机进行部署，由于es集群的master是自己选举产生的，所以搭建时无需关心master和普通节点的区别。 一、搭建步骤 下载]]></description>
 </item>
 </channel>

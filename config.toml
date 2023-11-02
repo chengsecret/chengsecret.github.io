@@ -1,4 +1,4 @@
-baseURL = "https://blog.koisecret.site/"
+baseURL = "https://blog.liaoyuaner.cn/"
 publishDir = "docs"  # 将生成的静态页面文件夹设置到 docs 下，而不是 publish
 
 # [en, zh-cn, fr, pl, ...] determines default content language
