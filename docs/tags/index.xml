@@ -4,7 +4,23 @@
         <link>https://blog.liaoyuaner.cn/tags/</link>
         <description>Tags - 标签 - 燎原 - 遇见你已经是很不可思议了</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
-            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 24 Apr 2023 13:49:00 &#43;0800</lastBuildDate><atom:link href="https://blog.liaoyuaner.cn/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 21 Jul 2024 22:25:48 &#43;0800</lastBuildDate><atom:link href="https://blog.liaoyuaner.cn/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>go</title>
+    <link>https://blog.liaoyuaner.cn/tags/go/</link>
+    <pubDate>Sun, 21 Jul 2024 22:25:48 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.liaoyuaner.cn/tags/go/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>向量数据库</title>
+    <link>https://blog.liaoyuaner.cn/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
+    <pubDate>Sun, 21 Jul 2024 22:25:48 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.liaoyuaner.cn/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>架构</title>
     <link>https://blog.liaoyuaner.cn/tags/%E6%9E%B6%E6%9E%84/</link>
     <pubDate>Mon, 24 Apr 2023 13:49:00 &#43;0800</pubDate>
@@ -66,22 +82,6 @@
     <pubDate>Tue, 01 Nov 2022 15:49:19 &#43;0800</pubDate>
     <author>chengsecret</author>
     <guid>https://blog.liaoyuaner.cn/tags/%E5%BC%80%E6%BA%90/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>生活</title>
-    <link>https://blog.liaoyuaner.cn/tags/%E7%94%9F%E6%B4%BB/</link>
-    <pubDate>Thu, 13 Oct 2022 19:40:19 &#43;0800</pubDate>
-    <author>chengsecret</author>
-    <guid>https://blog.liaoyuaner.cn/tags/%E7%94%9F%E6%B4%BB/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>网络</title>
-    <link>https://blog.liaoyuaner.cn/tags/%E7%BD%91%E7%BB%9C/</link>
-    <pubDate>Thu, 13 Oct 2022 15:52:37 &#43;0800</pubDate>
-    <author>chengsecret</author>
-    <guid>https://blog.liaoyuaner.cn/tags/%E7%BD%91%E7%BB%9C/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

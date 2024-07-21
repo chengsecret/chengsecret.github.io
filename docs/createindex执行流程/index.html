@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>CreateIndex执行流程 - 燎原 - 遇见你已经是很不可思议了</title><meta name="Description" content="燎原的博客网站"><meta property="og:title" content="CreateIndex执行流程" />
+<meta property="og:description" content="数据流程 创建索引的整体数据流向图： etcd元数据操作 1.客户端sdk发出CreateIndex API请求 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.liaoyuaner.cn/createindex%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/" /><meta property="og:image" content="https://blog.liaoyuaner.cn/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-07-21T22:25:48+08:00" />
+<meta property="article:modified_time" content="2024-07-21T22:25:48+08:00" /><meta property="og:site_name" content="My cool site" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.liaoyuaner.cn/logo.png"/>
+
+<meta name="twitter:title" content="CreateIndex执行流程"/>
+<meta name="twitter:description" content="数据流程 创建索引的整体数据流向图： etcd元数据操作 1.客户端sdk发出CreateIndex API请求 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18"/>
+<meta name="application-name" content="燎原の博客">
+<meta name="apple-mobile-web-app-title" content="燎原の博客"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.liaoyuaner.cn/createindex%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/" /><link rel="prev" href="https://blog.liaoyuaner.cn/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "CreateIndex执行流程",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.liaoyuaner.cn\/createindex%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B\/"
+        },"image": ["https:\/\/blog.liaoyuaner.cn\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "go, 向量数据库","wordcount":  4228 ,
+        "url": "https:\/\/blog.liaoyuaner.cn\/createindex%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B\/","datePublished": "2024-07-21T22:25:48+08:00","dateModified": "2024-07-21T22:25:48+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/blog.liaoyuaner.cn\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "chengsecret"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i> Github </a><a class="menu-item" href="/friend/"><i class='fas fa-user-friends'></i> 友链 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="燎原 - 遇见你已经是很不可思议了"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/chengsecret" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>Github</a><a class="menu-item" href="/friend/" title=""><i class='fas fa-user-friends'></i>友链</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">CreateIndex执行流程</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>chengsecret</a>
+</span>&nbsp;<span class="post-category">收录于 <a href="/categories/milvus/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>milvus</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-07-21">2024-07-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4228 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 9 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#数据流程">数据流程</a></li>
+        <li><a href="#etcd元数据操作">etcd元数据操作</a>
+          <ul>
+            <li><a href="#1客户端sdk发出createindex-api请求">1.客户端sdk发出CreateIndex API请求</a></li>
+            <li><a href="#2服务端接受api请求将request封装为createindextask并压入ddqueue队列">2.服务端接受API请求，将request封装为createIndexTask，并压入ddQueue队列。</a></li>
+            <li><a href="#3执行createindextask的3个方法preexecuteexecutepostexecute">3.执行createIndexTask的3个方法PreExecute、Execute、PostExecute</a></li>
+            <li><a href="#4进入datacoord的createindex接口">4.进入datacoord的CreateIndex接口</a></li>
+            <li><a href="#5进入smetacreateindex">5.进入s.meta.CreateIndex()</a></li>
+          </ul>
+        </li>
+        <li><a href="#创建索引操作">创建索引操作</a>
+          <ul>
+            <li><a href="#1datacoord执行createindex">1.dataCoord执行CreateIndex</a></li>
+            <li><a href="#2消费notifyindexchan也在datacoord">2.消费notifyIndexChan也在dataCoord</a></li>
+            <li><a href="#3进入screateindexesforsegment">3.进入s.createIndexesForSegment()</a></li>
+            <li><a href="#5进入sindexbuilderenqueuebuildid">5.进入s.indexBuilder.enqueue(buildID)</a></li>
+            <li><a href="#6进入process">6.进入process()</a></li>
+            <li><a href="#7进入ibassigntask">7.进入ib.assignTask()</a></li>
+            <li><a href="#8进入builderclientcreatejob">8.进入builderClient.CreateJob()</a></li>
+            <li><a href="#9进入buildindex">9.进入BuildIndex()</a></li>
+            <li><a href="#10进入saveindexfiles">10.进入SaveIndexFiles()</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/milvus/createIndex/%e6%9e%b6%e6%9e%84.png"
+        data-srcset="/milvus/createIndex/%e6%9e%b6%e6%9e%84.png, /milvus/createIndex/%e6%9e%b6%e6%9e%84.png 1.5x, /milvus/createIndex/%e6%9e%b6%e6%9e%84.png 2x"
+        data-sizes="auto"
+        alt="/milvus/createIndex/架构.png"
+        title="架构图" /></p>
+<h2 id="数据流程">数据流程</h2>
+<p>创建索引的整体数据流向图：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/milvus/%e6%95%b0%e6%8d%ae%e6%b5%81%e5%90%91.jpg"
+        data-srcset="/milvus/%e6%95%b0%e6%8d%ae%e6%b5%81%e5%90%91.jpg, /milvus/%e6%95%b0%e6%8d%ae%e6%b5%81%e5%90%91.jpg 1.5x, /milvus/%e6%95%b0%e6%8d%ae%e6%b5%81%e5%90%91.jpg 2x"
+        data-sizes="auto"
+        alt="/milvus/数据流向.jpg"
+        title="数据流" /></p>
+<h2 id="etcd元数据操作">etcd元数据操作</h2>
+<h3 id="1客户端sdk发出createindex-api请求">1.客户端sdk发出CreateIndex API请求</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-PYTHON" data-lang="PYTHON"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">pymilvus</span> <span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">connections</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FieldSchema</span><span class="p">,</span> <span class="n">CollectionSchema</span><span class="p">,</span> <span class="n">DataType</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Collection</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">num_entities</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">8</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;start connecting to Milvus&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">connections</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&#34;default&#34;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&#34;192.168.230.71&#34;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="s2">&#34;19530&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FieldSchema</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;pk&#34;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">VARCHAR</span><span class="p">,</span> <span class="n">is_primary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">auto_id</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FieldSchema</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;random&#34;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">DOUBLE</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FieldSchema</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;embeddings&#34;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT_VECTOR</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">schema</span> <span class="o">=</span> <span class="n">CollectionSchema</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="s2">&#34;hello_milvus is the simplest demo to introduce the APIs&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Create collection `hello_milvus`&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">hello_milvus</span> <span class="o">=</span> <span class="n">Collection</span><span class="p">(</span><span class="s2">&#34;hello_milvus&#34;</span><span class="p">,</span> <span class="n">schema</span><span class="p">,</span> <span class="n">consistency_level</span><span class="o">=</span><span class="s2">&#34;Strong&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Start inserting entities&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">19530</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">entities</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># provide the pk field because `auto_id` is set to False</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_entities</span><span class="p">)],</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">num_entities</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>  <span class="c1"># field random, only supports list</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">num_entities</span><span class="p">,</span> <span class="n">dim</span><span class="p">)),</span>    <span class="c1"># field embeddings, supports numpy.ndarray and list</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">insert_result</span> <span class="o">=</span> <span class="n">hello_milvus</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">hello_milvus</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Start Creating index IVF_FLAT&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">index</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;index_type&#34;</span><span class="p">:</span> <span class="s2">&#34;IVF_FLAT&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;metric_type&#34;</span><span class="p">:</span> <span class="s2">&#34;L2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;params&#34;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&#34;nlist&#34;</span><span class="p">:</span> <span class="mi">8</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">hello_milvus</span><span class="o">.</span><span class="n">create_index</span><span class="p">(</span><span class="s2">&#34;embeddings&#34;</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span><span class="n">index_name</span><span class="o">=</span><span class="s2">&#34;idx_embeddings&#34;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="2服务端接受api请求将request封装为createindextask并压入ddqueue队列">2.服务端接受API请求，将request封装为createIndexTask，并压入ddQueue队列。</h3>
+<p>代码路径:internal\proxy\impl.go</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// CreateIndex create index for collection.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">node</span> <span class="o">*</span><span class="nx">Proxy</span><span class="p">)</span> <span class="nf">CreateIndex</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">request</span> <span class="o">*</span><span class="nx">milvuspb</span><span class="p">.</span><span class="nx">CreateIndexRequest</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">commonpb</span><span class="p">.</span><span class="nx">Status</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">	<span class="c1">// request封装为task
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">cit</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">createIndexTask</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ctx</span><span class="p">:</span>                <span class="nx">ctx</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Condition</span><span class="p">:</span>          <span class="nf">NewTaskCondition</span><span class="p">(</span><span class="nx">ctx</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">req</span><span class="p">:</span>                <span class="nx">request</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">rootCoord</span><span class="p">:</span>          <span class="nx">node</span><span class="p">.</span><span class="nx">rootCoord</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">datacoord</span><span class="p">:</span>          <span class="nx">node</span><span class="p">.</span><span class="nx">dataCoord</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">replicateMsgStream</span><span class="p">:</span> <span class="nx">node</span><span class="p">.</span><span class="nx">replicateMsgStream</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 将task压入ddQueue队列
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">sched</span><span class="p">.</span><span class="nx">ddQueue</span><span class="p">.</span><span class="nf">Enqueue</span><span class="p">(</span><span class="nx">cit</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 等待cct执行完
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cit</span><span class="p">.</span><span class="nf">WaitToFinish</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="3执行createindextask的3个方法preexecuteexecutepostexecute">3.执行createIndexTask的3个方法PreExecute、Execute、PostExecute</h3>
+<ul>
+<li>PreExecute()一般为参数校验等工作。</li>
+<li>Execute()一般为真正执行逻辑。</li>
+<li>代码路径:internal\proxy\task_index.go</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">cit</span> <span class="o">*</span><span class="nx">createIndexTask</span><span class="p">)</span> <span class="nf">Execute</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">req</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">indexpb</span><span class="p">.</span><span class="nx">CreateIndexRequest</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">CollectionID</span><span class="p">:</span>    <span class="nx">cit</span><span class="p">.</span><span class="nx">collectionID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">FieldID</span><span class="p">:</span>         <span class="nx">cit</span><span class="p">.</span><span class="nx">fieldSchema</span><span class="p">.</span><span class="nf">GetFieldID</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IndexName</span><span class="p">:</span>       <span class="nx">cit</span><span class="p">.</span><span class="nx">req</span><span class="p">.</span><span class="nf">GetIndexName</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">TypeParams</span><span class="p">:</span>      <span class="nx">cit</span><span class="p">.</span><span class="nx">newTypeParams</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IndexParams</span><span class="p">:</span>     <span class="nx">cit</span><span class="p">.</span><span class="nx">newIndexParams</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IsAutoIndex</span><span class="p">:</span>     <span class="nx">cit</span><span class="p">.</span><span class="nx">isAutoIndex</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">UserIndexParams</span><span class="p">:</span> <span class="nx">cit</span><span class="p">.</span><span class="nx">newExtraParams</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Timestamp</span><span class="p">:</span>       <span class="nx">cit</span><span class="p">.</span><span class="nf">BeginTs</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cit</span><span class="p">.</span><span class="nx">result</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">cit</span><span class="p">.</span><span class="nx">datacoord</span><span class="p">.</span><span class="nf">CreateIndex</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">SendReplicateMessagePack</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">cit</span><span class="p">.</span><span class="nx">replicateMsgStream</span><span class="p">,</span> <span class="nx">cit</span><span class="p">.</span><span class="nx">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>从代码可以看出调用了datacoord的CreateIndex接口。</p>
+<h3 id="4进入datacoord的createindex接口">4.进入datacoord的CreateIndex接口</h3>
+<p>代码路径:internal\datacoord\index_service.go</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// CreateIndex create an index on collection.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Index building is asynchronous, so when an index building request comes, an IndexID is assigned to the task and
+</span></span></span><span class="line"><span class="cl"><span class="c1">// will get all flushed segments from DataCoord and record tasks with these segments. The background process
+</span></span></span><span class="line"><span class="cl"><span class="c1">// indexBuilder will find this task and assign it to IndexNode for execution.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Server</span><span class="p">)</span> <span class="nf">CreateIndex</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">indexpb</span><span class="p">.</span><span class="nx">CreateIndexRequest</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">commonpb</span><span class="p">.</span><span class="nx">Status</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 分配indexID,indexID=0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">indexID</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">CanCreateIndex</span><span class="p">(</span><span class="nx">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">indexID</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 分配indexID
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">indexID</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">allocator</span><span class="p">.</span><span class="nf">allocID</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">index</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">model</span><span class="p">.</span><span class="nx">Index</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">CollectionID</span><span class="p">:</span>    <span class="nx">req</span><span class="p">.</span><span class="nf">GetCollectionID</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">FieldID</span><span class="p">:</span>         <span class="nx">req</span><span class="p">.</span><span class="nf">GetFieldID</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IndexID</span><span class="p">:</span>         <span class="nx">indexID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IndexName</span><span class="p">:</span>       <span class="nx">req</span><span class="p">.</span><span class="nf">GetIndexName</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">TypeParams</span><span class="p">:</span>      <span class="nx">req</span><span class="p">.</span><span class="nf">GetTypeParams</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IndexParams</span><span class="p">:</span>     <span class="nx">req</span><span class="p">.</span><span class="nf">GetIndexParams</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">CreateTime</span><span class="p">:</span>      <span class="nx">req</span><span class="p">.</span><span class="nf">GetTimestamp</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IsAutoIndex</span><span class="p">:</span>     <span class="nx">req</span><span class="p">.</span><span class="nf">GetIsAutoIndex</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">UserIndexParams</span><span class="p">:</span> <span class="nx">req</span><span class="p">.</span><span class="nf">GetUserIndexParams</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Get flushed segments and create index
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">CreateIndex</span><span class="p">(</span><span class="nx">index</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 将collectionID发送到channel,其它的goroutine进行消费。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">select</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="nx">s</span><span class="p">.</span><span class="nx">notifyIndexChan</span> <span class="o">&lt;-</span> <span class="nx">req</span><span class="p">.</span><span class="nf">GetCollectionID</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">	<span class="k">default</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/milvus/index%e8%b0%83%e8%af%95.jpg"
+        data-srcset="/milvus/index%e8%b0%83%e8%af%95.jpg, /milvus/index%e8%b0%83%e8%af%95.jpg 1.5x, /milvus/index%e8%b0%83%e8%af%95.jpg 2x"
+        data-sizes="auto"
+        alt="/milvus/index调试.jpg"
+        title="index调试" /></p>
+<h3 id="5进入smetacreateindex">5.进入s.meta.CreateIndex()</h3>
+<p>代码路径:internal\datacoord\index_meta.go</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">meta</span><span class="p">)</span> <span class="nf">CreateIndex</span><span class="p">(</span><span class="nx">index</span> <span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Index</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 写入etcd元数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">catalog</span><span class="p">.</span><span class="nf">CreateIndex</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">index</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">m</span><span class="p">.</span><span class="nf">updateCollectionIndex</span><span class="p">(</span><span class="nx">index</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在这里重点研究m.catalog.CreateIndex()这个方法做了什么事情。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">kc</span> <span class="o">*</span><span class="nx">Catalog</span><span class="p">)</span> <span class="nf">CreateIndex</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">index</span> <span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Index</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">key</span> <span class="o">:=</span> <span class="nf">BuildIndexKey</span><span class="p">(</span><span class="nx">index</span><span class="p">.</span><span class="nx">CollectionID</span><span class="p">,</span> <span class="nx">index</span><span class="p">.</span><span class="nx">IndexID</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">value</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">proto</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nf">MarshalIndexModel</span><span class="p">(</span><span class="nx">index</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">kc</span><span class="p">.</span><span class="nx">MetaKv</span><span class="p">.</span><span class="nf">Save</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nb">string</span><span class="p">(</span><span class="nx">value</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在etcd会产生1个key。</p>
+<p>==field-index/445834678636119060/445834678636519085==</p>
+<p>value的值的结构为indexpb.FieldIndex，然后进行protobuf序列化后存入etcd。</p>
+<p>因此etcd存储的是二进制数据。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="o">&amp;</span><span class="nx">indexpb</span><span class="p">.</span><span class="nx">FieldIndex</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">IndexInfo</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">indexpb</span><span class="p">.</span><span class="nx">IndexInfo</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">CollectionID</span><span class="p">:</span>    <span class="nx">index</span><span class="p">.</span><span class="nx">CollectionID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">FieldID</span><span class="p">:</span>         <span class="nx">index</span><span class="p">.</span><span class="nx">FieldID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IndexName</span><span class="p">:</span>       <span class="nx">index</span><span class="p">.</span><span class="nx">IndexName</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IndexID</span><span class="p">:</span>         <span class="nx">index</span><span class="p">.</span><span class="nx">IndexID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">TypeParams</span><span class="p">:</span>      <span class="nx">index</span><span class="p">.</span><span class="nx">TypeParams</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IndexParams</span><span class="p">:</span>     <span class="nx">index</span><span class="p">.</span><span class="nx">IndexParams</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IsAutoIndex</span><span class="p">:</span>     <span class="nx">index</span><span class="p">.</span><span class="nx">IsAutoIndex</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">UserIndexParams</span><span class="p">:</span> <span class="nx">index</span><span class="p">.</span><span class="nx">UserIndexParams</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">},</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Deleted</span><span class="p">:</span>    <span class="nx">index</span><span class="p">.</span><span class="nx">IsDeleted</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">CreateTime</span><span class="p">:</span> <span class="nx">index</span><span class="p">.</span><span class="nx">CreateTime</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>跟踪BuildIndexKey()函数，即可以得到key的规则。整理如下:</p>
+<p>key规则:</p>
+<ul>
+<li>前缀/field-index/{collectionID}/{IndexID}</li>
+</ul>
+<p>可以反映index属于哪个collection。Index的value可以反映属于哪个field。</p>
+<p>不能反映属于哪个partition、哪个segment。</p>
+<p>总结:</p>
+<ul>
+<li>CreateIndex由proxy传递给协调器dataCoord操作etcd。</li>
+<li>CreateIndex最终会在etcd上写入1种类型的key（其实还有一种）。</li>
+</ul>
+<h2 id="创建索引操作">创建索引操作</h2>
+<h3 id="1datacoord执行createindex">1.dataCoord执行CreateIndex</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Server</span><span class="p">)</span> <span class="nf">CreateIndex</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">indexpb</span><span class="p">.</span><span class="nx">CreateIndexRequest</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">commonpb</span><span class="p">.</span><span class="nx">Status</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 分配indexID,indexID=0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">indexID</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">CanCreateIndex</span><span class="p">(</span><span class="nx">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">CreateIndex</span><span class="p">(</span><span class="nx">index</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 将collectionID发送到channel,其它的goroutine进行消费。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">select</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="nx">s</span><span class="p">.</span><span class="nx">notifyIndexChan</span> <span class="o">&lt;-</span> <span class="nx">req</span><span class="p">.</span><span class="nf">GetCollectionID</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">	<span class="k">default</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>上文已经分析过s.meta.CreateIndex()，这里重点分析s.notifyIndexChan。将collectionID发送到channel,其它的goroutine进行消费。</p>
+<h3 id="2消费notifyindexchan也在datacoord">2.消费notifyIndexChan也在dataCoord</h3>
+<p>代码路径:internal\datacoord\index_service.go</p>
+<p>启动dataCoord服务的时候会调用此方法。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Server</span><span class="p">)</span> <span class="nf">createIndexForSegmentLoop</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">log</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;start create index for segment loop...&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nx">s</span><span class="p">.</span><span class="nx">serverLoopWg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">ticker</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">NewTicker</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nx">ticker</span><span class="p">.</span><span class="nf">Stop</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">select</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">ctx</span><span class="p">.</span><span class="nf">Done</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">log</span><span class="p">.</span><span class="nf">Warn</span><span class="p">(</span><span class="s">&#34;DataCoord context done, exit...&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span>
+</span></span><span class="line"><span class="cl">		<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">ticker</span><span class="p">.</span><span class="nx">C</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">segments</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">GetHasUnindexTaskSegments</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">			<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">segment</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">segments</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nf">createIndexesForSegment</span><span class="p">(</span><span class="nx">segment</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">					<span class="nx">log</span><span class="p">.</span><span class="nf">Warn</span><span class="p">(</span><span class="s">&#34;create index for segment fail, wait for retry&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;segmentID&#34;</span><span class="p">,</span> <span class="nx">segment</span><span class="p">.</span><span class="nx">ID</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">					<span class="k">continue</span>
+</span></span><span class="line"><span class="cl">				<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">case</span> <span class="nx">collectionID</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">s</span><span class="p">.</span><span class="nx">notifyIndexChan</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">log</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;receive create index notify&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;collectionID&#34;</span><span class="p">,</span> <span class="nx">collectionID</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 获取collection的segment信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nx">segments</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">SelectSegments</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">info</span> <span class="o">*</span><span class="nx">SegmentInfo</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span> <span class="nf">isFlush</span><span class="p">(</span><span class="nx">info</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">collectionID</span> <span class="o">==</span> <span class="nx">info</span><span class="p">.</span><span class="nx">CollectionID</span>
+</span></span><span class="line"><span class="cl">			<span class="p">})</span>
+</span></span><span class="line"><span class="cl">			<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">segment</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">segments</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nf">createIndexesForSegment</span><span class="p">(</span><span class="nx">segment</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">					<span class="nx">log</span><span class="p">.</span><span class="nf">Warn</span><span class="p">(</span><span class="s">&#34;create index for segment fail, wait for retry&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;segmentID&#34;</span><span class="p">,</span> <span class="nx">segment</span><span class="p">.</span><span class="nx">ID</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">					<span class="k">continue</span>
+</span></span><span class="line"><span class="cl">				<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">case</span> <span class="nx">segID</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">s</span><span class="p">.</span><span class="nx">buildIndexCh</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">log</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;receive new flushed segment&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;segmentID&#34;</span><span class="p">,</span> <span class="nx">segID</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">segment</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">GetSegment</span><span class="p">(</span><span class="nx">segID</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">segment</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">log</span><span class="p">.</span><span class="nf">Warn</span><span class="p">(</span><span class="s">&#34;segment is not exist, no need to build index&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;segmentID&#34;</span><span class="p">,</span> <span class="nx">segID</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">				<span class="k">continue</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nf">createIndexesForSegment</span><span class="p">(</span><span class="nx">segment</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">log</span><span class="p">.</span><span class="nf">Warn</span><span class="p">(</span><span class="s">&#34;create index for segment fail, wait for retry&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;segmentID&#34;</span><span class="p">,</span> <span class="nx">segment</span><span class="p">.</span><span class="nx">ID</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">				<span class="k">continue</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>走case collectionID := &lt;-s.notifyIndexChan这个分支。</p>
+<h3 id="3进入screateindexesforsegment">3.进入s.createIndexesForSegment()</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Server</span><span class="p">)</span> <span class="nf">createIndexesForSegment</span><span class="p">(</span><span class="nx">segment</span> <span class="o">*</span><span class="nx">SegmentInfo</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 要创建的索引的信息：索引名称，维度等信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">indexes</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">GetIndexesForCollection</span><span class="p">(</span><span class="nx">segment</span><span class="p">.</span><span class="nx">CollectionID</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">index</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">indexes</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">segment</span><span class="p">.</span><span class="nx">segmentIndexes</span><span class="p">[</span><span class="nx">index</span><span class="p">.</span><span class="nx">IndexID</span><span class="p">];</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nf">createIndexForSegment</span><span class="p">(</span><span class="nx">segment</span><span class="p">,</span> <span class="nx">index</span><span class="p">.</span><span class="nx">IndexID</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">log</span><span class="p">.</span><span class="nf">Warn</span><span class="p">(</span><span class="s">&#34;create index for segment fail&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;segmentID&#34;</span><span class="p">,</span> <span class="nx">segment</span><span class="p">.</span><span class="nx">ID</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">					<span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;indexID&#34;</span><span class="p">,</span> <span class="nx">index</span><span class="p">.</span><span class="nx">IndexID</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>4.进入s.createIndexForSegment()</p>
+<p>在segment上建立索引。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Server</span><span class="p">)</span> <span class="nf">createIndexForSegment</span><span class="p">(</span><span class="nx">segment</span> <span class="o">*</span><span class="nx">SegmentInfo</span><span class="p">,</span> <span class="nx">indexID</span> <span class="nx">UniqueID</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">log</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;create index for segment&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;segmentID&#34;</span><span class="p">,</span> <span class="nx">segment</span><span class="p">.</span><span class="nx">ID</span><span class="p">),</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;indexID&#34;</span><span class="p">,</span> <span class="nx">indexID</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">buildID</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">allocator</span><span class="p">.</span><span class="nf">allocID</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">segIndex</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">model</span><span class="p">.</span><span class="nx">SegmentIndex</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">SegmentID</span><span class="p">:</span>    <span class="nx">segment</span><span class="p">.</span><span class="nx">ID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">CollectionID</span><span class="p">:</span> <span class="nx">segment</span><span class="p">.</span><span class="nx">CollectionID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">PartitionID</span><span class="p">:</span>  <span class="nx">segment</span><span class="p">.</span><span class="nx">PartitionID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">NumRows</span><span class="p">:</span>      <span class="nx">segment</span><span class="p">.</span><span class="nx">NumOfRows</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IndexID</span><span class="p">:</span>      <span class="nx">indexID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">BuildID</span><span class="p">:</span>      <span class="nx">buildID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">CreateTime</span><span class="p">:</span>   <span class="nb">uint64</span><span class="p">(</span><span class="nx">segment</span><span class="p">.</span><span class="nx">ID</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">WriteHandoff</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 添加segment-index
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 前缀/segment-index/{collectionID}/{partitionID}/{segmentID}/{buildID}
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">AddSegmentIndex</span><span class="p">(</span><span class="nx">segIndex</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 入队，通知IndexNode执行索引创建任务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">s</span><span class="p">.</span><span class="nx">indexBuilder</span><span class="p">.</span><span class="nf">enqueue</span><span class="p">(</span><span class="nx">buildID</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>s.meta.AddSegmentIndex(segIndex)在etcd添加segment-index。</p>
+<p>==前缀/segment-index/{collectionID}/{partitionID}/{segmentID}/{buildID}==</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">kc</span> <span class="o">*</span><span class="nx">Catalog</span><span class="p">)</span> <span class="nf">CreateSegmentIndex</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">segIdx</span> <span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">SegmentIndex</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// key规则
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">key</span> <span class="o">:=</span> <span class="nf">BuildSegmentIndexKey</span><span class="p">(</span><span class="nx">segIdx</span><span class="p">.</span><span class="nx">CollectionID</span><span class="p">,</span> <span class="nx">segIdx</span><span class="p">.</span><span class="nx">PartitionID</span><span class="p">,</span> <span class="nx">segIdx</span><span class="p">.</span><span class="nx">SegmentID</span><span class="p">,</span> <span class="nx">segIdx</span><span class="p">.</span><span class="nx">BuildID</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">value</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">proto</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nf">MarshalSegmentIndexModel</span><span class="p">(</span><span class="nx">segIdx</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 写入etcd
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">err</span> <span class="p">=</span> <span class="nx">kc</span><span class="p">.</span><span class="nx">MetaKv</span><span class="p">.</span><span class="nf">Save</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nb">string</span><span class="p">(</span><span class="nx">value</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">log</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="s">&#34;failed to save segment index meta in etcd&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;buildID&#34;</span><span class="p">,</span> <span class="nx">segIdx</span><span class="p">.</span><span class="nx">BuildID</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;segmentID&#34;</span><span class="p">,</span> <span class="nx">segIdx</span><span class="p">.</span><span class="nx">SegmentID</span><span class="p">),</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">err</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="5进入sindexbuilderenqueuebuildid">5.进入s.indexBuilder.enqueue(buildID)</h3>
+<p>此函数作用:入队，通知IndexNode执行索引创建任务。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/milvus/index%e6%95%b0%e6%8d%ae%e6%b5%81%e5%9b%be.jpg"
+        data-srcset="/milvus/index%e6%95%b0%e6%8d%ae%e6%b5%81%e5%9b%be.jpg, /milvus/index%e6%95%b0%e6%8d%ae%e6%b5%81%e5%9b%be.jpg 1.5x, /milvus/index%e6%95%b0%e6%8d%ae%e6%b5%81%e5%9b%be.jpg 2x"
+        data-sizes="auto"
+        alt="/milvus/index数据流图.jpg"
+        title="数据流" /></p>
+<h3 id="6进入process">6.进入process()</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">ib</span> <span class="o">*</span><span class="nx">indexBuilder</span><span class="p">)</span> <span class="nf">process</span><span class="p">(</span><span class="nx">buildID</span> <span class="nx">UniqueID</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 有一个定时器，默认1秒，配置项indexCoord.scheduler.interval
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">switch</span> <span class="nx">state</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="nx">indexTaskInit</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">segment</span> <span class="o">:=</span> <span class="nx">ib</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">GetSegment</span><span class="p">(</span><span class="nx">meta</span><span class="p">.</span><span class="nx">SegmentID</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">!</span><span class="nf">isSegmentHealthy</span><span class="p">(</span><span class="nx">segment</span><span class="p">)</span> <span class="o">||</span> <span class="p">!</span><span class="nx">ib</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">IsIndexExist</span><span class="p">(</span><span class="nx">meta</span><span class="p">.</span><span class="nx">CollectionID</span><span class="p">,</span> <span class="nx">meta</span><span class="p">.</span><span class="nx">IndexID</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">log</span><span class="p">.</span><span class="nf">Ctx</span><span class="p">(</span><span class="nx">ib</span><span class="p">.</span><span class="nx">ctx</span><span class="p">).</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;task is no need to build index, remove it&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;buildID&#34;</span><span class="p">,</span> <span class="nx">buildID</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ib</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">DeleteTask</span><span class="p">(</span><span class="nx">buildID</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">log</span><span class="p">.</span><span class="nf">Ctx</span><span class="p">(</span><span class="nx">ib</span><span class="p">.</span><span class="nx">ctx</span><span class="p">).</span><span class="nf">Warn</span><span class="p">(</span><span class="s">&#34;IndexCoord delete index failed&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;buildID&#34;</span><span class="p">,</span> <span class="nx">buildID</span><span class="p">),</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">err</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="nf">deleteFunc</span><span class="p">(</span><span class="nx">buildID</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">indexParams</span> <span class="o">:=</span> <span class="nx">ib</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">GetIndexParams</span><span class="p">(</span><span class="nx">meta</span><span class="p">.</span><span class="nx">CollectionID</span><span class="p">,</span> <span class="nx">meta</span><span class="p">.</span><span class="nx">IndexID</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nf">isFlatIndex</span><span class="p">(</span><span class="nf">getIndexType</span><span class="p">(</span><span class="nx">indexParams</span><span class="p">))</span> <span class="o">||</span> <span class="nx">meta</span><span class="p">.</span><span class="nx">NumRows</span> <span class="p">&lt;</span> <span class="nx">Params</span><span class="p">.</span><span class="nx">DataCoordCfg</span><span class="p">.</span><span class="nx">MinSegmentNumRowsToEnableIndex</span><span class="p">.</span><span class="nf">GetAsInt64</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 数量小于最低数量无需建立索引,默认为1024
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nx">log</span><span class="p">.</span><span class="nf">Ctx</span><span class="p">(</span><span class="nx">ib</span><span class="p">.</span><span class="nx">ctx</span><span class="p">).</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;segment does not need index really&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;buildID&#34;</span><span class="p">,</span> <span class="nx">buildID</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;segmentID&#34;</span><span class="p">,</span> <span class="nx">meta</span><span class="p">.</span><span class="nx">SegmentID</span><span class="p">),</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;num rows&#34;</span><span class="p">,</span> <span class="nx">meta</span><span class="p">.</span><span class="nx">NumRows</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ib</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">FinishTask</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">indexpb</span><span class="p">.</span><span class="nx">IndexTaskInfo</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">BuildID</span><span class="p">:</span>        <span class="nx">buildID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">State</span><span class="p">:</span>          <span class="nx">commonpb</span><span class="p">.</span><span class="nx">IndexState_Finished</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">IndexFileKeys</span><span class="p">:</span>  <span class="kc">nil</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">SerializedSize</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">FailReason</span><span class="p">:</span>     <span class="s">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">			<span class="p">});</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">log</span><span class="p">.</span><span class="nf">Ctx</span><span class="p">(</span><span class="nx">ib</span><span class="p">.</span><span class="nx">ctx</span><span class="p">).</span><span class="nf">Warn</span><span class="p">(</span><span class="s">&#34;IndexCoord update index state fail&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;buildID&#34;</span><span class="p">,</span> <span class="nx">buildID</span><span class="p">),</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">err</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="nf">updateStateFunc</span><span class="p">(</span><span class="nx">buildID</span><span class="p">,</span> <span class="nx">indexTaskDone</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// peek client
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// if all IndexNodes are executing task, wait for one of them to finish the task.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">nodeID</span><span class="p">,</span> <span class="nx">client</span> <span class="o">:=</span> <span class="nx">ib</span><span class="p">.</span><span class="nx">nodeManager</span><span class="p">.</span><span class="nf">PeekClient</span><span class="p">(</span><span class="nx">meta</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">client</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">log</span><span class="p">.</span><span class="nf">Ctx</span><span class="p">(</span><span class="nx">ib</span><span class="p">.</span><span class="nx">ctx</span><span class="p">).</span><span class="nf">WithRateGroup</span><span class="p">(</span><span class="s">&#34;dc.indexBuilder&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">60</span><span class="p">).</span><span class="nf">RatedInfo</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s">&#34;index builder peek client error, there is no available&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// update version and set nodeID
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ib</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">UpdateVersion</span><span class="p">(</span><span class="nx">buildID</span><span class="p">,</span> <span class="nx">nodeID</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">log</span><span class="p">.</span><span class="nf">Ctx</span><span class="p">(</span><span class="nx">ib</span><span class="p">.</span><span class="nx">ctx</span><span class="p">).</span><span class="nf">Warn</span><span class="p">(</span><span class="s">&#34;index builder update index version failed&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Int64</span><span class="p">(</span><span class="s">&#34;build&#34;</span><span class="p">,</span> <span class="nx">buildID</span><span class="p">),</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">err</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// binLogs为向量数据文件的位置信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// files/insert_log/444517122896489678/444517122896489679/444517122896489694/102/444517122896236031
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// files/insert_log/{collectionID}/{partitionID}/{segmentID}/{fieldID}/444517122896236031
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">binLogs</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fieldID</span> <span class="o">:=</span> <span class="nx">ib</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">GetFieldIDByIndexID</span><span class="p">(</span><span class="nx">meta</span><span class="p">.</span><span class="nx">CollectionID</span><span class="p">,</span> <span class="nx">meta</span><span class="p">.</span><span class="nx">IndexID</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">fieldBinLog</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">segment</span><span class="p">.</span><span class="nf">GetBinlogs</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">fieldBinLog</span><span class="p">.</span><span class="nf">GetFieldID</span><span class="p">()</span> <span class="o">==</span> <span class="nx">fieldID</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">binLog</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">fieldBinLog</span><span class="p">.</span><span class="nf">GetBinlogs</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">					<span class="nx">binLogs</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">binLogs</span><span class="p">,</span> <span class="nx">binLog</span><span class="p">.</span><span class="nx">LogPath</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="p">}</span>
+</span></span><span class="line"><span class="cl">				<span class="k">break</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="nx">typeParams</span> <span class="o">:=</span> <span class="nx">ib</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">GetTypeParams</span><span class="p">(</span><span class="nx">meta</span><span class="p">.</span><span class="nx">CollectionID</span><span class="p">,</span> <span class="nx">meta</span><span class="p">.</span><span class="nx">IndexID</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="kd">var</span> <span class="nx">storageConfig</span> <span class="o">*</span><span class="nx">indexpb</span><span class="p">.</span><span class="nx">StorageConfig</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 获取元数据存储类型：minio
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="nx">Params</span><span class="p">.</span><span class="nx">CommonCfg</span><span class="p">.</span><span class="nx">StorageType</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#34;local&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">storageConfig</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">indexpb</span><span class="p">.</span><span class="nx">StorageConfig</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">RootPath</span><span class="p">:</span>    <span class="nx">Params</span><span class="p">.</span><span class="nx">LocalStorageCfg</span><span class="p">.</span><span class="nx">Path</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">StorageType</span><span class="p">:</span> <span class="nx">Params</span><span class="p">.</span><span class="nx">CommonCfg</span><span class="p">.</span><span class="nx">StorageType</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">storageConfig</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">indexpb</span><span class="p">.</span><span class="nx">StorageConfig</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">Address</span><span class="p">:</span>          <span class="nx">Params</span><span class="p">.</span><span class="nx">MinioCfg</span><span class="p">.</span><span class="nx">Address</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">AccessKeyID</span><span class="p">:</span>      <span class="nx">Params</span><span class="p">.</span><span class="nx">MinioCfg</span><span class="p">.</span><span class="nx">AccessKeyID</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">SecretAccessKey</span><span class="p">:</span>  <span class="nx">Params</span><span class="p">.</span><span class="nx">MinioCfg</span><span class="p">.</span><span class="nx">SecretAccessKey</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">UseSSL</span><span class="p">:</span>           <span class="nx">Params</span><span class="p">.</span><span class="nx">MinioCfg</span><span class="p">.</span><span class="nx">UseSSL</span><span class="p">.</span><span class="nf">GetAsBool</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">BucketName</span><span class="p">:</span>       <span class="nx">Params</span><span class="p">.</span><span class="nx">MinioCfg</span><span class="p">.</span><span class="nx">BucketName</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">RootPath</span><span class="p">:</span>         <span class="nx">Params</span><span class="p">.</span><span class="nx">MinioCfg</span><span class="p">.</span><span class="nx">RootPath</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">UseIAM</span><span class="p">:</span>           <span class="nx">Params</span><span class="p">.</span><span class="nx">MinioCfg</span><span class="p">.</span><span class="nx">UseIAM</span><span class="p">.</span><span class="nf">GetAsBool</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">IAMEndpoint</span><span class="p">:</span>      <span class="nx">Params</span><span class="p">.</span><span class="nx">MinioCfg</span><span class="p">.</span><span class="nx">IAMEndpoint</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">StorageType</span><span class="p">:</span>      <span class="nx">Params</span><span class="p">.</span><span class="nx">CommonCfg</span><span class="p">.</span><span class="nx">StorageType</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">Region</span><span class="p">:</span>           <span class="nx">Params</span><span class="p">.</span><span class="nx">MinioCfg</span><span class="p">.</span><span class="nx">Region</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">UseVirtualHost</span><span class="p">:</span>   <span class="nx">Params</span><span class="p">.</span><span class="nx">MinioCfg</span><span class="p">.</span><span class="nx">UseVirtualHost</span><span class="p">.</span><span class="nf">GetAsBool</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">CloudProvider</span><span class="p">:</span>    <span class="nx">Params</span><span class="p">.</span><span class="nx">MinioCfg</span><span class="p">.</span><span class="nx">CloudProvider</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">RequestTimeoutMs</span><span class="p">:</span> <span class="nx">Params</span><span class="p">.</span><span class="nx">MinioCfg</span><span class="p">.</span><span class="nx">RequestTimeoutMs</span><span class="p">.</span><span class="nf">GetAsInt64</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">req</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">indexpb</span><span class="p">.</span><span class="nx">CreateJobRequest</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">ClusterID</span><span class="p">:</span>           <span class="nx">Params</span><span class="p">.</span><span class="nx">CommonCfg</span><span class="p">.</span><span class="nx">ClusterPrefix</span><span class="p">.</span><span class="nf">GetValue</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">IndexFilePrefix</span><span class="p">:</span>     <span class="nx">path</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">ib</span><span class="p">.</span><span class="nx">chunkManager</span><span class="p">.</span><span class="nf">RootPath</span><span class="p">(),</span> <span class="nx">common</span><span class="p">.</span><span class="nx">SegmentIndexPath</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">BuildID</span><span class="p">:</span>             <span class="nx">buildID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">DataPaths</span><span class="p">:</span>           <span class="nx">binLogs</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">IndexVersion</span><span class="p">:</span>        <span class="nx">meta</span><span class="p">.</span><span class="nx">IndexVersion</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">StorageConfig</span><span class="p">:</span>       <span class="nx">storageConfig</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">IndexParams</span><span class="p">:</span>         <span class="nx">indexParams</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">TypeParams</span><span class="p">:</span>          <span class="nx">typeParams</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">NumRows</span><span class="p">:</span>             <span class="nx">meta</span><span class="p">.</span><span class="nx">NumRows</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">CurrentIndexVersion</span><span class="p">:</span> <span class="nx">ib</span><span class="p">.</span><span class="nx">indexEngineVersionManager</span><span class="p">.</span><span class="nf">GetCurrentIndexEngineVersion</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 通知IndexNode创建索引
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ib</span><span class="p">.</span><span class="nf">assignTask</span><span class="p">(</span><span class="nx">client</span><span class="p">,</span> <span class="nx">req</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="o">......</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="o">......</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// update index meta state to InProgress
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// 更新索引状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ib</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nf">BuildIndex</span><span class="p">(</span><span class="nx">buildID</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="o">......</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">updateStateFunc</span><span class="p">(</span><span class="nx">buildID</span><span class="p">,</span> <span class="nx">indexTaskInProgress</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="nx">indexTaskDone</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="o">......</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">default</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>ib.assignTask()通知indexNode创建索引。</p>
+<h3 id="7进入ibassigntask">7.进入ib.assignTask()</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// assignTask sends the index task to the IndexNode, it has a timeout interval, if the IndexNode doesn&#39;t respond within
+</span></span></span><span class="line"><span class="cl"><span class="c1">// the interval, it is considered that the task sending failed.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">ib</span> <span class="o">*</span><span class="nx">indexBuilder</span><span class="p">)</span> <span class="nf">assignTask</span><span class="p">(</span><span class="nx">builderClient</span> <span class="nx">types</span><span class="p">.</span><span class="nx">IndexNodeClient</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">indexpb</span><span class="p">.</span><span class="nx">CreateJobRequest</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// rpc调用indexNode
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">builderClient</span><span class="p">.</span><span class="nf">CreateJob</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="8进入builderclientcreatejob">8.进入builderClient.CreateJob()</h3>
+<p>代码路径:internal\indexnode\indexnode_service.go</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">i</span> <span class="o">*</span><span class="nx">IndexNode</span><span class="p">)</span> <span class="nf">CreateJob</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">indexpb</span><span class="p">.</span><span class="nx">CreateJobRequest</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">commonpb</span><span class="p">.</span><span class="nx">Status</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">task</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">indexBuildTask</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ident</span><span class="p">:</span>          <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;%s/%d&#34;</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">ClusterID</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">BuildID</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ctx</span><span class="p">:</span>            <span class="nx">taskCtx</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">cancel</span><span class="p">:</span>         <span class="nx">taskCancel</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">BuildID</span><span class="p">:</span>        <span class="nx">req</span><span class="p">.</span><span class="nf">GetBuildID</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ClusterID</span><span class="p">:</span>      <span class="nx">req</span><span class="p">.</span><span class="nf">GetClusterID</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">node</span><span class="p">:</span>           <span class="nx">i</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">req</span><span class="p">:</span>            <span class="nx">req</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">cm</span><span class="p">:</span>             <span class="nx">cm</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">nodeID</span><span class="p">:</span>         <span class="nx">i</span><span class="p">.</span><span class="nf">GetNodeID</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">tr</span><span class="p">:</span>             <span class="nx">timerecord</span><span class="p">.</span><span class="nf">NewTimeRecorder</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;IndexBuildID: %d, ClusterID: %s&#34;</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">BuildID</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">ClusterID</span><span class="p">)),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">serializedSize</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">ret</span> <span class="o">:=</span> <span class="nx">merr</span><span class="p">.</span><span class="nf">Success</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">i</span><span class="p">.</span><span class="nx">sched</span><span class="p">.</span><span class="nx">IndexBuildQueue</span><span class="p">.</span><span class="nf">Enqueue</span><span class="p">(</span><span class="nx">task</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>task执行逻辑:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">pipelines</span> <span class="o">:=</span> <span class="p">[]</span><span class="kd">func</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="kt">error</span><span class="p">{</span><span class="nx">t</span><span class="p">.</span><span class="nx">Prepare</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">BuildIndex</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">SaveIndexFiles</span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>依次执行task的Prepare()、BuildIndex()、SaveIndexFiles()方法。</p>
+<h3 id="9进入buildindex">9.进入BuildIndex()</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">it</span> <span class="o">*</span><span class="nx">indexBuildTask</span><span class="p">)</span> <span class="nf">BuildIndex</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">buildIndexInfo</span> <span class="o">*</span><span class="nx">indexcgowrapper</span><span class="p">.</span><span class="nx">BuildIndexInfo</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">buildIndexInfo</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">indexcgowrapper</span><span class="p">.</span><span class="nf">NewBuildIndexInfo</span><span class="p">(</span><span class="nx">it</span><span class="p">.</span><span class="nx">req</span><span class="p">.</span><span class="nf">GetStorageConfig</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">buildIndexInfo</span><span class="p">.</span><span class="nf">AppendFieldMetaInfo</span><span class="p">(</span><span class="nx">it</span><span class="p">.</span><span class="nx">collectionID</span><span class="p">,</span> <span class="nx">it</span><span class="p">.</span><span class="nx">partitionID</span><span class="p">,</span> <span class="nx">it</span><span class="p">.</span><span class="nx">segmentID</span><span class="p">,</span> <span class="nx">it</span><span class="p">.</span><span class="nx">fieldID</span><span class="p">,</span> <span class="nx">it</span><span class="p">.</span><span class="nx">fieldType</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">buildIndexInfo</span><span class="p">.</span><span class="nf">AppendIndexMetaInfo</span><span class="p">(</span><span class="nx">it</span><span class="p">.</span><span class="nx">req</span><span class="p">.</span><span class="nx">IndexID</span><span class="p">,</span> <span class="nx">it</span><span class="p">.</span><span class="nx">req</span><span class="p">.</span><span class="nx">BuildID</span><span class="p">,</span> <span class="nx">it</span><span class="p">.</span><span class="nx">req</span><span class="p">.</span><span class="nx">IndexVersion</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">buildIndexInfo</span><span class="p">.</span><span class="nf">AppendBuildIndexParam</span><span class="p">(</span><span class="nx">it</span><span class="p">.</span><span class="nx">newIndexParams</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">jsonIndexParams</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">it</span><span class="p">.</span><span class="nx">newIndexParams</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">buildIndexInfo</span><span class="p">.</span><span class="nf">AppendBuildTypeParam</span><span class="p">(</span><span class="nx">it</span><span class="p">.</span><span class="nx">newTypeParams</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">path</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">it</span><span class="p">.</span><span class="nx">req</span><span class="p">.</span><span class="nf">GetDataPaths</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">err</span> <span class="p">=</span> <span class="nx">buildIndexInfo</span><span class="p">.</span><span class="nf">AppendInsertFile</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">log</span><span class="p">.</span><span class="nf">Ctx</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span><span class="nf">Warn</span><span class="p">(</span><span class="s">&#34;append insert binlog path failed&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">err</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">it</span><span class="p">.</span><span class="nx">currentIndexVersion</span> <span class="p">=</span> <span class="nf">getCurrentIndexVersion</span><span class="p">(</span><span class="nx">it</span><span class="p">.</span><span class="nx">req</span><span class="p">.</span><span class="nf">GetCurrentIndexVersion</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">buildIndexInfo</span><span class="p">.</span><span class="nf">AppendIndexEngineVersion</span><span class="p">(</span><span class="nx">it</span><span class="p">.</span><span class="nx">currentIndexVersion</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">log</span><span class="p">.</span><span class="nf">Ctx</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span><span class="nf">Warn</span><span class="p">(</span><span class="s">&#34;append index engine version failed&#34;</span><span class="p">,</span> <span class="nx">zap</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">err</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// cgo层调用CreateIndex()
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// it.index有个Upload()方法写入s3(SaveIndexFiles方法里调用it.index.Upload()写入s3)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">it</span><span class="p">.</span><span class="nx">index</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">indexcgowrapper</span><span class="p">.</span><span class="nf">CreateIndex</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">buildIndexInfo</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>indexcgowrapper.CreateIndex()调用C层创建索引。</p>
+<h3 id="10进入saveindexfiles">10.进入SaveIndexFiles()</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">it</span> <span class="o">*</span><span class="nx">indexBuildTask</span><span class="p">)</span> <span class="nf">SaveIndexFiles</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// c++层上传索引文件到s3
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">indexFilePath2Size</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">it</span><span class="p">.</span><span class="nx">index</span><span class="p">.</span><span class="nf">UpLoad</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="o">......</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>总结:</p>
+<ul>
+<li>CreateIndex由proxy传递给协调器dataCoord操作etcd。</li>
+<li>前缀/field-index/{collectionID}/{IndexID}</li>
+<li>前缀/segment-index/{collectionID}/{partitionID}/{segmentID}/{buildID}</li>
+<li>dataCoord通知indexNode创建索引,indexNode通过cgo调用C++层创建索引，并上传至s3</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-07-21</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://blog.liaoyuaner.cn/createindex%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/" data-title="CreateIndex执行流程" data-hashtags="go,向量数据库"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://blog.liaoyuaner.cn/createindex%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/" data-hashtag="go"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://blog.liaoyuaner.cn/createindex%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/" data-title="CreateIndex执行流程"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://blog.liaoyuaner.cn/createindex%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/" data-title="CreateIndex执行流程"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://blog.liaoyuaner.cn/createindex%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/" data-title="CreateIndex执行流程"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/go/">go</a>,&nbsp;<a href="/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/">向量数据库</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/%E6%9C%8D%E5%8A%A1%E5%A4%96%E5%8C%85%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/" class="prev" rel="prev" title="服务外包——智能政策信息检索系统"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>服务外包——智能政策信息检索系统</a></div>
+</div>
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">chengsecret</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span><span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
+                    <span class="icp"><a rel="" href="http://beian.miit.gov.cn/" target="_blank">浙ICP备2020042648号-3</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.5.4/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"chengsecret/chengsecret.github.io"}},"data":{"id-1":"燎原の博客","id-2":"燎原の博客"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

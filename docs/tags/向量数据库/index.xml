@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>向量数据库 - 标签 - 燎原 - 遇见你已经是很不可思议了</title>
+        <link>https://blog.liaoyuaner.cn/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
+        <description>向量数据库 - 标签 - 燎原 - 遇见你已经是很不可思议了</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>2240141419@qq.com (chengsecret)</managingEditor>
+            <webMaster>2240141419@qq.com (chengsecret)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 21 Jul 2024 22:25:48 &#43;0800</lastBuildDate><atom:link href="https://blog.liaoyuaner.cn/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="self" type="application/rss+xml" /><item>
+    <title>CreateIndex执行流程</title>
+    <link>https://blog.liaoyuaner.cn/createindex%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/</link>
+    <pubDate>Sun, 21 Jul 2024 22:25:48 &#43;0800</pubDate>
+    <author>chengsecret</author>
+    <guid>https://blog.liaoyuaner.cn/createindex%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/</guid>
+    <description><![CDATA[数据流程 创建索引的整体数据流向图： etcd元数据操作 1.客户端sdk发出CreateIndex API请求 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18]]></description>
+</item>
+</channel>
+</rss>
